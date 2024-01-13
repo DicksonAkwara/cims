@@ -1,0 +1,124 @@
+{% extends "partials/base.html" %}
+{% block title %}in-Patient register{% endblock %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% load static %}
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/rec_nav.html' %}
+   <div class="container-fluid">
+     <div class="row my-2">
+          <div class="col-md-12">
+            <div class="border p-3 bg-white">
+               <div class="row">
+                <div class="col-sm-3">
+                  <div class="input-group input-group-sm mb-3">                                                            
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">From:</span>
+                    </div> 
+                    <input type="date" id="ddfrom" class="form-control"> 
+                  </div>             
+                </div>
+                <div class="col-sm-3">
+                  <div class="input-group input-group-sm mb-3">                                                            
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">To:</span>
+                    </div> 
+                    <input type="date" id="ddateto" class="form-control"> 
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="input-group input-group-sm mb-3">                                                            
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">Ward:</span>
+                    </div> 
+                    <select id="wardName"  class="form-control">
+                      <option selected>----------</option>
+                      <option value="all">All</option>
+                      {% for point in ward %}
+                      <option value="{{point.wardId}}">{{point.wardName}}</option>
+                      {% endfor%}                    
+                    </select>
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <div class="input-group input-group-sm mb-3">                                                            
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">Count:</span>
+                        </div> 
+                        <input type="text" id="ssumClients" readonly class="form-control" value="{{count}}">
+                      </div>
+                    </div>
+                    <div class="col-sm-6">
+                      <button class="btn btn-sm btn-success form-control">Excel</button>
+                    </div>
+                  </div>                                   
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-3">
+                  <input type="text" id="ssearchlist" class="form-control form-control-sm" placeholder="filter by card no/name/ward">
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-12 mt-2" style="max-height:600px;overflow-y:scroll;">               
+                  <table class="table table-hover table-sm" id="registerip">
+                    <thead style="position: sticky;top: 0" class="thead-dark">
+                      <tr>                     
+                        <th>Admission Date</th>
+                        <th>File number</th>
+                        <th>patient name</th>
+                        <th>Age</th>                    
+                        <th>Gender</th>                 
+                        <th>PayMode</th>                 
+                        <th>Adm Type</th>                 
+                        <th>Ward Name</th>                 
+                        <th>Record By</th>                 
+                      </tr>
+                    </thead>
+                    <tbody id="registeripbody">
+                      {% for item in patList %}
+                       <tr>
+                        <td>{{item.admissionDate}}({{item.admissionTime}})</td>
+                        <td>{{item.ipNumber.op_number}}</td>
+                        <td>{{item.ipNumber.fullname}}</td>
+                        <td>{{item.ipNumber.patient_age}}</td>
+                        <td>{{item.ipNumber.gender}}</td>
+                        <td>{{item.subname.sub_name}}</td>
+                        <td>{{item.visit_type}}</td>
+                        <td>{{item.wardName.wardName}}</td>
+                        <td>{{item.admittedBy.username}}</td>
+                      </tr>                    
+                      {% endfor%}          
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>       
+       
+           </div>          
+           
+           </div>
+        </div>
+     </div>
+   <!--end of  clinical booking Form-->
+   <script src="{% static 'js/recRegisterList.js' %}"></script>
+   <script>
+
+    var now = new Date();
+    var month = (now.getMonth() + 1);               
+    var day = now.getDate();
+    if (month < 10) 
+        month = "0" + month;
+    if (day < 10) 
+        day = "0" + day;
+    var today = now.getFullYear() + '-' + month + '-' + day;
+    $('#ddfrom').val(today);
+    $('#ddateto').val(today);
+  
+  </script>
+
+{% endblock%}

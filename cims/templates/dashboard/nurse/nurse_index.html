@@ -1,0 +1,22 @@
+{% extends "partials/base.html" %}
+{% block title %}nurse-index{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/nurse_nav.html'%}
+<div class="container-fluid" id="main">
+    <div class="row row-offcanvas row-offcanvas-left vh-100">
+       <main class="col main pt-5 mt-3 h-100 overflow-auto">
+         
+        </main>
+        <!--/main col-->
+    </div>
+
+</div>
+<!--/.container-->
+
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}

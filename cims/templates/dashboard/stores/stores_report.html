@@ -1,0 +1,83 @@
+{% extends "partials/base.html" %}
+{% block title %}inventory-reports{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/store_nav.html'%}
+<div class="container-fluid" id="main">
+    <div class="row row-offcanvas row-offcanvas-left vh-100">
+       <main class="col main overflow-auto">
+        <div class="card mt-2 h-100">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="">Select Report Name</label>
+                            <select name="" class="form-control" id="">
+                                <option value="">---------------</option>
+                                <option value="">Admissions-Summary</option>
+                                <option value="">Admissions-detailed</option>
+                                <option value="">Refferals-In</option>
+                                <option value="">Refferal-Out</option>
+                                <option value="">Discharges</option>
+                                <option value="">Deaths</option>
+                            </select>
+                        </div>
+                       
+                    </div>
+                    <div class="col-sm-5">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="">From Date</label>
+                                    <input type="date" class="form-control" name="" id="">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="">To Date</label>
+                                    <input type="date" class="form-control" name="" id="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-sm-4">
+                        <div class="row mt-4">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <input type="button" class=" form-control btn btn-success" value="Load">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <input type="button" class=" form-control btn btn-info" value="Excel">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <input type="button" class=" form-control btn btn-warning" value="print">
+                                </div>
+                            </div>
+                        </div>
+                    </div>              
+                    
+                </div>
+            </div>
+            <div class="card-body">
+
+            </div>
+        </div>
+         
+        </main>
+        <!--/main col-->
+    </div>
+
+</div>
+<!--/.container-->
+
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}

@@ -1,0 +1,37 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script src="{% static '/js/Chart.min.js' %}"></script>
+    <script src="{% static '/js/jquery-3.2.1.min.js' %}"></script>  
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static '/css/bootstrap4.min.css' %}">
+    <link href="{% static '/css/jquery-ui.css' %}" rel='stylesheet'>
+    <link href="{% static '/css/font-awesome.min.css' %}" rel='stylesheet'>
+   
+    
+
+   <!--font awesome cdn link-->
+    <!--custom styling static-->
+    <link rel="stylesheet" href="{% static '/styles.css' %}">
+    <link rel="stylesheet" href="{% static '/css/style_new.css' %}">  
+    <link href="{% static '/css/auth.css' %}" rel='stylesheet'>
+    <title>{% block title %} {%endblock%}</title>
+  </head>
+  <body>
+    {% include 'userpartial/usernav.html' %}
+
+    {% block content %} {% endblock %}
+    <!--NEVER USE SLIM.MIN.JS-->
+     
+    <script src="{% static '/js/bootstrap5.bundle.min.js' %}"></script>
+    <script src="{% static '/js/popper.min.js' %}"></script>
+    <script src="{% static '/js/bootstrap.min.js' %}"></script>
+</body>
+</html>
+    
+  </body>
+</html>

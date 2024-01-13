@@ -1,0 +1,194 @@
+{% extends "partials/base.html" %}
+{% block title %}Adjustments{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/finance_nav.html'%}
+{% csrf_token %}
+<style>
+   .light-grey-bg {
+      background-color: #d3d3d3; /* Light grey color */
+    }
+</style>
+<div class="container-fluid" id="main">
+    <div class="row my-2">
+            <div class="col-sm-12">
+              <div class="card h-100">
+                      <div class="card-header">
+                       Patient Details &amp; Bill
+                      </div>
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col-sm-3">
+                            <div class="form-group">
+                              <select class="form-control form-control-sm" id="pat_type">                                                      
+                                {% for item in patType %}
+                                <option value="{{item.category}}">{{item.category}}</option>
+                                {%endfor%}                                
+                              </select>
+                            </div>
+                          </div>
+                           <div class="col-sm-2">
+                            <div class="form-group">
+                              <div class="input-group">
+                                <input class="form-control form-control-sm" type="text" id="cardnumber" placeholder="search card/file number" aria-label="Search">                                
+                                <input type="text" hidden id="ppid">
+                                <input type="text" hidden id="vstno">
+                              </div>
+                              <small id="patSearchStatus" class="text-danger"></small>
+                            </div>
+                          </div>
+                          <div class="col-sm-3">
+                            <div class="form-group">
+                              <small class="text-danger"></small>
+                            </div>
+                          </div>
+                        </div>  
+                       <div class="row">
+                        <div class="col-sm-3">
+                          <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">Name:</span>
+                            </div> 
+                            <input class="form-control" readonly type="text" id="patname"> 
+                          </div>
+                        </div>
+                        <div class="col-sm-3">
+                          <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">Pay mode:</span>
+                            </div> 
+                            <input class="form-control" readonly type="text" id="patpmode"> 
+                          </div>
+                        </div>
+                        <div class="col-sm-2">
+                          <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">Age:</span>
+                            </div> 
+                            <input class="form-control" readonly type="text" id="patage"> 
+                          </div>
+                        </div>
+                        <div class="col-sm-2">
+                          <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">Gender:</span>
+                            </div> 
+                            <input class="form-control" readonly type="text" id="patgend" > 
+                          </div>
+                        </div>                       
+                       </div>   
+                       <div class="row mt-3"> 
+                         <div class="col-sm-12" style="max-height:300px;overflow-y:scroll;" >
+                           <table class="table table-sm table-hover table-fixed " id="tbladjs">
+                             <thead style="position: sticky;top: 0" class="thead-dark">
+                              <th> Department</th>
+                                <th style="width:30%"> Service/Item</th>
+                               <th> Billed</th>
+                               <th> Actual</th>
+                               <th> Price</th> 
+                               <th> Cost</th>
+                             </thead>
+                             <tbody id="tbladjsbody"></tbody>                       
+                           </table>                        
+                         </div>                      
+                       </div>
+                       <div class="row mt-4">
+                        <div class="col-sm-3">
+                          <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">Total Bill:</span>
+                            </div> 
+                            <input class="form-control" readonly type="text" id="ttpbill" placeholder="0.0"> 
+                          </div>
+                        </div>
+                        <div class="col-sm-3">
+                          <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">Deposits:</span>
+                            </div> 
+                            <input class="form-control" readonly type="text" id="ttdep" value="'0.0" placeholder="0.0"> 
+                          </div>
+                        </div>
+                        <div class="col-sm-3">
+                          <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">Paid:</span>
+                            </div> 
+                            <input class="form-control" readonly type="text" id="pbill" placeholder="0.0"> 
+                          </div>
+                        </div>
+                        <div class="col-sm-3">
+                          <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">Net Amount:</span>
+                            </div> 
+                            <input class="form-control border-danger" readonly type="text" id="netbill" placeholder="0.0"> 
+                          </div>
+                        </div>                       
+                       </div>
+
+                       <div class="row mt-4">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4 text-center">
+                          <button class="btn btn-sm btn-info" id="btnSaveAdj"> Save Adjustments</button>
+                        </div>
+                        <div class="col-md-4"></div>
+                       </div>                                      
+                      </div>
+              </div> 
+                        
+             </div>          
+            
+         </div>
+       
+    
+
+</div>
+<!--/.container-->
+ <!--add bill modal-->
+ <div class="modal fade" id="billModal" tabindex="-1" aria-labelledby="bill_modal" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-top modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header"> 
+        <h5 class="modal-title float-center" id="billmodalTitle">Request for Service<small>(s)</small></h5> 
+        <button type="button" class="btn-close btn-danger" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>         
+      </div>
+      <div class="modal-body">
+        <div class="row">                       
+          <div class="col-sm-6">
+            <div class="form-group">
+              <input type="text" class="form-control" id="cpsearch" placeholder="Service Name">
+            </div>
+          </div>                     
+        </div>  
+        <div class="row">
+          <div class="col-sm-12">              
+              <table class="table table-sm table-hover tblSearch" id="tblSearch">
+                <thead>
+                  <th style="width:70%;">Service Name</th>
+                  <th>Price</th>                                     
+                </thead>
+                <tbody class="tblSearchBody"></tbody>
+              </table>             
+          </div>                     
+        </div>
+      
+          
+        </div>        
+        
+      </div>          
+    </div>
+  </div>
+<script>
+  $('body').height(document.documentElement.clientHeight);
+</script>
+
+<script src="{% static 'js/finance_billadjust.js' %}"></script>
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}

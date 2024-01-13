@@ -1,0 +1,186 @@
+{% extends "partials/base.html" %}
+{% block title %}lab | benches{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/lab_nav.html'%}
+<div class="container-fluid" id="main">
+    <div class="row mt-2">
+        <div class="col-md-12 border p-3 bg-white">                      
+            <div id="accordion">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link collapsed text-decoration-none" id="btn_testdetail" data-toggle="collapse" data-target="#benchdetailsacc" aria-expanded="false" aria-controls="benchdetailsacc">
+                              Bench Management
+                            </button>
+                          </h5>
+                    </div>
+                    <div id="benchdetailsacc" class="collapse" aria-labelledby="ptdetails" data-parent="#accordion">
+                    <div class="card-body">
+                        <div class="row">
+                        <div class="col-sm-4 h-100">
+                            <div class="border p-2 bg-white">
+                               <h4>Add/Edit Laboratory Bench</h4>
+                               <hr>
+                               <form id="testform">
+                                   {% csrf_token %}
+                                   {{ benchform | crispy}}
+                                   <div class="row">
+                                    <input type="text" name="bench" id="benchid" hidden>
+                                    <div class="col-sm-6">
+                                        <input class="btn btn-success  btn-block btn-sm" id="addbench" type="button" value="Add New">
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <input class="btn btn-warning  btn-block btn-sm" id="editbench" type="button" value="update">
+                                    </div>                                
+                                   </div>
+                                 
+                                </form>
+                           </div>
+                       </div>
+                       <div class="col-sm-8 h-100">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" name="" id="benchsearch" placeholder="search in list">
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                           <div class="col-sm-12">
+                               <div style="max-height:350px;overflow-y:scroll;" >
+                                   <table class="table table-sm table-hover table-fixed " id="tblbench">
+                                     <thead style="position: sticky;top: 0" class="thead-dark">
+                                       <tr>
+                                           <th >Date Added</th>
+                                           <th >Bench Name</th>                                    
+                                           <th >Description</th>                                    
+                                           <th >Added by</th>                                         
+                                       </tr>
+                                       </thead>
+                                       <tbody id="tblbenchbody">
+                                        {% if bench %}
+                                       {% for bnch in bench %}
+                                       <tr>
+                                           <td style="display:none;">{{bnch.departmentid}}</td>
+                                           <td>{{bnch.DateCreated}}</td>
+                                           <td>{{bnch.departmentname}}</td> 
+                                           <td>{{bnch.description}}</td> 
+                                           <td>{{bnch.createby}}</td>
+                                       </tr>
+                                       {% endfor %}
+                                       {% else %}
+                                       <td colspan="3"> No bench found</td>
+                                       {% endif %}
+                                       </tbody>
+                                   </table>
+                               </div>
+                           </div>
+                        </div>
+                        
+                           
+                       </div>
+                       </div>
+                    </div>
+                    </div>
+                </div>
+
+
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link collapsed text-decoration-none" id="btn_testparamdetail" data-toggle="collapse" data-target="#benchtestdetacc" aria-expanded="false" aria-controls="benchtestdetacc">
+                              Departmental Tests Management
+                            </button>
+                          </h5>
+                    </div>
+                    <div id="benchtestdetacc" class="collapse" aria-labelledby="ptdetails" data-parent="#accordion">
+                    <div class="card-body">
+                        <div class="col-sm-12">
+                            <div class="border p-2 bg-white">
+                           
+                               <div class="row">
+                                <div class="col-sm-3">
+                                    <input class="form-control form-control-sm" type="text" name="" id="testsearchbnch" placeholder="search test table">
+                                </div>
+
+                                <div class="col-sm-4">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend">
+                                          <span class="input-group-text">Test Name:</span>
+                                        </div>
+                                        <select id="testname" class="form-control">
+                                            <option value="none">----------</option>
+                                            {% for test in lbtest %}
+                                            <option value="{{test.scode}}">{{test.service_name}}</option>
+                                            {%endfor%}
+                                        </select>
+                                    </div>                                    
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend">
+                                          <span class="input-group-text">Bench Name:</span>
+                                        </div>
+                                        <select id="deptname" class="form-control">
+                                            <option value="none">----------</option>
+                                            {% for bnch in bench %}
+                                            <option value="{{bnch.departmentid}}">{{bnch.departmentname}}</option>
+                                            {%endfor%}
+                                        </select>
+                                    </div> 
+                                </div>
+                                <div class="col-sm-2">
+                                    <button class="btn btn-sm btn-success" id="addbnchtest">Add to Bench</button>
+                                </div>
+                                
+                               </div>
+                               <div class="row mt-2">
+                                <div class="col-sm-12">
+                                    <div style="max-height:400px;overflow-y:scroll;" id="divbenchtest" >
+                                        <table class="table table-sm table-hover table-fixed " id="tblbenchtest">
+                                          <thead style="position: sticky;top: 0" class="thead-dark">
+                                            <tr>
+                                                <th >Department</th>
+                                                <th >Test Name</th>                                                                                                
+                                                <th >Date Added</th>
+                                                <th >Added by</th>
+                                                <th></th>                                             
+                                            </tr>
+                                            </thead>
+                                            <tbody id="tblbenchtestbody">
+                                                {% if benchtest %}
+                                                    {% for bnch in benchtest %}
+                                                    <tr>
+                                                        <td style="display:none;">{{bnch.entryno}}</td>
+                                                        <td>{{bnch.departmentname.departmentname}}</td> 
+                                                        <td>{{bnch.testname.service_name}}</td>                                                        
+                                                        <td>{{bnch.entryDate}}</td> 
+                                                        <td>{{bnch.createby}}</td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                    {% else %}
+                                                    <td colspan="4"> No bench test found</td>
+                                                {% endif %}                                          
+                                            </tbody>
+                                        </table>
+                                    </div>                                     
+                                </div>
+                             </div>                               
+                           </div>
+                       </div>
+                   
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+  
+    </div>
+</div>
+
+<!--/.container-->
+<script src="{% static 'js/lab_dept.js' %}"></script>
+
+{% endblock%}

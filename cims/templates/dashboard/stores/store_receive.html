@@ -1,0 +1,314 @@
+{% extends "partials/base.html" %}
+{% block title %}Stores-receive{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/store_nav.html'%}
+<div class="container-fluid" id="main">
+
+            <div class="row mt-2">
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="row">
+                                
+                                
+                                    {% csrf_token %}
+                                    <input type="text" name="dvid" id="dvid" hidden> 
+                                <div class="col-sm-3">                           
+                                        <div class="input-group input-group-sm mb-3">
+                                          <div class="input-group-prepend">
+                                            <span class="input-group-text">Receive Date</span>
+                                          </div>
+                                          <input type="date" name="dldate" id="dldate" class="form-control">                           
+                                        </div>
+                                </div>
+                                <div class="col-sm-3">                           
+                                    <div class="input-group input-group-sm mb-3">
+                                      <div class="input-group-prepend">
+                                        <span class="input-group-text">Receive Type:</span>
+                                      </div>
+                                      <select name="rectype" id="rectype" class="form-control">               
+                                        <option value="external">external</option>
+                                        <option value="internal">Internal</option>                
+                                    </select>                         
+                                </div>
+                            </div>
+                                <div class="col-sm-3">                           
+                                        <div class="input-group input-group-sm mb-3">
+                                          <div class="input-group-prepend">
+                                            <span class="input-group-text">Receive Store</span>
+                                          </div>
+                                          <select name="storerec" id="storerec" class="form-control">
+                                            <option  value="none">---------</option>
+                                            {% for store in usstore %}
+                                            <option value="{{store.storeName.store_Id}}">{{store.storeName}}</option>
+                                            {% endfor %}                                        
+                                        </select>                          
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">                           
+                                    <div class="input-group input-group-sm mb-3">
+                                      <div class="input-group-prepend">
+                                        <span class="input-group-text">Supplier:</span>
+                                      </div>
+                                      <select name="supplier" id="supplier" class="custom-select custom-select-sm">
+                                        <option  value="none">---------</option>
+                                        {% for sup in supp %}
+                                        <option value="{{sup.supplierName}}">{{sup.supplierName}}</option>
+                                        {% endfor %}
+                                    </select>                        
+                                </div>
+                                <p><a href="{% url 'generatepdf' %}" download>Download Book Catalog (PDF)</a></p>
+                            </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                          <div id="divreceiveitem">
+                          <div class="row">
+                            <div class="col-sm-3">                           
+                                <div class="input-group input-group-sm mb-3">
+                                  <div class="input-group-prepend">
+                                    <span class="input-group-text">Delivery Note No</span>
+                                  </div>
+                                  <input type="text" name="dlvno" id="dlvno" class="form-control">                           
+                                </div>
+                            </div>
+
+                            <div class="col-sm-3">                           
+                                <div class="input-group input-group-sm mb-3">
+                                  <div class="input-group-prepend">
+                                    <span class="input-group-text">LPO no:</span>
+                                  </div>
+                                  <input type="text" name="lpono" id="lpono" class="form-control">                       
+                                </div>
+                            </div>
+
+                            <div class="col-sm-3">                           
+                                <div class="input-group input-group-sm mb-3">
+                                  <div class="input-group-prepend">
+                                    <span class="input-group-text">Delivery person:</span>
+                                  </div>
+                                  <input type="text" name="dlvby" id="dlvby" class="form-control">                       
+                                </div>
+                            </div>
+
+                            <div class="col-sm-3">                           
+                                <div class="input-group input-group-sm mb-3">
+                                  <div class="input-group-prepend">
+                                    <span class="input-group-text">inspected by:</span>
+                                  </div>
+                                  <input type="text" name="inpector" id="inpector" class="form-control">                       
+                                </div>
+                            </div>                     
+                          </div>
+                          <div class="row mt-1">
+                            
+                            <div class="col-sm-3">                           
+                                <div class="input-group input-group-sm mb-3">
+                                  <div class="input-group-prepend">
+                                    <span class="input-group-text">Item Search:</span>
+                                  </div>
+                                  <input list="stitemlist" class="form-control" id="dlvitem">                         
+                                </div>
+                                  <div>
+                                    <ul id="searchResult"></ul>
+                                  </div>
+                                  <input type="hidden" id="itemid">
+                            </div>
+
+                            <div class="col-sm-3">                           
+                                <div class="input-group input-group-sm mb-3">
+                                  <div class="input-group-prepend">
+                                    <span class="input-group-text">Package Unit:</span>
+                                  </div>
+                                  <select name="pkgUnit" id="pkgUnit" class="form-control">
+                                    <option  value="none" >immediate pkg to item</option>
+                                    <option value="bottle">bottle</option>
+                                    <option value="box">box</option>
+                                    <option value="packet">packet</option>
+                                    <option value="pieces">pieces</option>
+                                    <option value="container">container</option>
+                                </select>                         
+                            </div>
+                        </div>
+                              <div class="col-sm-3">                           
+                                <div class="input-group input-group-sm mb-3">
+                                  <div class="input-group-prepend">
+                                    <span class="input-group-text">Package Count:</span>
+                                  </div>
+                                  <input type="text" name="pkgcount" id="pkgcount" class="form-control" >                        
+                                </div>
+                            </div>
+
+                           <div class="col-sm-3">                           
+                                <div class="input-group input-group-sm mb-3">
+                                  <div class="input-group-prepend">
+                                    <span class="input-group-text">Items/package:</span>
+                                  </div>
+                                <input type="text" name="itmperpkg" id="itmperpkg" class="form-control">
+                                <input type="text" name="dlvttitem" id="dlvttitem" hidden> 
+                                <small class="text-danger" id="spttitems"></small>                          
+                                </div>
+                            </div>
+                          </div>
+                          <div class="row mt-1">
+                            <div class="col-sm-3">                           
+                                <div class="input-group input-group-sm mb-3">
+                                  <div class="input-group-prepend">
+                                    <span class="input-group-text">Total Cost:</span>
+                                  </div>
+                                  <input type="text" name="pkgprice" id="pkgprice" class="form-control">
+                                <input type="text" name="itemprice" id="itemprice" hidden>
+                                <small class="text-danger" id="spitemprice"></small>                         
+                                </div>
+                            </div>
+
+                            <div class="col-sm-3">                           
+                                <div class="input-group input-group-sm mb-3">
+                                  <div class="input-group-prepend">
+                                    <span class="input-group-text">Batch No:</span>
+                                  </div>
+                                  <input type="text" name="batchno" id="batchno" class="form-control">                          
+                                </div>
+                            </div>
+                            <div class="col-sm-3">                           
+                                <div class="input-group input-group-sm mb-3">
+                                  <div class="input-group-prepend">
+                                    <span class="input-group-text">Expiry Date:</span>
+                                  </div>
+                                  <input type="date" name="expdate" id="expdate" class="form-control">                        
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <button class="btn btn-sm btn-success  rcvstock">Receive</button>
+                                <button class="btn btn-sm btn-info float-right delview">Confirm List</button>                                                                    
+                            </div> 
+                          </div>
+                        </div>
+                            <div id="divpendtable" style="display: none;">
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend">
+                                              <span class="input-group-text">Delv.note pending:</span>
+                                            </div>
+                                            <select name="penddelv" id="penddelv" class="custom-select custom-select-sm">
+                                                <option  value="none">---------</option>
+                                                
+                                            </select>                   
+                                          </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend">
+                                              <span class="input-group-text">filter:</span>
+                                            </div>
+                                            <input type="text" name="" id="itemdelsearch" placeholder="search......" class="form-control form-control-sm">                        
+                                          </div>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <input type="button" name="" id="btnback" value="Back" class="btn btn-sm btn-secondary">
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-sm-12">
+                                        <div style="max-height:400px;overflow-y:scroll;" >
+                                            <table class="table table-sm table-striped table-fixed" id="tblrecitems">
+                                              <thead style="position: sticky;top: 0" class="thead-dark">
+                                                
+                                                    <th>Supplier</th>
+                                                    <th style="width:20%;">Item</th>
+                                                    <th >Pkg.Unit</th>
+                                                    <th >Pkg.Count</th>
+                                                    <th >Item/pkg</th>
+                                                    <th >Cost</th>
+                                                    <th >Lpo.No</th>
+                                                    <th >Batch.no</th>
+                                                    <th >Exp.Date</th>
+                                                    <th></th>
+                                                    <th></th>
+                                                </thead>
+                                                <tbody id='tblrecitemsbody'>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-sm-4"></div>
+                                    <div class="col-sm-4 text-center">
+                                        <button class="btn btn-info cnfdelivery">Confirm item(s)delivery</button>
+                                    </div>
+                                    <div class="col-sm-4"></div>
+                                </div>
+                              </div>
+                          
+                          
+                        <!--<div class="row mt-1">
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <button class="btn btn-warning form-control amdstock">Ammend</button>
+                                        </div>                                        
+                                    </div>                                   
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <button class="btn btn-danger form-control deldlv">Discard</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                         </div>-->
+                        </div>
+                        
+                    </div>
+                </div>
+        
+         
+    </div>
+   
+
+
+
+</div>
+<!--/.container-->
+<script src="{% static 'js/supplier.js' %}"></script>
+<script>
+
+    var now = new Date();
+    var month = (now.getMonth() + 1);               
+    var day = now.getDate();
+    if (month < 10) 
+        month = "0" + month;
+    if (day < 10) 
+        day = "0" + day;
+    var today = now.getFullYear() + '-' + month + '-' + day;
+    $('#dldate').val(today);
+
+
+    
+
+    var date = new Date(today); 
+    date.setFullYear(date.getFullYear() + 5);
+    var month2=(date.getMonth() + 1);
+    var day2 = date.getDate();
+    if (month2 < 10) 
+        month2 = "0" + month2;
+    if (day2 < 10) 
+        day2 = "0" + day2;
+    var plus = date.getFullYear() + '-' + month2 + '-' + day2;
+
+    $('#expdate').val(plus);
+
+</script>
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}
+   

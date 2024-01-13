@@ -1,0 +1,154 @@
+{% extends "partials/base.html" %}
+{% block title %}farewell-Registration{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}    
+<!--navbar.html-->
+{% include 'partials/fwnav.html' %}
+<div class="container-fluid" id="main">
+  <form action="" id="bodyRegister">
+    <div class="row my-2">
+        <div class="col-md-4 col-sm-4 p-2">
+          <h4>Body Registration</h4>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <select id="bdtype" name="bdtype" class="form-control border-danger">
+              <option value="">Body Category</option>
+              <option value="bid">Brought In Dead(BID)</option>
+              <option value="int">Internal Body(INT)</option>                   
+             </select>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-sm-4">
+            <div class="card h-100">
+              <div class="card-header">
+                Deceased Details
+              </div>
+              <div class="card-body">                         
+                <div class="form-group divhpno" style="display: none;">
+                  <label>Hospital Number<small class="text-danger">*</small></label>
+                  <input class="form-control" placeholder="search by exact no" type="text" id="hpno" name="hpno">
+                </div>
+                <div class="form-group">
+                  <label>Fullname<small class="text-danger">*</small></label>
+                  <input class="form-control" type="text" id="fullname" name="fullname" required>
+                </div>
+                <div class="row">
+                  <div class="col-sm-8">
+                    <div class="form-group">
+                      <label>Age<small class="text-danger">*</small><small>(Years)</small></label>
+                      <input class="form-control" type="number" id="age" name="age" min="1" max="150" required >
+                    </div>
+                  </div>
+                  <div class="col-sm-4 mt-3">
+                    <small class="text-danger " id="act_years"></small>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>National IdNo</label>
+                  <input class="form-control" type="number" id="idno" name="idno" >
+                </div>
+                <div class="form-group">
+                  <label>Sex<small class="text-danger">*</small></label>
+                  <select name="gender" id="gender" class="form-control">
+                    <option selected>Select...</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>                    
+                    <option value="Bisexual">Bisexual</option>                    
+                  </select>
+              </div>
+              <div class="form-group">
+                <label>Immediate Residence</label>
+                <input class="form-control" type="text" id="residence" name="residence">
+              </div>
+
+            </div>
+          </div>
+          </div> 
+          <div class="col-sm-4">
+            <div class="card h-100">
+              <div class="card-header">
+                Next of Kin Details
+              </div>
+              <div class="card-body">                         
+                <div class="form-group">
+                  <label>Fullname<small class="text-danger">*</small></label>
+                  <input class="form-control" type="text" id="nkfullname" name="nkfullname" required>
+                </div>
+                <div class="form-group">
+                  <label>Phone Number<small class="text-danger">*</small></small></label>
+                  <input class="form-control" type="number" id="nkphone" name="nkphone" min="1" max="150" required >
+                </div>
+                <div class="form-group">
+                  <label>National IdNo<small class="text-danger">*</small></label>
+                  <input class="form-control" type="number" id="nkidno" name="nkidno" required >
+                </div>
+                <div class="form-group">
+                  <label>Residence<small class="text-danger">*</small></label>
+                  <input class="form-control" type="text" id="nkresidence" name="nkresidence" required >
+                </div>
+                <div class="form-group">
+                  <label>Relation To Deceased<small class="text-danger">*</small></label>
+                  <select name="relation" id="relation" class="form-control">
+                    <option value="none" selected>Choose...</option>
+                    {% for rel in relation %}
+                    <option value="{{rel.relName}}">{{rel.relName}}</option>
+                    {%endfor%}                                    
+                  </select>
+              </div>
+
+            </div>
+          </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="card h-100">
+              <div class="card-header">
+                Legal Details
+              </div>
+              <div class="card-body">                         
+                <div class="form-group">
+                  <label>Tag Number<small class="text-danger">*</small></label>
+                  <input class="form-control" type="text" id="tagno" name="tagno" required>
+                </div>
+                <div class="form-group">
+                  <label>Date of Death<small class="text-danger">*</small></label>
+                  <input class="form-control" type="date" id="dod" name="dod" required>
+                </div>
+                <div class="form-group divob">
+                  <label>OB number<small class="text-danger">*</small></label>
+                  <input class="form-control" type="text" id="obnumber" name="obnumber">
+                </div>
+                <div class="form-group">
+                  <label>Additional Notes <small>(death place,clinical e.t.c)</small> </label>
+                  <textarea class="form-control" name="notes" id="notes" rows="3"></textarea>
+                </div>
+                <div class="row mt-2">
+                  <div class="col-md-12 text-center">
+                    <button type="button" class=" btn btn-success" id="btnfwregister">Save Details</button>
+                  </div>
+                </div>
+            </div>
+          </div>
+          </div>
+      </div>
+    </form>
+
+</div>
+<script>  
+  var now = new Date();
+  var month = (now.getMonth() + 1);               
+  var day = now.getDate();
+  if (month < 10) 
+      month = "0" + month;
+  if (day < 10) 
+      day = "0" + day;
+  var today = now.getFullYear() + '-' + month + '-' + day;
+  $('#dod').val(today);
+  //$('#pctdate').val(today);
+</script>
+<script src="{% static 'js/farewell.js' %}"></script>
+{% include 'partials/footer.html' %}
+{% endblock%}

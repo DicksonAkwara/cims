@@ -1,0 +1,60 @@
+{% extends "partials/base.html" %}
+{% block title %}records-docs{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/rec_nav.html'%}
+<div class="container-fluid" id="main">
+    <div class="row row-offcanvas row-offcanvas-left vh-100">
+       <main class="col main overflow-auto">
+        <div class="card mt-2 h-100">
+            <div class="card-header">
+              <h4>Select patient scanned documents</h4>
+            </div>
+            <div class="card-body">
+                <div class="row mt-3">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-4">
+                        <form id="fmdoc" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="form-group row">
+                                <label  class="col-sm-4 col-form-label">Patient Number</label>
+                                <div class="col-sm-8">
+                                  <input type="text" class="form-control" name="pnumber" id="pnumber">
+                                  <input type="text" hidden name="pno" id="pno">
+                                </div>
+                              </div>
+                              <div class="form-group row">
+                                <label  class="col-sm-4 col-form-label">Patient Name</label>
+                                <div class="col-sm-8">
+                                  <input type="text" readonly class="form-control" name="pname" id="pname">
+                                </div>
+                              </div>
+                              <div class="form-group row">
+                                <label  class="col-sm-4 col-form-label">Select Pdf<small>(s)</small></label>
+                                <div class="col-sm-8">
+                                  <input type="file" class="form-control" name="pdf_files" id="pdf_files" multiple>
+                                </div>
+                              </div>
+                              <div class="form-group row">
+                                <div class="col-sm-8">
+                                  <input type="button" class="btn btn-success float-right" id="btnfile" value="Upload">
+                                </div>
+                              </div>                              
+                        </form>
+                    </div>
+                    <div class="col-sm-4"></div>
+                </div>
+            </div>
+        </div>
+         
+        </main>
+        <!--/main col-->
+    </div>
+
+</div>
+<script src="{% static 'js/rec_upload.js'%}"></script>
+{% include 'partials/footer.html' %}
+{% endblock%}

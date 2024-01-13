@@ -1,0 +1,205 @@
+{% extends "partials/base.html" %}
+{% block title %}Consult | Theater{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/cons_nav.html'%}
+<div class="container-fluid" id="main">
+  <div class="row mt-3">
+    <div class="col-sm-3">
+        <input class="btn btn-warning form-control" type="button" id="btnsearchpt" value="Search Patient">
+    </div>
+
+    <div class="col-sm-3">
+        <input class="btn btn-secondary form-control" type="button" id="btnbooklist" value="View Bookings">
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-sm-3">
+        <div class="input-group input-group-sm mb-3">                                                            
+            <div class="input-group-prepend">                                              
+              <span class="input-group-text">Name</span>
+            </div> 
+            <input class="form-control form-control-sm" readonly type="text" id="pname">
+          </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="input-group input-group-sm mb-3">                                                            
+            <div class="input-group-prepend">                                              
+              <span class="input-group-text">FileNo</span>
+            </div> 
+            <input class="form-control form-control-sm" readonly type="text" id="cardno">
+          </div>
+    </div>
+
+    <div class="col-sm-3">
+        <div class="input-group input-group-sm mb-3">                                                            
+            <div class="input-group-prepend">                                              
+              <span class="input-group-text">Age</span>
+            </div> 
+            <input class="form-control form-control-sm" readonly type="text" id="page">
+          </div>
+    </div>
+
+    <div class="col-sm-3">
+        <div class="input-group input-group-sm mb-3">                                                            
+            <div class="input-group-prepend">                                              
+              <span class="input-group-text">Gender</span>
+            </div> 
+            <input class="form-control form-control-sm" readonly type="text" id="gender">
+          </div>
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-sm-3">
+        <div class="input-group input-group-sm mb-3">                                                            
+            <div class="input-group-prepend">                                              
+              <span class="input-group-text">Book Type</span>
+            </div>            
+            <select class="form-control form-control-sm" id="bktype">
+                <option value="">----------</option>
+                <option value="emergency">emergency</option>
+                <option value="elective">elective</option>
+            </select>
+          </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="input-group input-group-sm mb-3">                                                            
+            <div class="input-group-prepend">                                              
+              <span class="input-group-text">Procedure</span>
+            </div> 
+            <input list="procedures" value="" placeholder="Type to search..." class="col-sm-12 custom-select custom-select-sm" id="prodeure">
+            <datalist id="procedures">
+             <option value="none">select</option>
+             {% for cond in services %}
+             <option value="{{cond.service_name}}">{{cond.service_name}}</option>
+             {% endfor%} 
+            </datalist>
+          </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="input-group input-group-sm mb-3">                                                            
+            <div class="input-group-prepend">                                              
+              <span class="input-group-text">Scheduled on</span>
+            </div> 
+            <input class="form-control form-control-sm" type="date" id="bkdate">
+          </div>
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-sm-6">
+        <div class="input-group input-group-sm mb-3">                                                            
+            <div class="input-group-prepend">                                              
+              <span class="input-group-text">Additional Notes</span>
+            </div>             
+            <textarea id="addnotes" class="form-control form-control-sm"></textarea>
+          </div>
+    </div>
+
+    <div class="col-sm-3">
+        <input type="button" class="btn btn-success" id="btnsavebookTH" value="Save Booking">
+    </div>
+  </div>
+
+</div>
+
+
+<!-- booking list Modal -->
+<div class="modal fade" id="booklist" tabindex="-1" role="dialog" aria-labelledby="booklistTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-top modal-dialog-scrollable" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4>Booked Sessions(next 2 weeks)</h4>
+          <button type="button" class="btn-close btn-danger" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div> 
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-sm-8">
+                    <div class="input-group input-group-sm mb-3">                                                            
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">Search by number/name</span>
+                      </div> 
+                      <input class="form-control form-control-sm" type="text" id="bkcardno" placeholder="type to search ..." aria-label="Search">
+                        <small id="sttfind" class="text-danger"></small>
+                    </div>
+                  </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12" style="overflow-x:scroll;max-height:400px;overflow-y:scroll;">
+                    <table class="table table-sm table-bordered table-fixed" id="listTable">
+                        <thead style="position: sticky;top: 0">
+                            <th>Patient Name</th>
+                            <th>Card No</th>
+                            <th>Booked On</th>
+                            <th>Scheduled Date</th>
+                            <th>Book Status</th>
+                        </thead>
+                        <tbody id="listTableBody">
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+  
+        </div>       
+      </div>
+    </div>
+  </div>
+  <!--end of modal-->
+
+<!-- patient search Modal -->
+<div class="modal fade" id="patsearchModal" tabindex="-1" role="dialog" aria-labelledby="patsearchModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-top" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="modal_header"></h4>
+        <div class="alert hidden" role="alert" id="modalAlert"></div> 
+        <button type="button" class="btn-close btn-danger" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div> 
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">                    
+              <input class="form-control" type="text" id="search_pat" placeholder="search by card no/name/national id"> 
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            
+            <table class="table table-hover" id="patientTable">
+              <thead>
+                <tr>                     
+                  <th scope="col">FullName</th>
+                  <th scope="col">Card No</th> 
+                  <th scope="col">National idNo</th> 
+                  <th scope="col">Age</th>                    
+                  <th scope="col">Gender</th>                    
+                </tr>
+              </thead>
+              <tbody class="patientTableBody">
+    
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>       
+    </div>
+  </div>
+</div>
+<!--end of modal-->
+<!--/.container-->
+<!--footer.html-->
+<script src="{% static 'js/cons_booktheater.js' %}"></script>
+{% include 'partials/footer.html' %}
+{% endblock%}

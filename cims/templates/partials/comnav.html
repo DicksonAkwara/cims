@@ -1,0 +1,121 @@
+
+       <!--Start of navbar
+       <nav class="navbar navbar-expand-lg navbar-light bg-info border-bottom">
+        <div class="container-fluid">
+           
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+             
+                <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                    <li class="nav-item active"><a class="nav-link"  href="{% url 'storeindex' %}">Stores Dashboard</a></li>
+                   
+                </ul>
+
+
+                <ul class="navbar-nav mt-2 mt-lg-0">
+                  <li class="nav-item dropdown">
+                      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown8" role="button"
+                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                         Stock Management
+                      </a>
+                      <div class="dropdown-menu bg-info" aria-labelledby="navbarDropdown8">
+                        <a class="dropdown-item" href="{% url 'makeorder' %}">Make Order</a>
+                        <a class="dropdown-item" href="{% url 'receivestock' %}">Receive Stock</a>
+                        <a class="dropdown-item" href="{% url 'issuestock' %}">Issue Items</a>                          
+                          <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">Stock Reconciliation</a>
+                      </div>
+                  </li>
+              </ul>
+
+                <ul class="navbar-nav  mt-2 mt-lg-0">
+                  <li class="nav-item dropdown">
+                      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown8" role="button"
+                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                         Management setup
+                      </a>
+                      <div class="dropdown-menu bg-info" aria-labelledby="navbarDropdown8">
+                        <a class="dropdown-item" href="{% url 'supplier' %}">Suppliers</a>
+                        <a class="dropdown-item" href="{% url 'storeitems' %}">Store Items</a>
+                        <a class="dropdown-item" href="{% url 'stores' %}">Stores</a>
+                        <a class="dropdown-item" href="{% url 'storeallocate' %}">Store allocation</a>
+                      </div>
+                  </li>
+              </ul>
+              <ul class="navbar-nav  mt-2 mt-lg-0">
+                <li class="nav-item"><a class="nav-link"  href="{% url 'storeindex' %}">Store Reports</a></li>
+              </ul>
+
+                <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+                  <li class="nav-item dropdown">
+                      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown8" role="button"
+                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          Account
+                      </a>
+                      <div class="dropdown-menu bg-info" aria-labelledby="navbarDropdown8">
+                          <a class="dropdown-item" href="#">Profile</a>
+                          <a class="dropdown-item" href="#">Logout</a>
+                      </div>
+                  </li>
+              </ul>    
+    
+            </div>
+        </div>
+    </nav>
+ End of Navbar-->
+
+
+ {% load static %}
+ <nav class="navbar navbar-dark bg-info navbar-expand-md justify-content-center ">
+     <a href="{% url 'sysindex' %}" class="navbar-brand d-flex w-50 mr-auto">TIBASOFT</a>
+     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsingNavbar3">
+         <span class="navbar-toggler-icon"></span>
+     </button>
+     <div class="navbar-collapse collapse w-100" id="collapsingNavbar3">
+       
+         <ul class="nav navbar-nav ml-auto w-100 justify-content-end">
+             <li class="nav-item active">
+                 <a class="nav-link" href="#">logged in as {{user.username}} </a>
+             </li>
+             <li class="nav-item active">
+                 <a class="nav-link" href="#">Account</a>
+             </li>
+             <li class="nav-item active">
+                 <a class="nav-link" href="#" data-target="#myModal" data-toggle="modal">Sign Out</a>
+             </li>
+         </ul>
+     </div>
+ </nav>
+ 
+ 
+ <!--Sign out modal-->
+ <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
+   <div class="modal-dialog" role="document">
+       <div class="modal-content">
+           <div class="modal-header">
+               <h4 class="modal-title" id="myModalLabel">HIS Sign Out</h4>
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                   <span aria-hidden="true">×</span>
+                   <span class="sr-only">Close</span>
+               </button>
+           </div>
+           <div class="modal-body">
+               <p>Do you really want to exit from system</p>               
+           </div>
+           <div class="modal-footer">
+               <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+               <button type="button" class="btn btn-primary-outline btnlogout" >Yes</button>
+           </div>
+       </div>
+   </div>
+ </div>
+ <script >  
+     $('[data-toggle=offcanvas]').click(function() {
+       $('.row-offcanvas').toggleClass('active');
+     });
+ 
+     $('.btnlogout').on('click',function(){
+         window.location.href = "{% url 'user-logout' %}";
+     })
+ </script> 
+ 

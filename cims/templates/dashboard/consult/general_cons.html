@@ -1,0 +1,1102 @@
+{% extends "partials/base.html" %}
+{% block title %}Gen-Consult{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/cons_nav.html' %}
+<div class="container-fluid" id="main">
+    <div class="row row-offcanvas row-offcanvas-left ">
+      <main class="col main overflow-auto">
+              
+                <!-- Page content-->
+                  <div class="row mt-2 border bg-success p-3">
+                    <div class="col-sm-3">
+                      <div class="input-group input-group-sm mb-3">                                                            
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">Patient Category:</span>
+                        </div> 
+                        <select class="form-select form-control" id="pat_type"> 
+                          <option value="">-------</option>                             
+                          {% for item in patType %}
+                          <option value="{{item.category}}">{{item.category}}</option>
+                          {%endfor%}                                
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-sm-2">
+
+                      <div class="input-group input-group-sm mb-3">                                                            
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">Clinic:</span>
+                        </div> 
+                        <select id="cllname" name="cllname" class="form-select form-control">
+                          <option value="none">-------</option>                                              
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="col-sm-2">
+                      <input type="button" value="Refresh list" class="btn btn-sm btn-secondary" id="btnwtlist">
+                    </div>
+                    <div class="col-sm-3">
+                      <div class="input-group input-group-sm">                                                            
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">Card No:</span>
+                        </div> 
+                        <input class="form-control" type="text" id="pCardNo" placeholder="search....">
+                      </div>
+                    </div> 
+                    <div class="col-sm-2">
+                      <input type="button" value="Diagonistic Results" class="btn btn-sm btn-primary" id="btndiaglist">
+                    </div>                   
+                  </div>
+
+                  <div id="wtlistdiv" class="row mt-1">
+                    <div class="col-sm-12">
+                      <div style="max-height:500px;overflow-y:scroll;" >
+                        <table class="table table-sm table-bordered table-fixed" id="wtlist">
+                          <thead style="position: sticky;top: 0" class="thead-dark">
+                                <th>Visit Date</th>
+                                <th>Check-in time</th>
+                                <th>Patient No</th>
+                                <th>Fullname</th>
+                                <th>Age</th>
+                                <th>Sex</th>
+                                <th>Clinic/ward</th>
+                                <th>Paymode</th>
+                                <th>Urgency</th>
+                              </thead>
+                            <tbody id='wtlistBody'>
+                            </tbody>
+                        </table>
+                    </div>
+                    </div>
+                  </div>
+
+                   <div class="row mt-1" style="display: none;" id="clerkformdiv">
+                    <div class="col-md-12 border p-3 bg-white">                      
+                        <div class="accordion" id="accordion">
+                            <div class="row">
+                              <div class="col-sm-12">
+                                <div class="card h-100"> 
+                                  <div class="card-header" id="headingOne">
+                                    <div class="row">
+                                      <div class="col-sm-2">
+                                        <div class="form-group">
+                                          <input class="btn btn-primary btn-sm" type="button" id="rectriage" value="Triage Sheet">
+                                        </div>
+                                      </div>
+                                      <div class="col-sm-2">
+                                        <div class="form-group">
+                                          <input class="btn btn-info btn-sm" type="button" id="btnptriage" value="Triage Records">
+                                        </div>
+                                      </div>
+                                      <div class="col-sm-2">
+                                        <div class="form-group">
+                                          <input class="btn btn-info btn-sm float-right" type="button" id="btnptcard" value="Treatment Notes">
+                                        </div>
+                                      </div>
+                                      <div class="col-sm-2">
+                                        <div class="form-group divcontnotes" style="display:none">
+                                          <input type="button" class="btn btn-info btn-sm float-right" id="cont_notes" value="Continuation Notes">
+                                        </div>
+                                      </div>
+                                      <!-- <div class="col-sm-3">
+                                        <h2>
+                                          <button class="btn btn-link collapsed text-decoration-none btnpat_details" id="" data-toggle="collapse" data-target="#collapsepdetails" aria-expanded="false" aria-controls="collapsepdetails">
+                                           Patient Details
+                                         </button>
+                                       </h2>
+                                      </div> -->
+                                      
+                                   </div>
+                                   <div class="row">
+                                    <div class="col-sm-4">
+                                      <input id="cl_patid" type="text" hidden>
+                                      <input id="visitno" type="text" hidden>
+                                      <div class="input-group input-group-sm mb-3">                                                            
+                                        <div class="input-group-prepend">
+                                          <span class="input-group-text">Fullname:</span>
+                                        </div> 
+                                        <input class="form-control form-control-sm text-center" readonly type="text" id="pname">
+                                      </div>
+                                    </div>
+                                    <div class="col-sm-2">
+                                      <div class="input-group input-group-sm mb-3">                                                            
+                                        <div class="input-group-prepend">
+                                          <span class="input-group-text">Hosp No:</span>
+                                        </div> 
+                                        <input class="form-control form-control-sm text-center" readonly type="text" id="last_visit" >
+                                      </div>
+                                    </div>
+                                    <div class="col-sm-2" id="divclname">
+                                      <div class="input-group input-group-sm mb-3">                                                            
+                                        <div class="input-group-prepend">
+                                          <span class="input-group-text">Clinic:</span>
+                                        </div> 
+                                        <input class="form-control form-control-sm text-center" readonly type="text" id="rclinic" >
+                                      </div>
+                                    </div>
+                                    <div class="col-sm-2" id="divwdname" style="display: none ;">
+                                      <div class="input-group input-group-sm mb-3">                                                            
+                                        <div class="input-group-prepend">
+                                          <span class="input-group-text">Ward:</span>
+                                        </div> 
+                                        <input class="form-control form-control-sm text-center" readonly type="text" id="wardNme" >
+                                      </div>
+                                    </div>
+                                    <div class="col-sm-2">
+                                      <div class="input-group input-group-sm mb-3">                                                            
+                                        <div class="input-group-prepend">
+                                          <span class="input-group-text">Gender:</span>
+                                        </div> 
+                                        <input class="form-control form-control-sm text-center" readonly type="text" id="pgender" >
+                                      </div>
+                                    </div>
+                                    <div class="col-sm-2">
+                                      <div class="input-group input-group-sm mb-3">                                                            
+                                        <div class="input-group-prepend">
+                                          <span class="input-group-text">Age:</span>
+                                        </div> 
+                                        <input class="form-control form-control-sm text-center" readonly type="text" id="pat_age" >
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="row">                                        
+                                    <div class="col-sm-3">
+                                      <input class="form-control form-control-sm" hidden readonly type="text" id="pymode" >                         
+                                      <input readonly type="text" id="pymode2"  hidden>
+                                    </div>
+                                    <div class="col-sm-3">
+                                     <input class="form-control form-control-sm" hidden readonly type="text" id="nsurgency">
+                                    </div>
+                                  </div>
+                                </div>
+                                  </div>
+                                </div>
+                              </div>                             
+                            
+
+                            <div class="card">
+                                <div class="card-header" id="headingTwo">
+                                  <h5 class="mb-0">
+                                    <button class="btn btn-link collapsed text-decoration-none btn_drnotes" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                      Doctor/Clinician Notes
+                                    </button>
+                                    <label><small id="pd1"></small></label>
+                                  </h5>
+                                </div>
+                                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                                  <div class="card-body">
+                                    <div class="row">
+                                      <div class="col-sm-8">
+                                          <div class="input-group input-group-sm mb-3">                                                            
+                                            <div class="input-group-prepend">
+                                              <span class="input-group-text">Chief Complains:</span>
+                                            </div> 
+                                            <textarea id="chiefcomplain" class="form-control" rows="3"></textarea>
+                                          </div>
+                                      </div>                                     
+                                    </div><hr>
+                                  <div class="row">
+                                    <div class="col-sm-5">
+                                      <div class="form-group">
+                                        <label><b>TB screening</b></label>
+                                        <div style="max-height:200px;overflow-y:scroll;" >
+                                          <table class="table table-sm table-bordered" id="tbscreen">
+                                            <thead style="position: sticky;top: 0" class="thead-dark">
+                                              <tr>
+                                                <th>Indicator</th>
+                                                <th>Option</th>
+                                                <th>Comments</th>
+                                              </tr>
+                                            </thead>
+                                            <tbody id="tbscreenbody">
+                                              {% for tbs in tb%}
+                                              <tr>
+                                                <td style="word-wrap:break-word;">{{tbs.indicator}}</td>
+                                                <td>
+                                                  <select id="ind_option" class="custom-select custom-select-sm ">
+                                                    <option value="No">No</option>
+                                                    <option value="Yes">Yes</option>
+                                                  </select>
+                                                </td>
+                                                <td contenteditable="true"></td>
+                                              </tr>
+                                              {%endfor%}
+                                            </tbody>
+                                          </table></div>
+                                        
+                                      </div>
+                                    </div> 
+
+                                    <div class="col-sm-4">
+                                      <div class="form-group">
+                                        <label><b>History Presenting Illness</b></label>
+                                        <textarea class="form-control" placeholder="enter notes here" id="hist_doctor_notes" rows="8"></textarea>
+                                      </div>
+                                    </div>
+                                    <div class="col-sm-3">  
+                                      <div class="form-group">
+                                        <input type="text" name="" id="consnumber" hidden>
+                                        <label><b>Physical examinations &amp; Findings</b></label>
+                                        <textarea class="form-control" placeholder="enter notes here" id="doctor_notes" rows="8"></textarea>
+                                      </div>                                       
+                                    </div>
+                                   
+                                  </div>
+                                  <div class="row mt-2">
+                                    <div class="col-sm-3"></div>
+                                    <div class="col-sm-3"></div>
+                                    <div class="col-sm-3">
+                                      <div class="form-group">
+                                        <input type="button" class="form-control btn-success " id="save_notes" value="Save Patient Notes">
+                                      </div>
+                                    </div>
+                                    <div class="col-sm-3"></div> 
+                                  </div>
+                                  </div>
+                                </div>
+                              </div>
+          
+                              <div class="card">
+                                <div class="card-header" id="headingThree">
+                                  <h5 class="mb-0">
+                                    <button class="btn btn-link collapsed text-decoration-none btndiagnosis" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                      Diagnosis
+                                    </button>
+                                    <label><small id="pd2"></small></label>
+                                  </h5>
+                                </div>
+                                <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+                                  <div class="card-body">
+                                    <div class="row">
+                                      <div class="col-sm-12">
+                                        <form>
+                                          <div class="row">
+                                            <div class="col-sm-5">
+                                              <div class="form-group">
+                                                <select name="diag_type" id="diag_type" class="form-control">
+                                                  <option selected>Select....</option>
+                                                  <option value="Provisional">Provisional</option>
+                                                  <option value="Confirmed">Confirmed</option>
+                                                                                                
+                                                </select>
+                                              </div>
+                                            </div>
+                                            <div class="col-sm-7">
+                                              <div class="form-group">
+                                                <div class="input-group">
+                                                  <input class="form-control" type="text" id="search_diag" autocomplete="off" placeholder="search diagnosis" >
+                                                  <span class="input-group-text">&#128269;</span>
+                                                 </div>
+                                              </div>
+                                            </div>
+                                          </div> 
+                                          <div class="row">
+                                            <div class="col-md-12 mt-2">                                    
+                                              <table class="table table-hover table-sm" id="diagOutputSvs">
+                                                <thead>
+                                                  <tr>                                                   
+                                                  </tr>
+                                                </thead>
+                                                <tbody class="diagOutputSvsBody">
+                                      
+                                                </tbody>
+                                              </table>
+                                            </div>
+                            
+                                          </div>                               
+                                        </form>                            
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+          
+                              <div class="card">
+                                <div class="card-header" id="headingFour">
+                                  <h5 class="mb-0">
+                                    <button class="btn btn-link collapsed text-decoration-none btndr_request" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                      Service/Test/Image/Prescription Request
+                                    </button>
+                                    <label><small id="pd3"></small></label>
+                                  </h5>
+                                </div>
+                                <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordion">
+                                  <div class="card-body">
+                                    <div class="row">
+                                      <div class="col-sm-4">
+                                        <div class="form-group">                            
+                                          <select name="operation" id="operation" class="form-control custom-select custom-select-sm">
+                                            <option selected="true" disabled="disabled" >Select Request Activity</option>
+                                            <option value="1">Nursing Procedure</option>                                  
+                                            <option value="2">Laboratory Request</option>
+                                            <option value="3">Radiology Image</option> 
+                                            <option value="4">Prescription</option>
+                                            <option value="5">Admission</option>
+                                            <option value="6">Book Special Clinic</option>
+                                            <option value="7">General Service</option>                                                
+                                            <option value="8">Referral</option>                                                
+                                          </select>
+                                      </div>
+                                      </div>
+                                      <div class="col-sm-2">
+                                        <input type="button" class="btn btn-sm btn-success" id="btn_confirm_request" value="Confirm request">
+                                      </div>
+
+                                      <!--<div class="col-sm-2">
+                                        <input type="button" class="btn btn-sm btn-info float-right" id="btncloseVisit" value="Close Visit">
+                                      </div>-->
+
+                                      <div class="col-sm-2">
+                                        <input type="button" class="btn btn-sm btn-danger float-right" id="btnviewreq" value="Cancel request">
+                                      </div>
+                                     
+                                    </div>
+                                   
+                                  <div class="row">
+                                    <div class="col-md-12 mt-2">
+                                      <div style="max-height:200px;overflow-y:scroll;" >
+                                        <table class="table table-hover table-sm" id="billOutputSvs" style="display:none;">
+                                          <thead>
+                                            <tr>                              
+                                              <th scope="col">Service Name</th>
+                                              <th scope="col">Cost</th>                    
+                                              <th scope="col">Department</th>                 
+                                            </th>                                  
+                                            </tr>
+                                          </thead>
+                                          <tbody class="billOutputSvsBody">                    
+                                          </tbody>
+                                        </table>
+            
+                                        <table class="table table-hover table-sm" id="pharOuttable" style="display:none;">
+                                          <thead>
+                                            <tr>                              
+                                              <th scope="col">Drug/Item Name</th>
+                                              <th scope="col">Dose</th>                    
+                                              <th scope="col">Frequency</th>                 
+                                              <th scope="col">Days</th>                                   
+                                              <th scope="col">Qnt.Presc</th> 
+                                              <th scope="col">Available</th>
+                                              <th scope="col">Counter</th>
+                                              
+                                            </tr>
+                                          </thead>
+                                          <tbody class="pharOuttableBody">                    
+                                          </tbody>
+                                        </table>
+                                      
+                                      </div>
+                                      
+                                      
+          
+                                      <div style="display: none;" id="admdiv">
+                                        
+                                          <div class="col-md-6  form-group">  
+                                               <select id="ward" class="form-control form-select ">
+                                                <option value="" selected="true" disabled="disabled">select inpatient ward to admit</option>
+                                                {% for ward in wards %}
+                                                 <option value="{{ward}}">{{ward}}</option>
+                                                {% endfor %}
+                                               </select>               
+                                            
+                                          </div>
+                                          <div class="form-group">
+                                            <textarea class="form-control" placeholder="enter admission notes here" id="admitNotes" rows="5"></textarea>
+                                          </div>
+                                       
+                                      </div>
+                                      <div style="display: none;"  id="clinicBook">
+                                        <div class="row">                                
+                                            <div class="col-sm-4">
+                                              <div class="form-group">
+                                                <label>Preferred clinic Date</label>
+                                                <input type="date" class="form-control form-control-sm" name="pdate" id="prdate"><!-- had a jquery date picker-->
+                                              </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                              <div class="form-group">
+                                                <label>Booking Type</label>
+                                                <select class=" form-control form-control-sm" id="bkType">
+                                                  <option value="" selected="true" disabled="disabled">-----</option>
+                                                  <option value="Normal">Normal</option>
+                                                  <option value="Urgent">Urgent</option>
+                                                </select>
+                                              </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                              <div class="form-group">
+                                                <label>Clinic/Department</label>
+                                                <select class=" form-control form-control-sm" id="bkDept">
+                                                  <option value="" selected="true" disabled="disabled">-----</option>
+                                                  {% for clinic in spclinics %}
+                                                   <option value="{{clinic.clinic_code}}">{{clinic.clinic_name}}</option>
+                                                  {% endfor %}                                                                               
+                                                </select>   
+                                               </div>
+                                            </div>
+                                          
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-sm-12">
+                                            <div class="form-group">
+                                              <textarea class="form-control form-control-sm" placeholder="enter additional notes here" id="clinicNotes" rows="3"></textarea>
+                                            </div>
+                                          </div>
+                                          
+                                        </div>
+                                      </div>
+          
+                                    </div>
+                    
+                                  </div>                         
+                                  </div>
+                                </div>
+                              </div>
+          
+                              <div class="card">
+                                <div class="card-header" id="headingFive">
+                                  <h5 class="mb-0">
+                                    <button class="btn btn-link collapsed text-decoration-none" data-toggle="collapse" data-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                                      Diagonistic Results
+                                    </button>
+                                    <label><small id="pd4"></small></label>
+                                  </h5>
+                                </div>
+                                <div id="collapseFive" class="collapse" aria-labelledby="headingFive" data-parent="#accordion">
+                                  <div class="card-body">
+                                    <div class="row">
+                                      <div class="col-sm-4">
+                                        <div class="form-group">
+                                          <input type="button" class="btn form-control btn-secondary" id="btnLabRes" value="Laboratory Results">
+                                        </div> 
+                                        <div class="form-group">
+                                          <input type="button" class="btn form-control btn-secondary mt-2" id="btnRadRes" value="Radiology Notes">
+                                        </div> 
+                                      </div>
+                                      
+                                      <div class="col-sm-8">
+                                        <input type="text"  id="resDept" hidden>
+                                        <table class="table table-hover table-sm resOutputSvs" id="resOutputSvs">
+                                          <thead>
+                                            <tr>                     
+                                             <th scope="col" style="display:none;">code</th>
+                                              <th scope="col">Result Date</th>
+                                              <th scope="col">Investigation</th>                                                  
+                                              <th scope="col">Status</th>                                                  
+                                            </tr>
+                                          </thead>
+                                          <tbody class="resOutputSvsBody">
+                                
+                                          </tbody>
+                                        </table>
+                                      </div>
+                                    </div>
+                                   
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div class="card" id="admdischarge" style="display:none;">
+                                <div class="card-header" id="dischargeNotes">
+                                  <h5 class="mb-0">
+                                    <button class="btn btn-link collapsed text-decoration-none" data-toggle="collapse" data-target="#divdischargeNotes" aria-expanded="false" aria-controls="divdischargeNotes">
+                                      Discharge Notes &amp; Instructions
+                                    </button>
+                                    <label><small id="pd5"></small></label>
+                                  </h5>
+                                </div>
+                                <div id="divdischargeNotes" class="collapse" aria-labelledby="dischargeNotes" data-parent="#accordion">
+                                  <div class="card-body">
+                                  <div class="row">
+                                    <div class="col-sm-12">
+                                      <form>
+                                        <input type="text" name="" id="consnumber" hidden>
+                                        <textarea class="form-control" placeholder="enter notes here" id="dsch_notes" rows="5"></textarea>
+                                        <input type="button" class="btn float-right btn-success mt-3" id="btnDischargeNotes" value="Save Instructions">
+                                      </form>                            
+                                    </div>
+                                  </div>
+                                  </div>
+                                </div>
+                              </div>
+
+
+                              <div class="card">
+                                <div class="card-header" id="headingsix">
+                                  <h5 class="mb-0">
+                                    <button class="btn btn-link collapsed text-decoration-none" data-toggle="collapse" data-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                                      Patient Referral
+                                    </button>
+                                    <label><small id="pd6"></small></label>
+                                  </h5>
+                                </div>
+                                <div id="collapseSix" class="collapse" aria-labelledby="headingsix" data-parent="#accordion">
+                                  <div class="card-body">
+                                    <div class="row">
+                                      <div class="col-sm-4">
+                                        <div class="input-group input-group-sm mb-3">                                                            
+                                          <div class="input-group-prepend">
+                                            <span class="input-group-text">Referral type</span>
+                                          </div> 
+                                          <select class=" form-control form-control-sm" id="referaltype">
+                                            <option value="" selected="true" disabled="disabled">-----</option>
+                                            <option value="internal">internal</option>
+                                            <option value="external">External</option>
+                                          </select>
+                                        </div>
+                                      </div>
+                                      <div class="col-sm-4">
+                                        <div class="input-group input-group-sm mb-3">                                                            
+                                          <div class="input-group-prepend">
+                                            <span class="input-group-text" id="destlabel"></span>
+                                          </div> 
+                                          <select class=" form-control form-control-sm" id="rfdestination">                                    
+                                          </select>
+                                        </div>
+                                      </div>
+                                      <div class="col-sm-4">
+                                        <div class="form-group">
+                                          <input type="button" class="btn btn-sm btn-success" id="btnconfreferral" value="confirm referral">
+                                        </div>
+                                      </div>
+                                      
+                                    </div>
+                                    <div class="row">
+                                      <div class="col-sm-12">
+                                        <div class="card">
+                                          <div class="card-header">
+                                            Referral Notes
+                                          </div>
+                                          <div class="card-body">
+                                            <textarea style="width: 100%;"id="refnotes"rows="5"></textarea>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div> 
+
+                            </div>  
+
+
+                            </div>
+                     </div>
+                   </div>
+                
+           <!--</div>-->
+          
+        </main>
+        <!--/main col-->
+    </div>
+
+</div>
+<!--/.container-->
+
+<!-- Triage  Modal -->
+<div class="modal fade" id="TriageModal" tabindex="-1" role="dialog" aria-labelledby="paymodalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-top modal-dialog-scrollable verybigmodal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4>Current Triage Taken</h4>
+        <button type="button" class="btn-close btn-danger" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div> 
+      <div class="modal-body">
+        <div style="max-height:200px;overflow-y:scroll;" >
+          <table class="table table-sm table-bordered table-fixed triageTable">
+            <thead style="position: sticky;top: 0" class="thead-dark">
+                  <th >DateTime</th>
+                  <th >Urgency</th>
+                  <th >Temp.(c)</th>
+                  <th >B.Pressure(mm/hg)</th>
+                  <th >Pulse(b/m)</th>
+                  <th> SPO2</th>                          
+                  <th> MUAC</th>
+                  <th >Weight(kg)</th>
+                  <th >Height(cm)</th>
+                  <th style="word-wrap: break-word;">Notes</th>
+                </thead>
+              <tbody class='triageTableBody'>           
+              </tbody>
+          </table>
+      </div>
+
+      </div>       
+    </div>
+  </div>
+</div>
+<!--end of modal-->
+<!-- Service request Modal -->
+<div class="modal fade" id="serviceModal" tabindex="-1" role="dialog" aria-labelledby="servicemodalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-top modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="modal_header"></h4>
+        <div class="alert hidden" role="alert" id="modalAlert"></div> 
+        <button type="button" class="btn-close btn-danger" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div> 
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">                    
+              <input class="form-control" type="text" id="search_service" placeholder="service to order"> 
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            
+            <table class="table table-hover" id="resultTable">
+              <thead>
+                <tr>                     
+                  <th scope="col">Service Name</th>
+                  <th scope="col">Normal Rate</th> 
+                  <th scope="col">Special Rate</th>                    
+                  <th scope="col">Department</th>                    
+                </tr>
+              </thead>
+              <tbody class="resultTableBody">
+    
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>       
+    </div>
+  </div>
+</div>
+<!--end of modal-->
+
+<!-- Pharmacy request Modal -->
+<div class="modal fade" id="pharmacyModal" tabindex="-1" role="dialog" aria-labelledby="pharmacymodalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-top modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="modal_header"></h4>
+        <div class="alert hidden" role="alert" id="modalAlert"></div> 
+        <button type="button" class="btn-close btn-danger" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div> 
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-4">
+            <div class="form-group">
+              <select name="" id="prescstore" class="form-control">
+                <option value="none">Pharmacy Outlet</option>
+                {% for st in stores %}
+                <option value="{{st.store_Id}}">{{st.store_name}}</option>
+                {%endfor%}
+              </select>
+            </div>
+          </div>
+          <div class="col-md-8">
+            <div class="form-group">                    
+              <input class="form-control" type="text" id="search_pharmacy" placeholder="Drug/item to order"> 
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            
+            <table class="table table-hover" id="pharSearchTb">
+              <thead>
+                <tr>                     
+                  <th scope="col">Item Name</th> 
+                  <th scope="col">cash</th> 
+                  <th scope="col">scheme</th>                   
+                  <th scope="col">Available</th>                                     
+                </tr>
+              </thead>
+              <tbody class="pharSearchTbBody">
+    
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>       
+    </div>
+  </div>
+</div>
+<!--end of modal-->
+
+<!-- Admision alert Modal -->
+<div class="modal fade" id="admissionModal" tabindex="-1" role="dialog" aria-labelledby="paymodalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4>Special clinic Request</h4>
+        <button type="button" class="btn-close btn-danger" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div> 
+      <div class="modal-body">
+
+      </div>       
+    </div>
+  </div>
+</div>
+<!--end of modal-->
+
+<!--radiology results modal  -->
+<div class="modal fade" id="radNotesModal" tabindex="-1" role="dialog" aria-labelledby="paymodalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-top modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="radHeader"></h4>
+        <button type="button" class="btn-close btn-danger" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div> 
+      <div class="modal-body">
+        <textarea class="form-control" readonly id="radResNotes" rows="5"></textarea>
+        <textarea class="form-control" readonly id="radResDetails" rows="2"></textarea>
+        <button class="btn btn-primary float-right mt-3 p-2">print</button>
+      </div>       
+    </div>
+  </div>
+</div>
+<!--end of modal-->
+
+ <!--Verified result modal-->
+ <div class="modal fade" id="verifiedModal" tabindex="-1" aria-labelledby="bill_modal" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-top modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header"> 
+        <h5 class="modal-title text-center" id="verifiedModal">Verified Result</h5> 
+        <button type="button" class="btn-close btn-danger" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>        
+      </div>
+      <div class="modal-body">        
+          <div class="row">           
+            <h5 class="ml-3" id="testVerDetails"></h5>
+            <table class="table tableVerified">             
+              <tbody class="tableVerifiedBody"></tbody>
+            </table>         
+          </div>         
+        </div>        
+        
+      </div>          
+    </div>
+  </div>
+  <!--end of modal-->
+
+
+ <!--previous notes modal-->
+ <div class="modal fade" id="prevnotesModal" tabindex="-1" aria-labelledby="prev_modal" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-top modal-dialog-scrollable verybigmodal">
+    <div class="modal-content">
+      <div class="modal-header"> 
+        <h5 class="modal-title text-center" id="prevnotesModal">Today's Previous notes Recorded</h5> 
+        <button type="button" class="btn-close btn-danger" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>        
+      </div>
+      <div class="modal-body">        
+          <div class="row">           
+            <div class="col-md-12">
+              <div style="max-height:500px;overflow-y:scroll;" >
+                <table class="table table-sm table-bordered table-fixed prevnotes">
+                  <thead style="position: sticky;top: 0" class="thead-dark">
+                        <th >DateTime</th>
+                        <th style="word-wrap: break-word;">Hist.of Complain</th>
+                        <th style="word-wrap: break-word;">Physical Exam.</th>
+                        <th style="word-wrap: break-word;" >Diagnosis</th>
+                        <th >Clinician</th>
+                        <th style="word-wrap: break-word;">Investigations</th>                        
+                      </thead>
+                    <tbody class='prevnotesBody'>
+                 
+                    </tbody>
+                </table>
+            </div>
+            </div>         
+          </div>         
+        </div>        
+        
+      </div>          
+    </div>
+  </div>
+
+  <!--Patient card summary-->
+  <div class="modal fade" id="patcard" tabindex="-1" aria-labelledby="pcardmodal" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-top modal-dialog-scrollable verybigmodal">
+      <div class="modal-content">
+        <div class="modal-header"> 
+          <h5 class="modal-title text-center" id="prevnotesModal">Patient Card Notes</h5> 
+          <button type="button" class="btn-close btn-danger" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>        
+        </div>
+        <div class="modal-body"> 
+          <div class="row">
+            <div class="col-sm-2">
+              <div class="input-group input-group-sm mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">From</span>
+                </div>
+                <input type="date" class="form-control" id="pcfdate">
+              </div>
+            </div>
+            <div class="col-sm-2">
+              <div class="input-group input-group-sm mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">To</span>
+                </div>
+                <input type="date" class="form-control" id="pctdate">
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="form-check">
+                <label class="form-check-label">
+                  <input type="checkbox" class="form-check-input" id="chkdate">use dates
+                </label>
+              </div>                      
+            </div>
+            <div class="col-sm-1">
+              <button type="button" class="btn btn-sm btn-primary" id="pcgenerate">Generate</button>
+            </div>
+            <div class="col-sm-2">
+              <button type="button" class="btn btn-sm btn-info" id="pdfgenerate">Export PDF</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12" id="divpcardtb">
+              <table class="table pcard table-fixed table-bordered " id="pcard">
+                <thead style="position: sticky;top: 0;white-space:nowrap;" class="thead-dark">                                                    
+                  <th>Clerk Date</th>                          
+                  <th>History&Physical findings</th>
+                  <th>Diagnosis</th>
+                  <th>Diagonistic/Service Request<small>(s)</small> </th>
+                  <th>Diagonistic Results<small>(s)</small> </th>
+                  <th>Prescriptions</th>                                 
+                  <th>Clerked By</th>                                 
+                  <th>Dispensed Drug/Item<small>(s)</small></th>                                 
+                  <th>Dispensed By</th> 
+                  <th>Edit</th>                                
+                </thead>
+                <tbody id="pcardbody">    
+                      
+                </tbody>
+              </table>               
+            </div>
+            <div class="col-sm-12" id="divpcardpdf" style="display: none;"><!---->
+              <table class="table pcard table-fixed table-bordered " id="pcardpdf">
+                
+                  {% for prof in profile %}
+                  <thead><th style="text-align: center;" colspan='5'>{{prof.facName}}({{prof.facAbbreviation}})</th></thead>
+                  <thead><th style="text-align: center;" colspan='5'>Phone:{{prof.phoneNo}}, Email: {{prof.email}}</th></thead>
+                    
+                  {%endfor%} 
+                  <thead><th style="text-align: center;" colspan='5'>Patient Card Notes</th></thead>
+                  <tbody id="pcardpdfbody"> 
+                </tbody>
+              </table>
+            </div>
+          </div>             
+        </div>          
+      </div>
+    </div>
+</div>
+
+<!-- triage entry Modal -->
+<div class="modal fade" id="triageFormModal" tabindex="-1" role="dialog" aria-labelledby="triageFormModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-top" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="modal_header"></h4> 
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" class="text-danger">&times;</span>
+        </button>
+      </div> 
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-4">
+            <label><strong>Card No:</strong></label>
+            <label id="tr_hospno" ></label>
+          </div>
+          <div class="col-sm-8">
+            <label><strong>Name:</strong></label>
+            <label id="tr_pname"></label>
+          </div>                   
+        </div><hr>
+        <div class="row">
+          <div class="col-sm-2">
+            <label><strong>Age:</strong></label>
+            <label id="tr_age"></label>
+          </div>
+          <div class="col-sm-3">
+            <label><strong>Gender:</strong></label>
+            <label id="trgender"></label>
+          </div> 
+
+          <div class="col-sm-4">
+            <label><strong>Paymode:</strong></label>
+            <label id="trpymode"></label>
+          </div>
+          <div class="col-sm-3">
+            <label><strong>Urgency:</strong></label>
+            <label id="trurgency"></label>
+          </div>          
+        </div><hr>
+
+        <div class="row">
+          <div class="col-sm-12">
+            <form action="" id="triageForm">
+                <input readonly hidden type="text" name="patid" id="trpatid" >
+                <input readonly hidden type="text" name="vno" id="trvno" >
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="input-group input-group-sm mb-3">                                                            
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">Temperature(C):</span>
+                      </div> 
+                      <input type="number" class="form-control" required name="btemp" id="btemp"> 
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="input-group input-group-sm mb-3">                                                            
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">Blood pressure(mmHg):</span>
+                      </div> 
+                      <input type="text" class="form-control" required id="bpress" name="bpress"> 
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="input-group input-group-sm mb-3">                                                            
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">Pulse rate(bpm):</span>
+                      </div> 
+                      <input type="text" class="form-control" required id="pulse" name="pulse">
+                    </div>
+                  </div>
+                  
+                  <div class="col-md-6">
+                    <div class="input-group input-group-sm mb-3">                                                            
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">Blood Oxygenation(%):</span>
+                      </div> 
+                      <input type="text" class="form-control" required id="spo" name="spo">
+                    </div>
+                  </div>                  
+                </div>  
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="input-group input-group-sm mb-3">                                                            
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">height(cm):</span>
+                      </div> 
+                      <input type="text" class="form-control" id="bheight" name="bheight">
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="input-group input-group-sm mb-3">                                                            
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">Weight(kg):</span>
+                      </div> 
+                      <input type="text" class="form-control" id="bweight" name="bweight">
+                    </div>
+                  </div>                                   
+                </div>
+                
+                <div class="row">
+                  <div class="col-md-4">
+                      <div class="input-group input-group-sm mb-3">                                                            
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">MUAC(cm):</span>
+                        </div> 
+                        <input type="text" class="form-control" id="muac" name="muac">
+                      </div> 
+                  </div>
+
+                  <div class="col-md-4">                    
+                      <div class="input-group input-group-sm mb-3">                                                            
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">Patient Urgency:</span>
+                        </div> 
+                        <select class="custom-select" id="paturgency" name="paturgency">                                                  
+                          <option value="Normal">Normal</option>
+                          <option value="Mild">Mild</option>                                                         
+                          <option value="Critical">Critical</option>                                                         
+                        </select>
+                      </div> 
+                  </div>
+
+                  <div class="col-md-4">                    
+                    <div class="input-group input-group-sm mb-3">                                                            
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">Patient Status:</span>
+                      </div> 
+                      <select class="custom-select" id="patstaus" name="patstaus">                                                   
+                        <option value="Stable">Stable</option>
+                        <option value="unconscious">unconscious</option>                                                         
+                      </select>
+                    </div> 
+                </div>
+                </div>            
+
+              
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="input-group input-group-sm mb-3">                                                            
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">Additional notes:</span>
+                    </div> 
+                    <textarea name="trg_notes"  class="form-control" rows="3" id="trg_notes"></textarea> 
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-4"></div>
+                <div class="col-md-4 text-center">
+                  <input class="btn btn-success"  type="button" id="btnsave" value="Save Vitals">
+                </div>
+                <div class="col-md-4"></div>
+              </div>
+              </form>
+          </div>
+        </div>
+        
+      </div>       
+    </div>
+  </div>
+</div>
+<!--end of modal-->
+<script>  
+   var now = new Date();
+   var month = (now.getMonth() + 1);               
+   var day = now.getDate();
+   if (month < 10) 
+       month = "0" + month;
+   if (day < 10) 
+       day = "0" + day;
+   var today = now.getFullYear() + '-' + month + '-' + day;
+   $('#pcfdate').val(today);
+   $('#pctdate').val(today);
+</script>
+  <script src="{% static 'js/general_cons.js' %}"></script>
+  <script src="{% static 'js/supplier.js' %}"></script>
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}
+ 
+
+

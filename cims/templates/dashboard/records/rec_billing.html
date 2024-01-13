@@ -1,0 +1,167 @@
+{% extends "partials/base.html" %}
+{% block title %}records-billing{% endblock %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% load static %}
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/rec_nav.html' %}
+        
+        <div class="container-fluid">
+          <div class="row my-2">
+            <div class="col-sm-4">
+               <div class="card h-100">
+                <div class="card-header">
+                  Records services/items Billing
+                </div>
+                <div class="card-body">
+                  <div class="row">             
+                    <div class="col-sm-6">
+                      <label>Patient Category</label>
+                      <select class="form-control border-danger" id="pat_type">                              
+                        {% for item in patType %}
+                        <option value="{{item.category}}">{{item.category}}</option>
+                        {%endfor%}                                
+                      </select>
+                    </div>
+                     <div class="col-sm-6 " id="div_search"> 
+                      <label>Card Number</label>                
+                      <input class="form-control" type="text" id="pCardNo" placeholder="search by number"> 
+                      <small class="text-danger" id="psearchStatus"></small>
+                     </div>            
+                   </div>
+                   <div class="row mt-3">
+                    <div class="col-sm-12">
+                     <form>
+                       
+                       <input id="cl_patid" type="text" hidden>
+                       <input id="visitno" type="text" hidden>
+                       <div class="form-group">
+                         <label>Patient Fullname*</label>
+                         <input class="form-control" readonly type="text" id="pname" required>
+                       </div>
+                       <div class="form-group">
+                         <label>Current Paymode*</label>
+                         <input class="form-control" readonly type="text" id="pymode" required>
+                       </div>  
+                       <div class="form-group" style="display:none;" id="divWard" >
+                         <label>Current Ward*</label>
+                         <input class="form-control form-control-sm" readonly type="text" id="pymode" required>
+                       </div>              
+                     </form>
+                     <!--<a href="{% url 'future-clinics' %}">click here</a>-->
+                    </div>
+                    </div>
+                </div>
+             
+          
+              </div>          
+              
+              </div>
+            
+              <div class="col-sm-8">
+                <div class="card h-100">
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <input type="button" value="search service" class="btn btn-sm btn-success float-left btn-search">                 
+                      </div>
+                      <div class="col-md-6">
+                        <input type="button" value="Confirm Bill" class="btn btn-sm btn-danger float-right btn-confirm">
+                      </div>
+                    </div>
+      
+                    <div class="row">
+                      <div class="col-md-12 mt-3">
+                         <div style="max-height:500px;overflow-y:scroll;" >
+                          <table class="table table-sm table-striped table-fixed" id="billOutputSvs">
+                            <thead style="position: sticky;top: 0" class="thead-dark">
+                                  <th style="width: 30%;">Service</th>
+                                  <th >Quantity</th>
+                                  <th >Cost</th>
+                                  <th >Total</th>
+                                  <th >Department</th>
+                                  <th ></th>
+                                </thead>
+                              <tbody id='tbservicebody'>
+                           
+                              </tbody>
+                          </table>
+                      </div>
+                      </div>
+      
+                    </div>
+
+                  </div>
+                
+                 
+           
+               </div>          
+               
+               </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Search service Modal -->
+<div class="modal fade" id="serviceModal" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="servicemodalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-top" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4>Search by service name</h4>
+        <div class="alert hidden" role="alert" id="modalAlert"></div> 
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div> 
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">                    
+              <input class="form-control" type="text" id="search-service" placeholder="service to bill"> 
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            
+            <table class="table table-hover" id="tableOutputSvs">
+              <thead>
+                <tr>                     
+                  <th scope="col">Service Name</th>
+                  <th scope="col">Normal Rate</th> 
+                  <th scope="col">Special Rate</th>                    
+                  <th scope="col">Department</th>                    
+                </tr>
+              </thead>
+              <tbody class="svs-table-body">
+    
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>       
+    </div>
+  </div>
+</div>
+<!--end of modal-->
+
+<!-- alert Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="paymodalTitle" aria-hidden="true">
+  <div class="modal-dialogdal-lg modal-dialog-top" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="alert hidden" role="alert" id="modalAlert"></div> 
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>        
+    </div>
+  </div>
+</div>
+<!--end of modal-->
+<script src="{% static 'js/op_billing.js' %}"></script>
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}

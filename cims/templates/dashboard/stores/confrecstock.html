@@ -1,0 +1,64 @@
+{% extends "partials/base.html" %}
+{% block title %}Stores-receive{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/store_nav.html'%}
+<div class="container-fluid" id="main">   
+            <div class="row mt-2">
+             
+        
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-header">
+                            Pending confirmation deliveries
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <input type="text" name="" id="itemdelsearch" placeholder="search by delivery note number" class="form-control form-control-sm">
+                                </div>
+                                <div class="col-sm-6">
+                                    <input type="button" name="" id="loadpending" value="load pending delivery" class="btn btn-sm float-right btn-warning">
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-sm-12">
+                                    <div style="max-height:400px;overflow-y:scroll;" >
+                                        <table class="table table-sm table-striped table-fixed" id="tblrecitems">
+                                          <thead style="position: sticky;top: 0" class="thead-dark">
+                                            
+                                                <th>Supplier</th>
+                                                <th style="width: 30%;">Product</th>
+                                                <th >Pkg.Count</th>
+                                                <th >Delv.No</th>
+                                                <th >Price</th>
+                                                <th >Exp.Date</th>                                  
+                                            
+                                            </thead>
+                                            <tbody id='tblrecitemsbody'>
+                                         
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-sm-12">
+                                    <button class="btn btn-info  mr-2 cnfdelivery">Confirm delivery</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>      
+</div>
+<!--/.container-->
+<script src="{% static 'js/supplier.js' %}"></script>
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}
+   

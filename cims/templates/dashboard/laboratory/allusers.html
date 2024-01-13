@@ -1,0 +1,88 @@
+{% extends "partials/base.html" %}
+{% block title %}lab | users{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/lab_nav.html'%}
+<div class="container-fluid" id="main">
+            <div class="row mt-2">
+        
+                <div class="col-sm-4">
+                     <div class="border p-2 bg-white">
+                        <h4>Staff Management</h4>
+                        <hr>                        
+                            <div style="max-height:500px;overflow-y:scroll;">
+                            <form id="usermgmtform" method="POST">
+                            {% csrf_token %}
+                            {{ form | crispy}}
+                            
+                            <div class="row" >
+                             <input type="text" name="userid" id="userid" hidden>
+                             <div class="col-sm-4">
+                                 <!--<input class="btn btn-success btn-block" id="buttonAdduser" type="button" value="Create">-->
+                                 <input class="btn btn-success form-control" type="submit" value="Create">
+                             </div>
+                             <div class="col-sm-4">
+                                 <input class="btn btn-warning btn-block" id="buttonEdituser" type="button" value="Edit">
+                             </div>
+                             <div class="col-sm-4">
+                                 <input class="btn btn-danger btn-block" id="buttonDeluser" type="button" value="dormant">
+                             </div>
+                            </div>
+                        </form>
+                        </div>                         
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                 <div class="row">
+                     <div class="col-sm-6">
+                         <input class="form-control" type="text" name="" id="usersearch" placeholder="search in list">
+                     </div>
+                 </div>
+                 <div class="row mt-2">
+                    <div class="col-sm-12">
+                        <div style="max-height:400px;overflow-y:scroll;" >
+                            <table class="table table-sm table-hover table-fixed " id="tblitems">
+                              <thead style="position: sticky;top: 0" class="thead-dark">
+                                <tr>
+                                    <th >staff name</th>
+                                    <th >National Id</th>
+                                    <th >Phone Number</th>
+                                    <th >Username</th>
+                                    <th >Is Active</th>
+                                   
+                                </tr>
+                                </thead>
+                                <tbody id="tblitems">
+                                 {% if users %}
+                                {% for item in users %}
+                                <tr>
+                                    <td style="display:none;">{{item.id}}</td>
+                                    <td>{{item.fullname}}</td>
+                                    <td>{{item.national_Id_No}}</td>
+                                    <td>{{item.phone}}</td> 
+                                    <td style="display:none;">{{item.email}}</td>
+                                    <td>{{item.username}}</td>
+                                    <td>{{item.is_active}}</td>
+                                </tr>
+                                {% endfor %}
+                                {% else %}
+                                <td colspan="6"> No item found</td>
+                                {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                 </div>
+                 
+                    
+                </div>
+            </div>
+    </div>
+
+<!--/.container-->
+<script src="{% static 'js/users.js' %}"></script>
+
+{% endblock%}

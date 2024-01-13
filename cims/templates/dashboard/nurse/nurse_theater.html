@@ -1,0 +1,240 @@
+{% extends "partials/base.html" %}
+{% block title %}Nursing{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/nurse_nav.html'%}
+<div class="container-fluid" id="main">
+        <main class="col main overflow-auto">
+          <div class="row mt-2">
+            <div class="col-md-5 col-sm-5 ">
+                  <div class="card h-100">
+                       <div class="card-header">
+                        Patient Details
+                       </div>
+                       <div class="card-body">
+                           <div class="form-group">
+                            <select class="form-select form-control" id="pat_type"> 
+                              <option value="">Patient Category</option>                             
+                              {% for ptype in patType %}
+                              <option value="{{ptype.category}}">{{ptype.category}}</option>
+                              {%endfor%}                                
+                            </select>                            
+                           </div>                       
+                            
+                          <div class="form-group ">
+                            <div class="input-group">
+                              <input class="form-control " type="text" id="pCardNo" placeholder="search by cardNo" aria-label="Search">
+                              <span class="input-group-text ">&#128269;</span>
+                             </div>
+                           </div>
+                           <div class="form-group" id="divpatward" style="display:none">
+                            <select class=" form-control" id="patward"> 
+                              <option value="">select ward</option>                             
+                              {% for pward in wards %}
+                              <option value="{{pward.wardName}}">{{pward.wardName}}</option>
+                              {%endfor%}                                
+                            </select>
+                           </div>
+                           <div class="form-group">
+                            <label>Patient Fullname</label>
+                            <input class="form-control" readonly type="text" id="pname">
+                          </div>
+                          <div class="form-group">
+                           <label>Card Number</label>
+                            <input class="form-control" readonly type="text" id="last_visit" >
+                          </div>
+   
+                          <div class="form-group">
+                            <div class="row">
+                              <div class="col-sm-6">
+                                <label>Gender</label>
+                               <input class="form-control" readonly type="text" id="pgender" >
+                              </div>
+                              <div class="col-sm-6">
+                               <label>Age(yrs)</label>
+                               <input class="form-control" readonly type="text" id="pat_age" >
+                              </div>
+                              </div>                           
+                            </div>
+                            <div class="row">
+                             <div class="col-sm-6">
+                               <div class="form-group">
+                                 <label>Paymode</label>
+                                 <input class="form-control" readonly type="text" id="pymode" >                         
+                                </div>
+                             </div>
+                             <div class="col-sm-6">
+                               <div class="form-group ">
+                                 <label>Urgency</label>
+                                 <input class="form-control border-danger" readonly type="text" id="urgency" >                         
+                                </div>
+                             </div>
+                            </div>
+                                                                
+                       </div>
+                  </div> 
+              </div>
+              
+              <div class="col-md-7 col-sm-7 ">
+                  <form action="" id="triageForm">
+                        <div class="card h-100">
+                            <div class="card-header" id="headingOne">
+                              <h5 class="mb-0">
+                                Triage Details
+                               </h5>
+                            </div>                  
+                            <div class="card-body"> 
+
+                              <div class="form-group m-2">
+                                <input readonly hidden type="text" name="patid" id="patid" >
+                                <input readonly hidden type="text" name="vno" id="vno" >
+                                <div class="input-group mb-3">                                                            
+                                  <div class="input-group-prepend">
+                                    <span class="input-group-text">Body Temperature(C)</span>
+                                  </div> 
+                                  <input type="number" class="form-control" id="btemp" name="btemp">                               
+                                  <div class="input-group-postpend">
+                                    <span class="input-group-input"><input readonly type="text" class="form-control " id="bbtemp"></span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="form-group m-2">
+                                <div class="input-group mb-3">                                                            
+                                  <div class="input-group-prepend">
+                                    <span class="input-group-text">Blood pressure(mmHg)</span>
+                                  </div> 
+                                  <input type="number" class="form-control" id="bpress" name="bpress">                               
+                                  <div class="input-group-postpend">
+                                    <span class="input-group-input"><input readonly type="text" class="form-control " id="bfdate"></span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="form-group m-2">
+                                <div class="input-group mb-3">                                                            
+                                  <div class="input-group-prepend">
+                                    <span class="input-group-text">Pulse rate(b/m)</span>
+                                  </div> 
+                                  <input type="number" class="form-control" id="pulse" name="pulse">                               
+                                  <div class="input-group-postpend">
+                                    <span class="input-group-input"><input readonly type="text" class="form-control " id="bfdate"></span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="form-group m-2">
+                                <div class="input-group mb-3">                                                            
+                                  <div class="input-group-prepend">
+                                    <span class="input-group-text">height(cm)</span>
+                                  </div> 
+                                  <input type="number" class="form-control" id="bheight" name="bheight">                               
+                                  <div class="input-group-postpend">
+                                    <span class="input-group-input"><input readonly type="text" class="form-control " id="bbheight"></span>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div class="form-group m-2">
+                                <div class="input-group mb-3">                                                            
+                                  <div class="input-group-prepend">
+                                    <span class="input-group-text">Weight(kg)</span>
+                                  </div> 
+                                  <input type="number" class="form-control" id="bweight" name="bweight">                               
+                                  <div class="input-group-postpend">
+                                    <span class="input-group-input"><input readonly type="text" class="form-control " id="bbweight"></span>
+                                  </div>
+                                </div>
+                              </div>
+                           <div class="form-group">
+                            <label>Change Patient Urgency</label>
+                            <select class="form-select form-control" id="paturgency" name="paturgency"> 
+                              <option value="">---------</option>                             
+                               <option value="Normal">Normal</option>
+                               <option value="Mild">Mild</option>                                                         
+                               <option value="Critical">Critical</option>                                                         
+                            </select>                            
+                           </div>
+
+                           <div class="form-group">
+                            <div class="row">
+                              <div class="col-sm-6">
+                                <input class="btn btn-info btn-block"  type="submit" id="btnsave" value="Save Vitals">
+                              </div>
+                            </div>
+                            
+                           </div>
+
+
+                             </div>
+                                                       
+                        </div>
+                  </form>
+                </div>
+          </div>
+        </main>
+        <!--/main col-->
+</div>
+<!--/.container-->
+<!-- Service request Modal -->
+<div class="modal fade" id="serviceModal" tabindex="-1" role="dialog" aria-labelledby="servicemodalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-top" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="modal_header"></h4>
+        <div class="alert hidden" role="alert" id="modalAlert"></div> 
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div> 
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">                    
+              <input class="form-control" type="text" id="search_service" placeholder="service to order"> 
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            
+            <table class="table table-hover" id="resultTable">
+              <thead>
+                <tr>                     
+                  <th scope="col">Service Name</th>
+                  <th scope="col">Normal Rate</th> 
+                  <th scope="col">Special Rate</th>                    
+                  <th scope="col">Department</th>                    
+                </tr>
+              </thead>
+              <tbody class="resultTableBody">
+    
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>       
+    </div>
+  </div>
+</div>
+<!--end of modal-->
+
+<!-- alert Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="paymodalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="alert hidden" role="alert" id="modalAlert"></div> 
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>        
+    </div>
+  </div>
+</div>
+<!--end of modal-->
+<script src="{% static 'js/nurse_triage.js' %}"></script>
+
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}

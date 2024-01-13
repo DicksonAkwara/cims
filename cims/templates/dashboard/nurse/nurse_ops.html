@@ -1,0 +1,231 @@
+{% extends "partials/base.html" %}
+{% block title %}Nurse-OPs{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/nurse_nav.html'%}
+<div class="container-fluid" id="main">
+        <main class="col main overflow-auto">
+          <div class="row mt-2">             
+              <div class="col-md-12 col-sm-12 ">
+                  <form action="" id="triageForm">
+                        <div class="card h-100">
+                            <div class="card-header" id="headingOne">
+                             <div class="row">
+                              <div class="col-sm-3">
+                                <select name="" id="nstation" class="custom-select disabled">
+                                  <option value="none">--Select Nurse Station--</option>                              
+                                    {% for stt in stations %}
+                                    <option value="{{stt.storeName.store_Id}}">{{stt.storeName.store_name}}</option>
+                                    {%endfor%}
+                                </select>
+                              </div>
+
+                              <div class="col-sm-3">
+                                <div class="form-group ">
+                                  <div class="input-group">
+                                    <input class="form-control text-center" type="text" id="pCardNo2" placeholder="search by cardNo" aria-label="Search">
+                                    
+                                   </div>
+                                   <small class="text-danger txtsearch2"></small>
+                                 </div>                                
+                              </div>
+
+                              <div class="col-sm-3">
+                                <select name="" id="nsoperation" class="custom-select">
+                                  <option value="">---Select Operation---</option>
+                                  <option value="requests">Doctor's Request</option>
+                                  <option value="periodical">Bill Services/injections</option>
+                                  <option value="receipt">Load Receipt items</option>
+                                </select>
+                              </div>
+                             
+                              <div class="col-sm-3">
+                                <input type="button" class="btn btn-primary" id="nsaddsvc" value="Add service/item">                                
+                              </div>
+                             </div>
+                            </div>  
+
+                            <div class="card-body"> 
+                              <div class="row">
+                                <div class="col-sm-3">
+                                  <div class="input-group input-group-sm mb-3">                                                            
+                                    <div class="input-group-prepend">
+                                      <span class="input-group-text">name:</span>
+                                    </div> 
+                                    <input class="form-control" readonly type="text" id="pname2">
+                                  </div>
+                                </div>                              
+                                
+                                <div class="col-sm-2">
+                                  <div class="input-group input-group-sm mb-3">                                                            
+                                    <div class="input-group-prepend">
+                                      <span class="input-group-text">Sex:</span>
+                                    </div> 
+                                    <input class="form-control" readonly type="text" id="pgender2" >
+                                  </div>                                 
+                                </div>
+                                <div class="col-sm-2">
+                                  <div class="input-group input-group-sm mb-3">                                                            
+                                    <div class="input-group-prepend">
+                                      <span class="input-group-text">Age:</span>
+                                    </div> 
+                                    <input class="form-control" readonly type="text" id="pat_age2" >
+                                  </div> 
+                                  
+                                </div>
+                              <!-- hidden fields-->  
+                                <input class="form-control border-danger" hidden readonly type="text" id="urgency2" >
+                                <input class="form-control" hidden readonly type="text" id="last_visit2" >
+                                <input hidden type="text" id="vno2" >
+                              <!-- end of hiddn fields-->
+                                <div class="col-sm-3">
+                                  <div class="input-group input-group-sm mb-3">                                                            
+                                    <div class="input-group-prepend">
+                                      <span class="input-group-text">pay mode:</span>
+                                    </div> 
+                                    <input class="form-control" readonly type="text" id="pymode2" >                         
+                                    <input hidden readonly type="text" id="ppymode" >
+                                  </div>
+                                </div>
+                                <div class="col-sm-2">
+                                  <div class="input-group input-group-sm mb-3">                                                            
+                                    <div class="input-group-prepend">
+                                      <span class="input-group-text">Card Notes</span>
+                                    </div> 
+                                    <select class="custom-select" id="card_opt">
+                                      <option selected>Choose...</option>
+                                      <option value="today">Today</option>
+                                      <option value="all">All</option>
+                                    </select>
+                                  </div>
+                                  
+                                </div>
+                              </div><hr>
+                                   
+                              <div class="row mt-1">
+                                <div class="col-sm-12">
+                                    <div style="max-height:400px;overflow-y:scroll;" >
+                                        <table class="table table-sm table-striped table-fixed  " id="tblnsops">
+                                          <thead style="position: sticky;top: 0" class="thead-dark">
+                                            <tr>
+                                                <th>Date</th>
+                                                <th style="width:30%;">Item/procedure Name</th>
+                                                <th >Instructions</th>
+                                                <th >qnt</th>
+                                                <th >Cost</th>
+                                                <th >Payment</th>                                                                                                        
+                                                <th >Status</th>                                                                                                        
+                                                <th >Requester</th>                                                                                                        
+                                                <th></th>                                                    
+                                            </tr>
+                                            </thead>
+                                            <tbody id="tblnsopsbody">
+                                         
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div><hr>
+                            <div class="row mt-4">
+                              <div class="col-sm-2">                                      
+                                  <input type="button" disabled class="form-control btn btn-warning btnraiseBill " id="btnraiseBill" value="Raise Bill">                                        
+                               </div>
+                               <div class="col-sm-2">
+                                <input type="text" class="form-control" readonly id="ttbill" placeholder="0.0">
+                               </div>                             
+                              <div class="col-sm-3">                                      
+                                <input class="btn btn-success ml-5 btnadminsvs" id="btnadminsvs" disabled type="button" value="Offer/Dispense ">
+                            </div>
+                          </div>
+
+
+
+                             </div>
+                                                       
+                        </div>
+                  </form>
+                </div>
+          </div>
+        </main>
+        <!--/main col-->
+</div>
+<!--/.container-->
+<!-- Service request Modal -->
+<div class="modal fade" id="servicenModal" tabindex="-1" role="dialog" aria-labelledby="servicenmodalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-top" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="modal_header">Type to search service or drug</h4>
+        <div class="alert hidden" role="alert" id="modalAlert"></div> 
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div> 
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">                    
+              <input class="form-control" type="text" id="search_nservice"> 
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <input type="text" id="username" hidden value="{{user.username}}">
+            <table class="table table-hover" id="resultTablen">
+              <thead>
+                <tr>                     
+                  <th scope="col">Service Name</th>
+                  <th scope="col">Normal Rate</th> 
+                  <th scope="col">Special Rate</th>
+                </tr>
+              </thead>
+              <tbody id="resultTablenBody">
+    
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>       
+    </div>
+  </div>
+</div>
+<!--end of modal-->
+
+<!-- alert Modal -->
+<div class="modal fade" id="receiptModal" tabindex="-1" role="dialog" aria-labelledby="receiptModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-top" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6>Enter Receipt number</h6>
+        <div class="alert hidden" role="alert" id="modalAlert"></div> 
+        <button type="button" class="close text-danger" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-2"></div>
+          <div class="col-sm-8">
+            <div class="input-group mb-3">                                                            
+              <div class="input-group-prepend">
+                <span class="input-group-text">Receipt No.</span>
+              </div> 
+              <input type="text" class="form-control" id="rcptno" name="rcptno">
+            </div>
+          </div>
+          <div class="col-sm-2"></div>
+        </div>
+      </div>        
+    </div>
+  </div>
+</div>
+<!--end of modal-->
+<script src="{% static 'js/nurse_triage.js' %}"></script>
+
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}

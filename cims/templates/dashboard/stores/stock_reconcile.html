@@ -1,0 +1,80 @@
+{% extends "partials/base.html" %}
+{% block title %}Reconciliation{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/store_nav.html'%}
+<div class="container-fluid" id="main">
+  {% csrf_token %}
+                <div class="card mt-2">
+                    <div class="card-header">
+                      Stock Reconciliation 
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                          <div class="col-sm-4"></div>
+
+                          <div class="col-sm-4">
+                                  <div class="input-group input-group-sm mb-3">
+                                    <div class="input-group-prepend">
+                                      <span class="input-group-text">Store Name:</span>
+                                    </div>
+                                    <select name="storerec" id="storerec" class="form-control">
+                                      <option  value="none">---------</option>
+                                      {% for store in stores %}
+                                      <option value="{{store.storeName.store_Id}}">{{store.storeName.store_name}}</option>
+                                      {% endfor %}                                        
+                                  </select>                          
+                                </div>
+                            
+                              <div class="mt-4">
+                              <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">Item Search:</span>
+                                </div>
+                                <input list="stitemlist" class="form-control" id="dlvitem">                         
+                              </div>
+                                <div>
+                                  <ul id="searchResult"></ul>
+                                </div>
+                                <input type="hidden" id="itemid">
+                            </div>
+  
+                            <div class="mt-4">
+                              <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">Balance:</span>
+                                </div>
+                                <input type="text" name="itbal" id="itbal" readonly class="form-control" >                        
+                              </div>
+                            </div>
+  
+                            <div class="mt-4">
+                              <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">New Balance:</span>
+                                </div>
+                                <input type="number" name="newbal" id="newbal" class="form-control" >                        
+                              </div>
+                            </div>
+  
+                            <div class="mt-4">
+                              <input type="button" class="btn btn-sm btn-success" id="btnsavereconcile" value="Save">
+                              <input type="button" class="btn btn-sm btn-info float-right" value="Stock Balances">
+                            </div>
+                          </div>                         
+
+                          <div class="col-sm-4"></div>
+                        </div>
+                    </div>
+                </div>
+
+</div>
+<!--/.container-->
+<script src="{% static 'js/supplier.js' %}"></script>
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}
+

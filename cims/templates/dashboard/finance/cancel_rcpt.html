@@ -1,0 +1,106 @@
+{% extends "partials/base.html" %}
+{% block title %}Cancel-Receipt{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/finance_nav.html'%}
+<div class="container-fluid" id="main">
+    <div class="row my-2">
+            <div class="col-sm-12">
+              <div class="card h-100">
+                      <div class="card-header">
+                       Patient &amp; Receipt Details
+                      </div>
+                      <div class="card-body">
+                        <div class="row mt-1">
+                           <div class="col-sm-4">
+                            <div class="form-group">
+                              <div class="input-group">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">Receipt No</span>
+                                </div> 
+                                <input class="form-control" type="text" id="rcnumber" placeholder="search by rcpt no" aria-label="Search">                                
+                                <input type="hidden" id="rctno">
+                              </div>
+                              <small id="rcSearchStatus" class="text-danger"></small>
+                            </div>
+                          </div>
+                          <div class="col-sm-3">
+                            <div class="form-group">
+                              <small class="text-danger"></small>
+                            </div>
+                          </div>
+                        </div>  
+                       <div class="row">
+                        <div class="col-sm-4">
+                          <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">Received From:</span>
+                            </div> 
+                            <input class="form-control" type="text" id="ptname" readonly>                                
+                           
+                          </div>
+                        </div>                       
+                        <div class="col-sm-4">
+                          <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">Receipt Amount</span>
+                            </div> 
+                            <input class="form-control text-center" type="text" id="rctamount" readonly>                                
+                           
+                          </div>
+                        </div>
+                       </div>
+                       <div>
+                        <input type="text" class="form-control" id="dname">
+                        <input type="button" class="btn btn-warning" id="dbtnsearch">
+                       </div>
+
+
+                       <div class="row mt-3"> 
+                         <div class="col-sm-12" style="max-height:300px;overflow-y:scroll;">
+                           <table class="table table-sm table-hover table-fixed " id="tblcancel">
+                             <thead style="position: sticky;top: 0" class="thead-dark">
+                               <th style="width:30%"> Service/Item</th>
+                               <th>Quantity</th>                                
+                               <th>Total</th> 
+                               <th>Cashier</th>
+                               <th>Date Time</th>              
+                             </thead>
+                             <tbody id="tblcancelBody">                            
+                             </tbody>                       
+                           </table>                        
+                         </div>                      
+                       </div>
+
+                       <div class="row mt-3">
+                        <div class="col-sm-8">
+                          <div class="form-group">
+                            <label>Reason to Cancel</label>
+                            <textarea name="" id="canc_reason" class="form-control" rows="3" placeholder="atleast 10 characters"></textarea>
+                          </div>
+                        </div>
+                         <div class="col-sm-4">                           
+                           <button class="btn btn-info mt-5" disabled id="btnCancel"> Cancel receipt</button>
+                         </div>
+                       </div>                                      
+                      </div>
+              </div> 
+                        
+             </div>          
+            
+         </div>
+       
+    
+
+</div>
+<script>
+  $('body').height(document.documentElement.clientHeight);
+</script>
+
+<script src="{% static 'js/cancel_receipt.js' %}"></script>
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}

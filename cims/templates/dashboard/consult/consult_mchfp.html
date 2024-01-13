@@ -1,0 +1,1473 @@
+{% extends "partials/base.html" %}
+{% block title %} Mch-Consult{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/cons_nav.html' %}
+<div class="container-fluid" id="main">
+     <main class="col main mt-1 h-100 overflow-auto">          
+          <div class="row mt-2 border bg-success p-3">
+            <div class="col-sm-4">
+              <div class="form-group">                
+                <select name="" id="mchclinc" class="form-control">
+                    <option>select mch clinic</option>
+                    {% for clinic in mchclinic %}
+                     <option value="{{clinic.clinicNo}}">{{clinic.clinicName}}</option>
+                    {%endfor%}
+                </select>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <div class="input-group">
+                  <input class="form-control" type="text" id="searmch" placeholder="Enter maiden cardNo" aria-label="Search">
+                  <span class="input-group-text">&#128269;</span>
+                </div>
+                <input type="text" name="" id="pid" class="form-control" hidden readonly>
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-2">
+            <div class="col-sm-12"> 
+              <div id="mchaccordion">
+                <div class="card">
+                  <div class="card-header" id="mpatdetails">
+                    <h5 class="mb-0">
+                      <button class="btn btn-link collapsed text-decoration-none" data-toggle="collapse" data-target="#mchpatdetails" aria-expanded="false" aria-controls="mchpatdetails">
+                        Patient Details
+                      </button>
+                    </h5>
+                  </div>
+                  <div id="mchpatdetails" class="collapse show" aria-labelledby="mpatdetails" data-parent="#mchaccordion">
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-sm-3">
+                          <div class="form-group">
+                            <label>Maiden Name</label>
+                             <input type="text" name="" id="pname" class="form-control form-control-sm " readonly >
+                          </div>
+                        </div>
+                        <div class="col-sm-2">
+                          <div class="form-group">
+                            <label>Gender</label>
+                           <input class="form-control form-control-sm" readonly type="text" id="pgender" >
+                          </div>
+                        </div>
+                        <div class="col-sm-2">
+                          <div class="form-group">
+                            <label>Age(yrs)</label>
+                            <input class="form-control form-control-sm" readonly type="text" id="page" >
+                          </div>
+                        </div>
+                        <div class="col-sm-2">
+                          <div class="form-group">
+                            <label>Current PayMode</label>
+                            <input type="text" name="" id="pymode" class="form-control form-control-sm " readonly >
+                            <input type="text" name="" id="pymode2" class="form-control" hidden readonly >
+                          </div>
+                        </div>
+                        <div class="col-sm-3">
+                          <div class="form-group">
+                            <label class="text-white" >-----</label>
+                            <input type="button" value="Visit data &amp;notes" class=" form-control form-control-sm btn btn-primary">
+                          </div>
+                        </div>
+                      </div>
+                      
+                     
+                    </div>
+                  </div>
+                </div>
+
+                <div class="card">
+                  <div class="card-header" id="divoperation">
+                    <h5 class="mb-0">
+                      <button class="btn btn-link collapsed text-decoration-none" data-toggle="collapse" data-target="#divmchops" aria-expanded="false" aria-controls="divmchops">
+                        Patient clerking
+                      </button>
+                    </h5>
+                  </div>
+                  <div id="divmchops" class="collapse" aria-labelledby="divoperation" data-parent="#mchaccordion">
+                    <div class="card-body">
+                      <div class="row mt-2">
+                        <div class="col-sm-12 ">
+                          
+                          <div class="anc" style="display: none;">
+                            <div class="card">
+                              <nav>
+                                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                  <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home"
+                                    type="button" role="tab" aria-controls="nav-home" aria-selected="true">Maternal Clerking</button>
+                                  <button class="nav-link nav_btn_refresh" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-service"
+                                    type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Service Request</button>
+                                  <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-results"
+                                    type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Diagonistic Result</button>
+                                </div>
+                              </nav>
+        
+                              <div class="tab-content" id="nav-tabContent">
+                                <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                                  <div class="card-header">
+                                    <h5 id="clinicheader"></h5>
+                                    <h6 style="display:none;" id="patdetails"></h6>
+                                </div>
+                                <div class="card-body">                          
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <select class="form-control" id="visittype">
+                                                <option value="">--Select Visit Type--</option>
+                                                <option value="profile">Anc Profile</option>
+                                                <option value="first">First visit</option>
+                                                <option value="second">second visit</option>
+                                                <option value="third">third visit</option>
+                                                <option value="fourth">fourth visit</option>
+                                                <option value="fifth">fifth visit</option>
+                                                <option value="sixth">sixth visit</option>
+                                                <option value="seventh">seventh visit</option>
+                                                
+                                            </select>
+                                        </div>            
+                                    </div>
+                                    <div class="mtprofileDiv mt-2" style="display:none ;">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div id="accordion">
+                                                  <div class="card">
+                                                    <div class="card-header" id="headingOne">
+                                                      <h5 class="mb-0">
+                                                        <button class="btn btn-link collapsed text-decoration-none" id="navbtnMP" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                                            Maternal Profile
+                                                        </button>
+                                                      </h5>
+                                                    </div>                  
+                                                    <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                                                        <div class="card-body"> 
+                                                          <form id="motherProfForm">
+                                                            {% csrf_token %}                                 
+                                                            <div class="row mt-2">
+                                                                  <div class="col-sm-3">
+                                                                    <input type="text" name="profid" id="profid" hidden>
+                                                                    <input type="text" name="cardNo" id="cardNo" hidden>
+                                                                    <label>KMHFL Code</label>
+                                                                     <input type="text" name="kmhfl" id="kmhfl" class="form-control form-control-sm">
+                                                                  </div>    
+                                                                  <div class="col-sm-3">
+                                                                    <label>ANC Number</label>
+                                                                    <input type="text" name="ancno" id="ancno" class="form-control form-control-sm">
+                                                                  </div>
+                                                                  <div class="col-sm-3">
+                                                                    <label>Gravida</label>
+                                                                    <input type="text" name="gravida" id="gravida" class="form-control form-control-sm">
+                                                                  </div>
+                                                                  <div class="col-sm-3">
+                                                                    <label>Parity</label>
+                                                                    <input type="text" name="parity" id="parity" class="form-control form-control-sm">
+                                                                  </div> 
+                                                            </div>
+                                                            <div class="row mt-2">
+                                                                <div class="col-sm-3">
+                                                                  <label>Height(cm)</label>
+                                                                   <input type="text" name="height" id="height" class="form-control form-control-sm">
+                                                                </div>    
+                                                                <div class="col-sm-3">
+                                                                  <label>Weight(kg)</label>
+                                                                  <input type="text" name="weight" id="weight" class="form-control form-control-sm">
+                                                                </div>
+                                                                <div class="col-sm-3">
+                                                                  <label>LMP</label>
+                                                                  <input type="date" name="lmp" id="lmp" class="form-control form-control-sm">
+                                                                </div>
+                                                                <div class="col-sm-3">
+                                                                  <label>EDD</label>
+                                                                  <input type="date" name="edd" id="edd" class="form-control form-control-sm">
+                                                                </div>                                             
+                                                            </div>
+                                                            <div class="row mt-2">
+                                                                <div class="col-sm-3">                                                   
+                                                                    <input type="button" id="BtnSaveMP" class="form-control btn btn-sm btn-success" value="Save details">
+                                                                  </div>
+                                                                  <div class="col-sm-3">                                                   
+                                                                    <input type="button" id="BtneditMP1" class="form-control btn btn-sm btn-info" value="Edit details">
+                                                                  </div>
+                                                            </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                  </div>
+                              
+                                                  <div class="card">
+                                                    <div class="card-header" id="headingTwo">
+                                                      <h5 class="mb-0">
+                                                        <button class="btn btn-link collapsed text-decoration-none" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                                            Medical &amp; Surgical History
+                                                        </button>
+                                                      </h5>
+                                                    </div>
+                                                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                                                        <div class="card-body">  
+                                                          <form id="motherMSHForm">                                  
+                                                            <div class="row mt-2">
+                                                                <div class="col-sm-3">
+                                                                    <label>surgical operation(specify)</label>
+                                                                    <input type="text" name="sop" id="sop" class="form-control form-control-sm">
+                                                                    <input type="text" name="profid2" id="profid2" hidden>
+                                                                </div>    
+                                                                <div class="col-sm-3">
+                                                                    <label>Diabetes</label>
+                                                                    <select class="form-control form-control-sm" name="diab" id="diab">
+                                                                        <option value="No">No</option>
+                                                                        <option value="Yes">Yes</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-sm-3">
+                                                                    <label>Hypertension</label>
+                                                                    <select class="form-control form-control-sm" name="htn" id="htn">
+                                                                        <option value="No">No</option>
+                                                                        <option value="Yes">Yes</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-sm-3">
+                                                                    <label>Blood transfusion</label>
+                                                                    <select class="form-control form-control-sm" name="bldtrans" id="bldtrans">
+                                                                        <option value="No">No</option>
+                                                                        <option value="Yes">Yes</option>
+                                                                    </select>
+                                                                </div> 
+                                                            </div>
+                                                            <div class="row mt-2">
+                                                                <div class="col-sm-3">
+                                                                <label>Tuberculosis</label>
+                                                                <select class="form-control form-control-sm" name="tb" id="tb">
+                                                                    <option value="No">No</option>
+                                                                    <option value="Yes">Yes</option>
+                                                                </select>
+                                                                </div>    
+                                                                <div class="col-sm-3">
+                                                                <label>Drug Allergy(specify)</label>
+                                                                <input type="text" name="allergy" id="allergy" class="form-control form-control-sm">
+                                                                </div>
+                                                                <div class="col-sm-3">
+                                                                <label>Other allergies(specify)</label>
+                                                                <input type="text" name="otherallg" id="otherallg" class="form-control form-control-sm">
+                                                                </div>
+                                                                <div class="col-sm-3">
+                                                                <label>Family twins</label>
+                                                                <select class="form-control form-control-sm" name="ftwins" id="ftwins">
+                                                                    <option value="No">No</option>
+                                                                    <option value="Yes">Yes</option>
+                                                                </select>
+                                                                </div>                                             
+                                                            </div>
+                                                            <div class="row mt-2">
+                                                              <div class="col-sm-6">
+                                                                <label>Clinical Notes</label>
+                                                                <textarea class="form-control" placeholder="enter notes here" name="ancnotes" id="ancnotes" rows="3"></textarea>
+                                                                </div>
+                                                            </div>
+                    
+                                                            <div class="row mt-2">
+                                                                <div class="col-sm-3">                                                   
+                                                                    <input type="button" id="BtnSaveMSH" class="form-control btn btn-sm btn-success" value="Save details">
+                                                                   
+                                                                  </div>
+                                                                  <div class="col-sm-3"> 
+                                                                    <input type="button" id="BtneditMSH1" class="form-control btn btn-sm btn-info" value="Edit details">
+                                                                  </div>
+                                                                  
+                                                            </div>
+                                                          </form>
+                                                        </div>
+                                                    </div>
+                                                  </div>
+                              
+                                                  <div class="card">
+                                                    <div class="card-header" id="mpatdetails">
+                                                      <h5 class="mb-0">
+                                                        <button class="btn btn-link collapsed text-decoration-none" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                                          Previous Pregnancy
+                                                        </button>
+                                                      </h5>
+                                                    </div>
+                                                    <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+                                                      <div class="card-body">
+                                                        <form id="prevPregForm">
+                                                          {% csrf_token %}                                  
+                                                          <div class="row mt-2">
+                                                              <div class="col-sm-3">
+                                                                  <label>Pregnancy Order</label>
+                                                                  <select class="form-control form-control-sm" name="pregorder" id="pregorder">
+                                                                    <option value="first">first</option>
+                                                                    <option value="second">second</option>
+                                                                    <option value="third">third</option>
+                                                                    <option value="fourth">fourth</option>
+                                                                    <option value="fifth">fifth</option>
+                                                                    <option value="sixth">sixth</option>
+                                                                    <option value="seventh">seventh</option>
+                                                                    <option value="eigth">eigth</option>
+                                                                    <option value="nineth">nineth</option>
+                                                                    <option value="tenth">tenth</option>                                                           
+                                                                </select>
+                                                                  <input type="text" name="profidpp" id="profidpp" hidden  >
+                                                              </div>    
+                                                              <div class="col-sm-3">
+                                                                  <label>Pregnancy Year(yyyy)</label>                                                          
+                                                                  <select class="form-control form-control-sm" name="yob" id="yob">
+                                                                    
+                                                                                                                                  
+                                                                </select>                                                       
+                                                              </div>
+                                                              <div class="col-sm-3">
+                                                                  <label>Anc clinics per pregnancy</label>
+                                                                  <select class="form-control form-control-sm" name="cln" id="cln">
+                                                                      <option value="1">1</option>
+                                                                      <option value="2">2</option>
+                                                                      <option value="3">3</option>
+                                                                      <option value="4">4</option>
+                                                                      <option value="5">5</option>                                                              
+                                                                  </select>
+                                                              </div>
+                                                              <div class="col-sm-3">
+                                                                  <label>Childbirth place</label>                                                          
+                                                                  <select class="form-control form-control-sm" name="pob" id="pob">
+                                                                    <option value="health facility">health facility</option>
+                                                                    <option value="Home-with-CHV">Home-with-CHV</option>
+                                                                    <option value="Home-without-CHV">Home-without-CHV</option>
+                                                                    <option value="transit">transit</option>
+                                                                    <option value="Herbal clinic">Herbal clinic</option>                                                                                                                         
+                                                                </select>
+                                                              </div> 
+                                                          </div>
+                                                          <div class="row mt-2">
+                                                              <div class="col-sm-3">
+                                                              <label>Gestation Period(weeks)</label>
+                                                              <input type="text" name="gestp" id="gestp" class="form-control form-control-sm">
+                                                              </div>    
+                                                              <div class="col-sm-3">
+                                                              <label>Duration of labour</label>
+                                                              <input type="text" name="labd" id="labd" class="form-control form-control-sm">
+                                                              </div>
+                                                              <div class="col-sm-3">
+                                                              <label>Delivery Mode</label>
+                                                              <select class="form-control form-control-sm" name="delmode" id="delmode">
+                                                                <option value="Normal">Normal</option>
+                                                                <option value="c/s">c/s</option>
+                                                            </select>
+                                                              </div>
+                                                              <div class="col-sm-3">
+                                                              <label>Birth Weight(grams)</label>
+                                                              <input type="text" name="birthw" id="birthw" class="form-control form-control-sm">
+                                                              </div>                                             
+                                                          </div>
+                                                          <div class="row mt-2">
+                                                            <div class="col-sm-3">
+                                                            <label>Sex</label>
+                                                            <select class="form-control form-control-sm" name="sex" id="sex">
+                                                                <option value="male">male</option>
+                                                                <option value="female">female</option>
+                                                                <option value="transgender">transgender</option>
+                                                            </select>
+                                                            </div>    
+                                                            <div class="col-sm-3">
+                                                            <label>Outcome</label>
+                                                            <input type="text" name="outcome" id="outcome" class="form-control form-control-sm">
+                                                            </div>
+                                                            <div class="col-sm-3">
+                                                            <label>Puerperium</label>
+                                                            <input type="text" name="pprm" id="pprm" class="form-control form-control-sm">
+                                                            </div>                                                                                               
+                                                        </div>
+                                                          <div class="row mt-2">
+                                                              <div class="col-sm-6">
+                                                                <div class="row mt-2">
+                                                                  <div class="col-sm-4">                                                   
+                                                                    <input type="button" id="buttonsavePrevp" class="form-control btn btn-sm btn-success" value="Save details">                                                         
+                                                                  </div>
+                                                                  <div class="col-sm-4"> 
+                                                                    <input type="button" id="buttoneditPrevp" class="form-control btn btn-sm btn-info" value="Edit details">
+                                                                  </div>
+                                                                  <div class="col-sm-4">                                                   
+                                                                    <input type="button" id="buttonviewMSH" class="form-control btn btn-sm btn-primary" value="View Anc Profile">
+                                                                  </div>
+                                                                </div>                                                        
+                                                              </div>
+                                                          </div>          
+                                                        </form>
+                                                      </div>
+                                                    </div>
+                                                  </div>                  
+                                                 
+                                                </div>               
+                                             </div>
+                        
+                                        </div>
+                                    </div> 
+                                    <div class="firstvisitDiv mt-2" style="display:none ;">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div id="accordion2">
+                                                    <div class="card">
+                                                        <div class="card-header" id="headingFour">
+                                                          <h5 class="mb-0">
+                                                            <button class="btn btn-link collapsed text-decoration-none" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                                              Physical Examination
+                                                            </button>
+                                                          </h5>
+                                                        </div>
+                                                        <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordion2">
+                                                          <div class="card-body">
+                                                            <form id="ancfstVisitForm">
+                                                              {% csrf_token %}
+                                                              <input type="text" name="profidAnc" id="profidAnc" hidden>
+                                                              <input type="text" name="cardNo2" id="cardNo2" hidden>
+                                                            <div class="row mt-2">
+                                                                <div class="col-sm-3">
+                                                                  <label>General Examination</label>
+                                                                   <input type="text" name="genExam" id="genExam" class="form-control form-control-sm">
+                                                                </div>    
+                                                                <div class="col-sm-3">
+                                                                  <label>BP(mmHg)</label>
+                                                                  <input type="text" name="bp" id="bp" class="form-control form-control-sm">
+                                                                </div>
+                                                                <div class="col-sm-3">
+                                                                  <label>Pulse rate(b/m)</label>
+                                                                  <input type="text" name="prate" id="prate" class="form-control form-control-sm">
+                                                                </div>
+                                                                <div class="col-sm-3">
+                                                                  <label>Breast</label>
+                                                                  <input type="text" name="breasts" id="breasts" class="form-control form-control-sm">
+                                                                </div> 
+                                                            </div>  
+                                                            <div class="row mt-2">
+                                                                <div class="col-sm-3">
+                                                                  <label>Abdomen</label>
+                                                                   <input type="text" name="abdm" id="abdm" class="form-control form-control-sm">
+                                                                </div>    
+                                                                <div class="col-sm-3">
+                                                                  <label>External Genitalia Exam</label>
+                                                                  <input type="text" name="gentExam" id="gentExam" class="form-control form-control-sm">
+                                                                </div>
+                                                                <div class="col-sm-3">
+                                                                  <label>Discharge/genital ulcer</label>
+                                                                  <input type="text" name="genUlcer" id="genUlcer" class="form-control form-control-sm">
+                                                                </div>                                                                                               
+                                                            </div> 
+                                                            <div class="row mt-2">
+                                                                <div class="col-sm-3">                                                   
+                                                                    <input type="button" id="buttonSavePEX" class="form-control btn btn-sm btn-success" value="Save details">
+                                                                  </div>
+                                                            </div> 
+                                                            </form>             
+                                                          </div>
+        
+                                                        </div>
+                                                      </div>
+                                  
+                                                      <div class="card">
+                                                        <div class="card-header" id="headingFive">
+                                                          <h5 class="mb-0">
+                                                            <button class="btn btn-link collapsed text-decoration-none" data-toggle="collapse" data-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                                                              Antenatal Profile
+                                                            </button>
+                                                          </h5>
+                                                        </div>
+                                                        <div id="collapseFive" class="collapse" aria-labelledby="headingFive" data-parent="#accordion2">
+                                                          <div class="card-body">
+                                                            <form id="ancAntProfForm">
+                                                              {% csrf_token %}
+                                                            <input type="text" name="profidAnc2" id="profidAnc2" hidden>              
+                                                            <input type="text" name="cardNo3" id="cardNo3" hidden>              
+                                                                <div class="row mt-2">
+                                                                    <div class="col-sm-3">
+                                                                      <label>HB</label>
+                                                                       <input type="text" name="hb" id="hb" class="form-control form-control-sm">
+                                                                    </div>    
+                                                                    <div class="col-sm-3">
+                                                                      <label>Blood Group</label>
+                                                                      <select name="bgroup" id="bgroup" class="form-control form-control-sm">
+                                                                          <option id="">--select--</option>
+                                                                          <option id="A">A</option>
+                                                                          <option id="B">B</option>
+                                                                          <option id="AB">AB</option>
+                                                                          <option id="O">O</option>                                                      
+                                                                      </select>                                                  
+                                                                    </div>
+                                                                    <div class="col-sm-3">
+                                                                      <label>Rhesus</label>
+                                                                      <select name="rhesus" id="rhesus" class="form-control form-control-sm">
+                                                                        <option id="positive">positive</option>
+                                                                        <option id="negative">negative</option>
+                                                                                                                              
+                                                                    </select>                                                  
+                                                                    </div>
+                                                                    <div class="col-sm-3">
+                                                                      <label>Urinalysis</label>
+                                                                      <input type="text" name="urinalysis" id="urinalysis" class="form-control form-control-sm">
+                                                                    </div> 
+                                                                </div>
+                    
+                                                                <div class="row mt-2">
+                                                                    <div class="col-sm-3">
+                                                                      <label>Blood RBS</label>
+                                                                       <input type="text" name="rbs" id="rbs" class="form-control form-control-sm">
+                                                                    </div>    
+                                                                    <div class="col-sm-3">
+                                                                      <label>TB screening</label>
+                                                                      <select class="form-control form-control-sm" name="tbtest" id="tbtest">
+                                                                        <option value="negative">Negative</option>
+                                                                        <option value="postive">Positive</option>
+                                                                    </select>
+                                                                    </div>
+                                                                    <div class="col-sm-3">
+                                                                      <label>Tripple Hiv test</label>
+                                                                      <select class="form-control form-control-sm" name="hiv" id="hiv">
+                                                                        <option value="NR">NR</option>
+                                                                        <option value="R">R</option>
+                                                                        <option value="not tested">not tested</option>
+                                                                        <option value="inconclusive">inconclusive</option>
+                                                                    </select>
+                                                                    </div>
+                                                                    <div class="col-sm-3">
+                                                                      <label>Tripple Syphilis test</label>
+                                                                      <select class="form-control form-control-sm" name="syphilis" id="syphilis">
+                                                                        <option value="NR">NR</option>
+                                                                        <option value="R">R</option>
+                                                                        <option value="not tested">not tested</option>
+                                                                        <option value="inconclusive">inconclusive</option>
+                                                                    </select>
+                                                                    </div> 
+                                                                </div> 
+                                                                <div class="row mt-2">
+                                                                    <div class="col-sm-3">
+                                                                      <label>Tripple Hepatitis B </label>
+                                                                      <select class="form-control form-control-sm" name="hepatts" id="hepatts">
+                                                                        <option value="NR">NR</option>
+                                                                        <option value="R">R</option>
+                                                                        <option value="not tested">not tested</option>
+                                                                        <option value="inconclusive">inconclusive</option>
+                                                                    </select>
+                                                                    </div>    
+                                                                    <div class="col-sm-3">
+                                                                      <label>Couple Hiv Counselling</label>
+                                                                      <select class="form-control form-control-sm" name="hivCouns" id="hivCouns">
+                                                                        <option value="Yes">Yes</option>
+                                                                        <option value="No">No</option>
+                                                                        
+                                                                    </select>
+                                                                    </div>
+                                                                    <div class="col-sm-3">
+                                                                      <label>Partner Hiv test</label>
+                                                                      <select class="form-control form-control-sm" name="phiv" id="phiv">
+                                                                        <option value="NR">NR</option>
+                                                                        <option value="R">R</option>
+                                                                        <option value="not tested">not tested</option>
+                                                                        <option value="inconclusive">inconclusive</option>                                                    
+                                                                    </select>
+                                                                    </div> 
+                                                                                                                  
+                                                                </div>
+                                                                <div class="row mt-2">
+                                                                    <div class="col-sm-3">                                                   
+                                                                        <input type="button" id="buttonsaveANTP" class="form-control btn btn-sm btn-success" value="Save details">
+                                                                      </div>
+                                                                      <div class="col-sm-3">                                                   
+                                                                        <input type="button" id="buttonviewANTP" class="form-control btn btn-sm btn-primary" value="View visit data">
+                                                                      </div>
+                                                                </div>                                           
+                                                            
+                                                           </form>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                    
+                                                </div> 
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="othervisitDiv" style="display:none ;">
+                                            <div class="card mt-3">
+                                              <div class="card-header">
+                                                Subsequent visit details
+                                              </div>
+                                              <div class="card-body">
+                                                <form id="subvisitForm">
+                                                  {% csrf_token %}
+                                                <div class="row mt-2">
+                                                  <div class="col-sm-3">
+                                                    <input type="text" name="cardno4" id="cardno4" hidden>
+                                                    <input type="text" name="profid4" id="profid4" hidden>
+                                                    <input type="text" name="vstcnt" id="vstcnt" hidden>
+                                                    <label>MUAC<small>(cm)</small></label>
+                                                     <input type="text" name="muac" id="muac" class="form-control form-control-sm">
+                                                  </div>    
+                                                  <div class="col-sm-3">
+                                                    <label>Blood Pressure<small>(mmHg)</small></label>
+                                                    <input type="text" name="bp" id="bp" class="form-control form-control-sm">
+                                                  </div>
+                                                  <div class="col-sm-3">
+                                                    <label>Pulse Rate<small>(b/m)</small></label>
+                                                    <input type="text" name="prate" id="prate" class="form-control form-control-sm">
+                                                  </div> 
+                                                  <div class="col-sm-3">
+                                                    <label>Weight<small>(kg)</small></label>
+                                                     <input type="text" name="weight" id="weight" class="form-control form-control-sm">
+                                                  </div>                                                                                  
+                                              </div> 
+        
+                                              <div class="row mt-2">                                           
+                                                <div class="col-sm-3">
+                                                  <label>Pallor</small></label>
+                                                  <input type="text" name="pallor" id="pallor" class="form-control form-control-sm">
+                                                </div>
+                                                <div class="col-sm-3">
+                                                  <label>Gestation<small>(weeks)</small></label>
+                                                  <input type="text" name="gest" id="gest" class="form-control form-control-sm">
+                                                </div> 
+                                                <div class="col-sm-3">
+                                                  <label>Fundal Height</label>
+                                                  <input type="text" name="fheight" id="fheight" class="form-control form-control-sm">
+                                                </div> 
+                                                <div class="col-sm-3">
+                                                  <label>presentation</label>
+                                                  <input type="text" name="pres" id="pres" class="form-control form-control-sm">
+                                                </div>                                                                                
+                                            </div> 
+        
+                                            <div class="row mt-2">                                           
+                                              <div class="col-sm-3">
+                                                <label>Foetal Heart Rate</small></label>
+                                                <input type="text" name="fhrate" id="fhrate" class="form-control form-control-sm">
+                                              </div>
+                                              <div class="col-sm-3">
+                                                <label>Foetal Movement</small></label>
+                                                <input type="text" name="ftmvt" id="ftmvt" class="form-control form-control-sm">
+                                              </div> 
+                                              <div class="col-sm-3">
+                                                <label>next visit</label>
+                                                <input type="date" name="nvstdate" id="nvstdate" class="form-control form-control-sm">
+                                              </div>                                                                                                                      
+                                          </div> 
+                                          <div class="row mt-2">
+                                              <div class="col-sm-6">
+                                                <textarea class="form-control" placeholder="enter clinical notes here" name="ancnotes" id="ancnotes" rows="3"></textarea>
+                                              </div>
+                                              <div class="col-sm-6">
+                                                <div class="row">
+                                                  <div class="col-sm-6">
+                                                    <input type="button" id="buttonSaveSubVisit" class=" form-control btn btn-primary mt-5" value="save visit details">
+                                                  </div>
+                                                </div>
+                                              </div>
+                                          </div>
+                                            </form>
+                                              </div>
+                                            </div>
+                                  </div>
+                                    
+                                </div>
+        
+                                </div>
+                                <div class="tab-pane fade" id="nav-service" role="tabpanel" aria-labelledby="nav-service-tab">
+                                  <div class="row mt-2">
+                                    <div class="col-md-12">
+                                      <div class="border p-3 bg-white">
+                                         <div class="row">
+                                          <div class="col-md-6">
+                                            <input type="submit" value="search service" class="btn btn-sm btn-success float-left btn-search">                 
+                                          </div>
+                                          <div class="col-md-6">
+                                            <input type="submit" value="Confirm Bill" class="btn btn-sm btn-danger float-right btn-confirm">
+                                          </div>
+                                        </div>
+                          
+                                        <div class="row">
+                                          <div class="col-md-12 mt-3">
+                                            
+                                            <table class="table table-hover table-sm" id="billOutputSvs">
+                                              <thead>
+                                                <tr>                     
+                                                 <!-- <th scope="col" style="display:none;">code</th>
+                                                  <th scope="col">Service</th>
+                                                  <th scope="col">Cost</th>                    
+                                                  <th scope="col">Department</th> -->                   
+                                                </tr>
+                                              </thead>
+                                              <tbody class="bill-table-body billOutputSvsBody">
+                                    
+                                              </tbody>
+                                            </table>
+                                          </div>
+                          
+                                        </div>
+                                       
+                                 
+                                     </div>          
+                                     
+                                     </div>
+                                  </div>
+                                  
+                                </div>
+                                <div class="tab-pane fade" id="nav-results" role="tabpanel" aria-labelledby="nav-results-tab">
+                                  <div class="row mt-2">
+                                    <div class="col-sm-4">
+                                      <div class="form-group">
+                                        <input type="button" class="btn float-right  btn-secondary ml-3 mr-3" id="btnLabRes" value="Laboratory Results">
+                                      </div> 
+                                      <div class="form-group">
+                                        <input type="button" class="btn float-right btn-secondary m-3" id="btnRadRes" value="Radiology Notes">
+                                      </div> 
+                                    </div>
+                                    
+                                    <div class="col-sm-8">
+                                      <input type="text"  id="resDept" hidden>
+                                      <table class="table table-hover table-sm resOutputSvs" id="resOutputSvs">
+                                        <thead>
+                                          <tr>                     
+                                           <th scope="col" style="display:none;">code</th>
+                                            <th scope="col">Date</th>
+                                            <th scope="col">Service</th>                                                  
+                                            <th scope="col">Status</th>                                                  
+                                          </tr>
+                                        </thead>
+                                        <tbody class="resOutputSvsBody">
+                              
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>                        
+                            </div> 
+                          </div>           
+                          <div class="pnc" style="display: none;">
+                              <div class="row">
+                                <div class="col-sm-12">
+                                  <nav>
+                                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                      <button class="nav-link active" id="nav-pnc-home-tab" data-toggle="tab" data-target="#nav-pnc-home"
+                                        type="button" role="tab" aria-controls="nav-pnc-home" aria-selected="true">PNC Clerking</button>
+                                      <button class="nav-link nav_btn_refresh" id="nav-pnc-service-tab" data-toggle="tab" data-target="#nav-pnc-service"
+                                        type="button" role="tab" aria-controls="nav-pnc-service" aria-selected="false">Service Request</button>
+                                      <button class="nav-link" id="nav-pnc-diag-tab" data-toggle="tab" data-target="#nav-pnc-diag"
+                                        type="button" role="tab" aria-controls="nav-pnc-diag" aria-selected="false">Diagonistic Result</button>
+                                    </div>
+                                  </nav>
+                                  <div class="tab-content" id="nav-tabContent-pnc">
+                                    <div class="tab-pane fade show active" id="nav-pnc-home" role="tabpanel" aria-labelledby="nav-pnc-home-tab">
+                                      <div class="row mt-2">
+                                        <div class="col-sm-6">
+                                            <select class="form-control" id="pncvisit">
+                                                <option value="">--Select Visit count--</option>                                        
+                                                <option value="atBirth">At Birth</option>
+                                                <option value="first">First visit</option>
+                                                <option value="second">second visit</option>
+                                                <option value="third">third visit</option>
+                                                <option value="fourth">fourth visit</option>                               
+                                            </select>
+                                        </div> 
+                                                
+                                    </div>
+                                      <div class="row">
+                                        <div class="col-sm-12">
+                                          <div id="accordionPNC" class="mt-3">
+                                            <div class="card">
+                                                <div class="card-header" id="headingmpnc">
+                                                  <h5 class="mb-0">
+                                                    <button class="btn btn-link collapsed text-decoration-none btndivpncmaiden" data-toggle="collapse" data-target="#collapsedivmother" aria-expanded="false" aria-controls="collapsedivmother">
+                                                      Mother Details
+                                                    </button>
+                                                  </h5>
+                                                </div>
+                                                <div id="collapsedivmother" class="collapse" aria-labelledby="headingmpnc" data-parent="#accordionPNC">
+                                                  <div class="card-body">  
+                                                    <form id="pncmaidenForm">
+                                                      {% csrf_token %}                                            
+                                                        <div class="row mt-2">                                                      
+                                                          <div class="col-sm-3">
+                                                            <label>BP(mmHg)</label>
+                                                            <input type="text" name="bp" id="bp" class="form-control form-control-sm">
+                                                            <input type="text" name="mdnnumber" id="mdnnumber" hidden>
+                                                            <input type="text" name="vperiod" id="vperiod" hidden>
+                                                          </div>
+                                                          <div class="col-sm-3">
+                                                            <label>Pulse rate(b/m)</label>
+                                                            <input type="text" name="prate" id="prate" class="form-control form-control-sm">
+                                                          </div>
+                                                          <div class="col-sm-3">
+                                                            <label>Temperature</label>
+                                                            <input type="text" name="temp" id="temp" class="form-control form-control-sm">
+                                                          </div> 
+                                                          <div class="col-sm-3">
+                                                            <label>Weight<small>(kg)</small></label>
+                                                             <input type="text" name="weight" id="weight" class="form-control form-control-sm">
+                                                          </div>
+                                                      </div> 
+        
+                                                      <div class="row mt-2">
+                                                        <div class="col-sm-3">
+                                                          <label>General Examination</label>
+                                                           <input type="text" name="genExam" id="genExam" class="form-control form-control-sm">
+                                                        </div> 
+                                                        <div class="col-sm-3">
+                                                          <label>Breast</label>
+                                                          <input type="text" name="breasts" id="breasts" class="form-control form-control-sm">
+                                                        </div>   
+                                                        <div class="col-sm-3">
+                                                          <label>C/S scar</label>
+                                                          <input type="text" name="scar" id="scar" class="form-control form-control-sm">
+                                                        </div>
+                                                        <div class="col-sm-3">
+                                                          <label>involution of uterus</label>
+                                                          <input type="text" name="uterus" id="uterus" class="form-control form-control-sm">
+                                                        </div>
+                                                         
+                                                    </div> 
+        
+                                                    <div class="row mt-2">
+                                                      <div class="col-sm-3">
+                                                        <label>Pelvic Examination</label>
+                                                         <input type="text" name="pelExam" id="pelExam" class="form-control form-control-sm">
+                                                      </div>    
+                                                      <div class="col-sm-3">
+                                                        <label>Episiotomy/tear condition</label>
+                                                        <input type="text" name="tear" id="tear" class="form-control form-control-sm">
+                                                      </div>
+                                                      <div class="col-sm-3">
+                                                        <label>Obs fistula screen</label>
+                                                        <input type="text" name="fistula" id="fistula" class="form-control form-control-sm">
+                                                      </div>
+                                                      <div class="col-sm-3">
+                                                        <label>Lochia<small>(smell,amount,color)</small></label>
+                                                        <input type="text" name="lochia" id="lochia" class="form-control form-control-sm">
+                                                      </div> 
+                                                  </div> 
+        
+                                                  <div class="row mt-2">                                                
+                                                    <div class="col-sm-3">
+                                                      <label>Hiv Status</label>
+                                                      <select class="form-control form-control-sm" name="hiv" id="hiv">
+                                                        <option value="NR">NR</option>
+                                                        <option value="R">R</option>
+                                                        <option value="not tested">not tested</option>
+                                                        <option value="inconclusive">inconclusive</option>
+                                                    </select></div>
+                                                    <div class="col-sm-3">
+                                                      <label>Counseling</label>
+                                                      <select class="form-control form-control-sm" name="pfcouns" id="pfcouns">
+                                                        <option value="yes">yes</option>
+                                                        <option value="no">no</option>
+                                                        
+                                                    </select></div>
+                                                    <div class="col-sm-3">
+                                                      <label>FP Method</label>
+                                                      <select class="form-control form-control-sm" name="fpmethod" id="fpmethod">
+                                                        {% for fp in fpmethod %}
+                                                        <option value="{{fp.acronym}}">{{fp.description}}({{fp.acronym}})</option>
+                                                       {% endfor %}
+                                                    </select>
+                                                   </div>
+                                                   <div class="col-sm-3">
+                                                    <label>FP Specification</label>
+                                                     <input type="text" name="fpspec" id="fpspec" class="form-control form-control-sm">
+                                                  </div> 
+                                                   </div>
+                                                   
+                                                   <div class="row mt-2">                                            
+                                                    <div class="col-sm-6">
+                                                      <label>Clinical Notes</label>
+                                                      <textarea class="form-control" placeholder="enter clinical notes here" name="pncmnotes" id="pncmnotes" rows="3"></textarea>
+                                                    </div> 
+                                                    <div class="col-sm-6">
+                                                      <input type="button" id="buttonsavePNCM" class=" btn btn-sm btn-success mt-5" value="Save details">
+                                                    </div>
+                                                   </div>
+                                                   </form>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                              <div class="card">
+                                                <div class="card-header" id="headingbpnc">
+                                                  <h5 class="mb-0">
+                                                    <button class="btn btn-link collapsed text-decoration-none btnloadbabyPnc"  data-toggle="collapse" data-target="#collapsedivbaby" aria-expanded="false" aria-controls="collapsedivbaby">
+                                                      Baby Details
+                                                    </button>
+                                                  </h5>
+                                                </div>
+                                                <div id="collapsedivbaby" class="collapse" aria-labelledby="headingbpnc" data-parent="#accordionPNC">
+                                                  <div class="card-body">
+                                                    
+                                                      <div class="row mt-2"> 
+                                                        <table class="table table-sm tblebabylist2">
+                                                          <thead class="thead-dark">                                    
+                                                            <th>Baby Name</th>
+                                                            <th>Baby Sex</th>
+                                                            <th>Date of Birth</th>
+                                                            <th>Place of Birth</th>
+                                                          </thead>
+                                                          <tbody class="tblebabylist2body"></tbody>
+                                                        </table> 
+                                                        </div><hr>
+                                                    <form id="pncbabyForm">
+                                                      {% csrf_token %}
+                                                     <div class="row mt-2">
+                                                      <div class="col-sm-3">
+                                                        <label>General condition</label>
+                                                         <input type="text" name="mdnnumber2" id="mdnnumber2" hidden>
+                                                         <input type="text" name="babynumber" id="babynumber" hidden>
+                                                         <input type="text" name="vperiod2" id="vperiod2" hidden>
+                                                         <input type="text" name="genExam" id="genExam" class="form-control form-control-sm">
+                                                      </div>    
+                                                      <div class="col-sm-3">
+                                                        <label>Temperature<small>(c)</small></label>
+                                                        <input type="text" name="temp" id="temp" class="form-control form-control-sm">
+                                                      </div>
+                                                      <div class="col-sm-3">
+                                                        <label>Breaths per minute</label>
+                                                        <input type="text" name="prate" id="prate" class="form-control form-control-sm">
+                                                      </div>
+                                                      <div class="col-sm-3">
+                                                        <label>Weight</label>
+                                                        <input type="text" name="weight" id="weight" class="form-control form-control-sm">
+                                                      </div>                                               
+                                                     </div>
+        
+                                                     <div class="row mt-2">
+                                                      <div class="col-sm-3">
+                                                        <label>Feeding method</label>
+                                                        <input type="text" name="fdmethod" id="fdmethod" class="form-control form-control-sm">
+                                                      </div>
+        
+                                                      <div class="col-sm-3">
+                                                        <label>Breast feeding</label>
+                                                         <input type="text" name="brfeed" id="brfeed" class="form-control form-control-sm">
+                                                      </div>    
+                                                      <div class="col-sm-3">
+                                                        <label>Umbilical cord</label>
+                                                        <input type="text" name="umbcord" id="umbcord" class="form-control form-control-sm">
+                                                      </div>
+                                                      <div class="col-sm-3">
+                                                        <label>Next Visit Date</label>
+                                                        <input type="date" name="nvisit" id="nvisit" class="form-control form-control-sm">
+                                                      </div>                                               
+                                                     </div>
+                                                     <div class="row mt-2">                                            
+                                                      <div class="col-sm-6">
+                                                        <label>Clinical Notes</label>
+                                                        <textarea class="form-control" placeholder="enter clinical notes here" name="pncbbnotes" id="pncbbnotes" rows="3"></textarea>
+                                                      </div> 
+                                                      <div class="col-sm-6">                                                
+                                                        <input type="button" id="btnsavebabypnc" class="btn btn-success mt-5" value="save details">
+                                                      </div>
+                                                     </div>
+                                                    </form>
+                                                </div>
+                                              </div>
+                                            </div> 
+                                        </div>
+                                      </div>
+        
+                                    </div>
+                                              
+        
+        
+                                  </div>
+                                  <div class="tab-pane fade" id="nav-pnc-service" role="tabpanel" aria-labelledby="nav-pnc-service-tab">
+                                    <div class="row mt-2">
+                                      <div class="col-md-12">
+                                        <div class="border p-3 bg-white">
+                                           <div class="row">
+                                            <div class="col-md-6">
+                                              <input type="button" value="search service" class="btn btn-sm btn-success float-left btn-pnc-search">                 
+                                            </div>
+                                            <div class="col-md-6">
+                                              <input type="button" value="Confirm Bill" class="btn btn-sm btn-danger float-right btn-confirm">
+                                            </div>
+                                          </div>
+                            
+                                          <div class="row">
+                                            <div class="col-md-12 mt-3">
+                                              
+                                              <table class="table table-hover table-sm" id="billOutputSvs">
+                                                <thead>
+                                                  <tr>                     
+                                                   <!-- <th scope="col" style="display:none;">code</th>
+                                                    <th scope="col">Service</th>
+                                                    <th scope="col">Cost</th>                    
+                                                    <th scope="col">Department</th> -->                   
+                                                  </tr>
+                                                </thead>
+                                                <tbody class="bill-table-body billOutputSvsBody">
+                                      
+                                                </tbody>
+                                              </table>
+                                            </div>                    
+                                          </div>         
+                                   
+                                       </div>          
+                                       
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="tab-pane fade" id="nav-pnc-diag" role="tabpanel" aria-labelledby="nav-pnc-diag-tab">
+        
+                                 </div> 
+                                </div>
+                              </div>
+                          </div>
+                          </div>
+                          <div class="cwc" style="display: none;"></div>
+                          <div class="imm" style="display: none;">
+                            <div class="row">
+                              <div id="accordionIMM" class="mt-3">
+                                <div class="card">
+                                  <div class="card-header" id="headingmImm">
+                                    <h5 class="mb-0">
+                                      <button class="btn btn-link collapsed text-decoration-none" id="buttonImmOpen" data-toggle="collapse" data-target="#collapsedivImmMother" aria-expanded="false" aria-controls="collapsedivImmMother">
+                                        Immunization Schedule
+                                      </button>
+                                    </h5>
+                                  </div>
+                                  <div id="collapsedivImmMother" class="collapse" aria-labelledby="headingmImm" data-parent="#accordionIMM">
+                                    <div class="card-body">
+                                      <div class="row mt-2"> 
+                                        <table class="table table-sm tblebabylist">
+                                          <thead>                                    
+                                            <th>Baby Name</th>
+                                            <th>Baby Sex</th>
+                                            <th>Date of Birth</th>
+                                            <th>Place of Birth</th>
+                                          </thead>
+                                          <tbody class="tblebabylistbody"></tbody>
+                                        </table> 
+                                        </div><hr>
+        
+        
+                                        <div class="row mt-2">
+                                        <div class="col-sm-4">
+                                          <div class="col-sm-12" style="max-height:300px;overflow-y:scroll;" >
+                                            <table class="table table-sm table-hover table-fixed tblevstVaccine">
+                                              <thead style="position: sticky;top: 0" class="thead-primary">                                                                                 
+                                                  <th>Visit Date</th>
+                                                  <th>Vaccine</th>
+                                                  <th>Schedule</th>                                            
+                                              </thead>
+                                              <tbody class="tblevstVaccineBody">                            
+                                              </tbody>                       
+                                            </table>                        
+                                          </div>
+                                          
+                                        </div>
+                                        <div class="col-sm-8 ">
+                                          <form id="immbabyForm" class="p-2">
+                                            {% csrf_token %}
+                                          <h4>Administer Vaccine</h4>
+                                          <div class="row">
+                                            <div class="col-sm-6">
+                                              <div class="form-group">
+                                                <label>Vaccine Name</label>
+                                                <input type="text" name="bno" id="bno" hidden>
+                                                <input type="text" name="mdno" id="mdno" hidden>
+                                                <select id="vaccinename" name="vaccinename" class="form-control">
+                                                  <option>-------</option>
+                                                  {% for vacc in vaccines %}
+                                                  <option value="{{vacc.vaccineName}}">{{vacc.vaccineName}}({{vacc.acronym}})</option>
+                                                  {% endfor %}
+                                                </select>
+                                              </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                              <div class="form-group">
+                                                <label class="text-danger">Vaccine Period</label>
+                                                <select id="vaccineprd" name="vaccineprd" class="form-control">
+                                                  <option selected>-------</option>                                          
+                                                </select>
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <div class="row">
+                                            <div class="col-sm-6">
+                                              <div class="form-group">
+                                                <label>Next Immunization Date</label>
+                                              <input type="date" class="form-control" name="nxdate" id="nxdate">
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <hr>
+                                          <div class="row">
+                                            <div class="col-sm-6">
+                                              <label><b>Administartion Method</b></label>
+                                              <p id="admethod"></p>
+                                            </div>
+                                            <div class="col-sm-6">
+                                              <label><b>Body Part</b></label>
+                                              <p id="bpart"></p>
+                                              
+                                            </div>
+                                          </div><hr>
+                                          <div class="row mt-2">
+                                            <div class="col-sm-6">
+                                              <input type="button" value="Administer" class="btn btn-success" id="btnAdministerVacc">
+                                            </div>
+                                          </div> 
+                                          </form>
+                                        </div>
+                                       
+                                      </div>
+                                    </div>
+                                  </div>  
+                                </div>
+        
+        
+                                <div class="card">
+                                  <div class="card-header" id="headingEffect">
+                                    <h5 class="mb-0">
+                                      <button class="btn btn-link collapsed text-decoration-none" id="btndivopeneffect" data-toggle="collapse" data-target="#collapsedivEffect" aria-expanded="false" aria-controls="collapsedivEffect">
+                                        Record adverse Effect on Immunization
+                                      </button>
+                                    </h5>
+                                  </div>
+                                  <div id="collapsedivEffect" class="collapse" aria-labelledby="headingEffect" data-parent="#accordionIMM">
+                                    <div class="card-body">
+                                      <form id="vacveffectForm">
+                                        {% csrf_token %}
+                                      <div class="row mt-2">
+                                        <div class="col-sm-4">
+                                          <div class="form-group">
+                                            <label>Vaccine Name</label>
+                                            <select id="vaccinename" name="vaccinename" class="form-control">
+                                              <option>-------</option>
+                                              {% for vacc in vaccines %}
+                                              <option value="{{vacc.vaccineName}}">{{vacc.vaccineName}}({{vacc.acronym}})</option>
+                                              {% endfor %}
+                                            </select>
+                                          </div>          
+                                        </div>
+                                        <div class="col-sm-4">
+                                          <div class="form-group">
+                                            <label>Batch Number</label>
+                                            <input type="text" name="btnumber" id="btnumber" class="form-control">
+                                          </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                          <div class="form-group">                                   
+                                            <label>Manufacturer's Name</label>
+                                            <input type="text" name="mname" id="mname" class="form-control">
+                                          </div>
+                                        </div>                               
+                                      </div>
+                                      <div class="row mt-2">
+                                        <div class="col-sm-4">
+                                          <div class="form-group">
+                                            <label>Manufacture Date</label>
+                                            <input type="date" name="mndate" id="mndate" class="form-control">
+                                          </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                          <div class="form-group">
+                                            <label>Expiry Date</label>
+                                            <input type="date" name="expdate" id="expdate" class="form-control">
+                                          </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                          <div class="form-group">
+                                            <label>Select Baby Name</label>
+                                            <input type="text" name="mddno" id="mddno"hidden>
+                                            <select id="bbyname" name="bbyname" class="form-control">                                      
+                                            </select>
+                                          </div>          
+                                        </div>
+                                      </div>
+                                      <div class="row mt-2">
+                                        <div class="col-sm-6">
+                                          <label>Describe the effect </label>
+                                          <textarea class="form-control" placeholder="enter clinical notes here" name="cmpnotes" id="cmpnotes" rows="3"></textarea>
+                                        </div>
+                                        <div class="col-sm-6">
+                                          <input type="button" class="btn btn-success mt-5 " id="btnSaveEffect" value="Submit Complain">
+                                        </div>
+                                      </div>
+                                      </form>
+                                    </div>
+                                  </div>  
+                                </div>
+                              </div>
+                            </div>                    
+                          </div>
+                          <div class="pmtc" style="display: none;"></div>
+                          <div class="family" style="display: none;">
+                            <div class="row">
+                              <div class="col-sm-12">
+                              <div id="accordionFP" class="mt-1">
+                                <div class="card">
+                                  <div class="card-header" id="headingmImm">
+                                    <h5 class="mb-0">
+                                      <button class="btn btn-link collapsed text-decoration-none" id="buttonFpAdmOpen" data-toggle="collapse" data-target="#collapsedivFPadmin" aria-expanded="false" aria-controls="collapsedivFPadmin">
+                                        Plan Administration
+                                      </button>
+                                    </h5>
+                                  </div>
+                                  <div id="collapsedivFPadmin" class="collapse" aria-labelledby="headingmImm" data-parent="#accordionFP">
+                                    <div class="card-body">
+                                      <div class="row mt-1"> 
+                                        <table class="table table-sm tblefplist">
+                                          <thead> 
+                                            <th style="width:50%;">Method</th>
+                                            <th>Date Given</th>
+                                            <th>Status</th>                                    
+                                          </thead>
+                                          <tbody class="tblefpbody"></tbody>
+                                        </table> 
+                                        </div><hr>
+        
+        
+                                        <div class="row mt-2">
+                                       
+                                        <div class="col-sm-12 ">
+                                          <form id="fpadministerForm" class="">
+                                            {% csrf_token %}
+                                          <h4>Administer Plan</h4>
+                                          <div class="row mt-2">
+                                            <div class="col-sm-4">
+                                              <div class="form-group">
+                                                <label>FP Number</label>
+                                              <input type="text" class="form-control" name="fpno" id="fpno">
+                                              </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                              <div class="form-group">
+                                                <label>FP Method</label>
+                                                <input type="text" name="fpno" id="fpno" hidden>
+                                                <input type="text" name="mdfpno" id="mdfpno" hidden>
+                                                <select class="form-control form-control-sm" name="fpmethod" id="fpmethod">
+                                                  {% for fp in fpmethod %}
+                                                  <option value="{{fp.acronym}}">{{fp.description}}({{fp.acronym}})</option>
+                                                 {% endfor %}
+                                              </select>
+                                              </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                              <div class="form-group">
+                                                <label class="text-danger">Quantity</label>
+                                                <input type="number" class="form-control" name="qnty" id="qnty">
+                                              </div>
+                                            </div>
+                                           
+                                          </div>
+                                         <div class="row mt-2">
+                                          <div class="col-sm-4">
+                                            <div class="form-group">
+                                              <label class="text-danger">Date Given</label>
+                                              <input type="date" class="form-control" name="addate" id="addate">
+                                            </div>
+                                          </div>
+                                          <div class="col-sm-4">
+                                            <div class="form-group">
+                                              <label>Expected End Date</label>
+                                            <input type="date" class="form-control" name="exdate" id="exdate">
+                                            </div>
+                                          </div>
+                                          <div class="col-sm-4">
+                                            <div class="form-group">
+                                              <label>Reason to discontinue</label>
+                                            <input type="text" class="form-control" name="reason" id="reason">
+                                            </div>
+                                          </div>
+                                         
+                                         </div>                                                                 
+                                          <div class="row mt-2">
+                                            <div class="col-sm-4">
+                                              <input type="button" value="Administer" class="btn btn-success" id="btnAdministerFP">
+                                            </div>
+        
+                                            <div class="col-sm-4">
+                                              <input type="button" value="Discontinue" class="btn btn-primary" id="btnDiscontFP">
+                                            </div>
+        
+                                          </div> 
+                                          </form>
+                                        </div>
+                                       
+                                      </div>
+                                    </div>
+                                  </div>  
+                                </div>
+        
+        
+                                <div class="card">
+                                  <div class="card-header" id="headingEffectFP">
+                                    <h5 class="mb-0">
+                                      <button class="btn btn-link collapsed text-decoration-none" id="btndivopeneffectfp" data-toggle="collapse" data-target="#collapsedivEffectFP" aria-expanded="false" aria-controls="collapsedivEffectFP">
+                                        Record adverse Effect on Method
+                                      </button>
+                                    </h5>
+                                  </div>
+                                  <div id="collapsedivEffectFP" class="collapse" aria-labelledby="headingEffectFP" data-parent="#accordionFP">
+                                    <div class="card-body">
+                                      <form id="fpeffectForm">
+                                        {% csrf_token %}
+                                      <div class="row mt-1">
+                                        <div class="col-sm-4">
+                                          <div class="form-group">
+                                            <label>Current Method</label>
+                                            <select class="form-control form-control-sm" name="fpmethodEff" id="fpmethodEff">
+                                              {% for fp in fpmethod %}
+                                              <option value="{{fp.acronym}}">{{fp.description}}({{fp.acronym}})</option>
+                                             {% endfor %}
+                                          </select>
+                                          </div>          
+                                        </div>
+                                        <div class="col-sm-4">
+                                          <div class="form-group">
+                                            <label>Batch Number</label>
+                                            <input type="text" name="btnumber" id="btnumber" class="form-control">
+                                          </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                          <div class="form-group">                                   
+                                            <label>Manufacturer's Name</label>
+                                            <input type="text" name="mname" id="mname" class="form-control">
+                                          </div>
+                                        </div>                               
+                                      </div>
+                                      <div class="row mt-2">
+                                        <div class="col-sm-4">
+                                          <div class="form-group">
+                                            <label>Manufacture Date</label>
+                                            <input type="date" name="mndate" id="mndate" class="form-control">
+                                          </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                          <div class="form-group">
+                                            <label>Expiry Date</label>
+                                            <input type="date" name="expdate" id="expdate" class="form-control">
+                                          </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                          <div class="form-group">
+                                            <label>Card no/ FP Number</label>
+                                            <input type="text" name="cardno" id="cardno" class="form-control">                                    
+                                          </div>          
+                                        </div>
+                                      </div>
+                                      <div class="row mt-2">
+                                        <div class="col-sm-6">
+                                          <label>Describe the effect </label>
+                                          <textarea class="form-control" placeholder="enter clinical notes here" name="cmpnotes" id="cmpnotes" rows="3"></textarea>
+                                        </div>
+                                        <div class="col-sm-6">
+                                          <input type="button" class="btn btn-success mt-5 " id="btnSaveFpEffect" value="Submit Complain">
+                                        </div>
+                                      </div>
+                                      </form>
+                                    </div>
+                                  </div>  
+                                </div>
+                              </div>
+                              </div>
+
+                            </div> 
+                          </div>
+                        </div>
+                     </div>                   
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+     </main>
+</div>
+<!--/.container-->
+
+     <!-- pay mode Modal -->
+     <div class="modal fade" id="serviceModal" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="servicemodalTitle" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-top" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4>Search by service name</h4>
+            <div class="alert hidden" role="alert" id="modalAlert"></div> 
+            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div> 
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">                    
+                  <input class="form-control" type="text" id="search-service" placeholder="service to bill"> 
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                
+                <table class="table table-hover" id="tableOutputSvs">
+                  <thead>
+                    <tr>                     
+                      <th scope="col">Service Name</th>
+                      <th scope="col">Normal Rate</th> 
+                      <th scope="col">Special Rate</th>                    
+                      <th scope="col">Department</th>                    
+                    </tr>
+                  </thead>
+                  <tbody class="svs-table-body">
+        
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>       
+        </div>
+      </div>
+    </div>
+    <!--end of modal-->
+    <!--radiology results modal  -->
+    <div class="modal fade" id="radNotesModal" tabindex="-1" role="dialog" aria-labelledby="paymodalTitle" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 id="radHeader"></h4>
+            <button type="button" class="btn-close btn-danger" data-bs-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div> 
+          <div class="modal-body">
+            <textarea class="form-control" readonly id="radResNotes" rows="5"></textarea>
+            <textarea class="form-control" readonly id="radResDetails" rows="2"></textarea>
+            <button class="btn btn-primary float-right mt-3 p-2">print</button>
+          </div>       
+        </div>
+      </div>
+    </div>
+    <!--end of modal-->
+    
+     <!--Verified result modal-->
+     <div class="modal fade" id="verifiedModal" tabindex="-1" aria-labelledby="bill_modal" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-top modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header"> 
+            <h5 class="modal-title text-center" id="verifiedModal">Verified Result</h5> 
+            <button type="button" class="btn-close btn-danger" data-bs-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>        
+          </div>
+          <div class="modal-body">        
+              <div class="row">           
+                <h5 class="ml-3" id="testVerDetails"></h5>
+                <table class="table tableVerified">             
+                  <tbody class="tableVerifiedBody"></tbody>
+                </table>         
+              </div>         
+            </div>        
+            
+          </div>          
+        </div>
+      </div>
+<script src="{% static 'js/cons_mch_fp.js' %}"></script>
+<script src="{% static 'js/cons_mch_billing.js' %}"></script>
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}

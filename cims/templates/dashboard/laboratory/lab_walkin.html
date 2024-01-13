@@ -1,0 +1,185 @@
+{% extends "partials/base.html" %}
+{% block title %}lab-manual bill{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/lab_nav.html'%}
+{% csrf_token %}
+<div class="container-fluid">
+    <div class="row my-2">
+      <div class="col-sm-4">
+         <div class="card h-100">
+          <div class="card-header">
+            Raise bill for walk-in Patient
+          </div>
+          <div class="card-body">
+
+                <div class="input-group mb-3">                                                            
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">Category:</span>
+                    </div> 
+                    <select class="form-control border-danger" id="pat_type">                              
+                        {% for item in patType %}
+                        <option value="{{item.category}}">{{item.category}}</option>
+                        {%endfor%}                                
+                      </select>
+                  </div>
+                  <div class="input-group mb-3">                                                            
+                    <div class="input-group-prepend">
+                    <span class="input-group-text">Card Number</span>
+                    </div> 
+                    <input class="form-control" type="text" id="patno" value="">                     
+                </div> 
+                <div>
+                  <small class="text-danger" id="psearchStatus"></small>
+                </div>
+             <div class="row mt-3">
+              <div class="col-sm-12">
+               <form> 
+                <input id="patid" type="text" value="" hidden>
+                <input id="visitno" type="text" value="" hidden>
+                <div class="input-group mb-3">                                                            
+                    <div class="input-group-prepend">
+                    <span class="input-group-text">Fullname:</span>
+                    </div> 
+                    <input class="form-control" readonly type="text" id="pname">
+                </div>   
+                <div class="input-group mb-3">                                                            
+                  <div class="input-group-prepend">
+                  <span class="input-group-text">Gender:</span>
+                  </div> 
+                  <input class="form-control" readonly type="text" id="pgend">
+              </div>
+              <div class="input-group mb-3">                                                            
+                <div class="input-group-prepend">
+                <span class="input-group-text">Age:</span>
+                </div> 
+                <input class="form-control" readonly type="text" id="page">
+            </div>   
+            <div class="input-group mb-3">                                                            
+              <div class="input-group-prepend">
+              <span class="input-group-text">Payment mode:</span>
+              </div> 
+              <input class="form-control" readonly type="text" id="pymode">
+              <input id="ppmode" type="text" value="" hidden>
+          </div>                          
+               </form>
+              </div>
+              </div>
+          </div>
+       
+    
+        </div>          
+        
+        </div>
+      
+        <div class="col-sm-8">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="input-group input-group-sm">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">Type to search:</span>
+                    </div> 
+                    <input list="stitemlist" value="" class="form-control" id="test_search">                                  
+                  </div>
+                  <div>
+                    <ul class="list-group list-group-sm" id="searchResult"></ul>
+                  </div>
+                </div>               
+              </div>
+
+              <div class="row">
+                <div class="col-md-12 mt-3">
+                   <div style="max-height:300px;overflow-y:scroll;" >
+                    <table class="table table-sm table-striped table-fixed" id="billtable">
+                      <thead style="position: sticky;top: 0" class="thead-dark">
+                            <th style="width: 30%;">Service</th>
+                            <th >Quantity</th>
+                            <th >Cost</th>
+                            <th >Total</th>
+                            <th >Department</th>
+                            <th ></th>
+                          </thead>
+                        <tbody id='billtablebody'>
+                     
+                        </tbody>
+                    </table>
+                </div>
+                </div>
+              </div>
+
+              <div class="row mt-3">
+                <div class="col-md-4">
+                  <div class="input-group input-group-sm mb-3">                                                            
+                    <div class="input-group-prepend">
+                    <span class="input-group-text">Total Bill:</span>
+                    </div> 
+                    <input class="form-control" readonly type="text" id="bill_amt">
+                </div>
+                </div> 
+
+                <div class="col-md-4">
+                  <input type="button" value="Confirm Bill" id="btn_lab_confirm" class="btn btn-sm btn-success">
+                </div>
+                
+              </div>
+            </div>    
+         </div>    
+         
+         </div>
+      </div>
+  </div>
+</div>
+</div>
+
+<!-- Search service Modal -->
+<div class="modal fade" id="serviceModal" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="servicemodalTitle" aria-hidden="true">
+<div class="modal-dialog modal-lg modal-dialog-top" role="document">
+<div class="modal-content">
+<div class="modal-header">
+  <h4>Search by service name</h4>
+  <div class="alert hidden" role="alert" id="modalAlert"></div> 
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div> 
+<div class="modal-body">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group">                    
+        <input class="form-control" type="text" id="search-service" placeholder="service to bill"> 
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      
+      <table class="table table-hover" id="tableOutputSvs">
+        <thead>
+          <tr>                     
+            <th scope="col">Service Name</th>
+            <th scope="col">Normal Rate</th> 
+            <th scope="col">Special Rate</th>                    
+            <th scope="col">Department</th>                    
+          </tr>
+        </thead>
+        <tbody class="svs-table-body">
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>       
+</div>
+</div>
+</div>
+<!--end of modal-->
+<script src="{% static 'js/manual_billing.js' %}"></script>
+
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}

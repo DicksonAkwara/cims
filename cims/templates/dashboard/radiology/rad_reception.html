@@ -1,0 +1,592 @@
+{% extends "partials/base.html" %}
+{% block title %}Radiology{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/rad_nav.html'%}
+<div class="container-fluid" id="main">
+
+  {% csrf_token %}
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card-body">
+                <nav>
+                  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <button class="nav-link active" id="nav-home-tab" data-toggle="tab" data-target="#nav-home"
+                      type="button" role="tab" aria-controls="nav-home" aria-selected="true">Pending Requests</button>
+                    <button class="nav-link nav_btn_refresh" data-toggle="tab" data-target="#nav-profile"
+                      type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Pending Report</button>
+                    
+                    <button class="nav-link nav_btn_complete" data-toggle="tab" data-target="#nav-complete"
+                      type="button" role="tab" aria-controls="nav-complete" aria-selected="false">Complete Exams</button>
+
+                    <button class="nav-link" id="nav-contact-tab" data-toggle="tab" data-target="#nav-contact"
+                      type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Dicoms</button>
+                  </div>
+              </nav>
+              <div class="tab-content" id="nav-tabContent">
+                  <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">                     
+                    <div class="card">
+                      <div class="card-header">
+                        <div class="row">
+                          <!--  <div class="col-sm-2">
+                             <input type="button" value="load Today" class="btn btn-success btnrefreshtd">
+                           </div> -->
+                           <div class="col-sm-3">
+                             <div class="input-group input-group-sm">
+                               <div class="input-group-prepend">
+                                 <span class="input-group-text">Patient Category:</span>
+                               </div> 
+                               <select class="custom-select custom-select-sm " id="pat_type">  
+                                 <option value="0">-----------</option>                           
+                                 {% for item in patType %}                                    
+                                 <option value="{{item.category}}">{{item.category}}</option>
+                                 {%endfor%}                                
+                               </select>
+                             </div>
+                           </div>
+
+                           <div class="col-sm-3">
+                             <div class="input-group input-group-sm mb-3">
+                               <div class="input-group-prepend">
+                                 <span class="input-group-text">Search:</span>
+                               </div>
+                               <input type="text" class="form-control" id="requestsearch" placeholder="search in list">
+                             </div>
+                           
+                           </div>
+                                                       
+                             <div class="col-sm-2">
+                               <div class="input-group input-group-sm mb-3">
+                                 <div class="input-group-prepend">
+                                   <span class="input-group-text">From:</span>
+                                 </div>
+                                 <input type="date" class="form-control" id="rqfdate">
+                               </div>
+                             </div>
+                             <div class="col-sm-2">
+                               <div class="input-group input-group-sm mb-3">
+                                 <div class="input-group-prepend">
+                                   <span class="input-group-text">To:</span>
+                                 </div>
+                                 <input type="date" class="form-control" id="rqtdate">
+                               </div>
+                             </div>
+                              <div class="col-sm-2">
+                               <input type="button" class="btn btn-sm btn-warning btnfilterequest" value="Load list">
+                             </div>
+                         </div>
+                      </div>
+                      <div class="card-body">
+                        <div class="row">                           
+                          <div class="col-sm-12">
+                            <div style="max-height:400px;overflow-y:scroll;" >
+                              <table class="table table-sm table-striped table-fixed requestTable" id="requestTable">
+                                <thead style="position: sticky;top: 0" class="thead-dark">
+                                  <tr>  
+                                    <th>Urgency</th>                                        
+                                    <th>Request Date</th>
+                                    <th>Card no</th>
+                                    <th>Patient name</th>                                          
+                                    <th>Age(yrs)</th>                                          
+                                    <th>Gender</th>                                          
+                                    <th>Payment mode</th>
+                                    <th>Payment status</th>
+                                    <th>Request by</th>                             
+                                  </tr>
+                                  </thead>
+                                  <tbody class="requestTableBody">             
+                                  </tbody>
+                              </table>
+                          </div>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">                      
+                    <div class="card"> 
+                      <div class="card-header">
+                        <div class="row">
+                          <div class="col-sm-2">
+                            <button class="btn btn-sm btn-primary float-left btn_ref_list" id="btnreflist">Refresh List</button>
+                          </div>
+                          <div class="col-sm-2">
+                            <div class="form-group">                          
+                              <input class="form-control form-control-sm" type="text" id="rsearch" placeholder="search in list">                         
+                             </div>
+                          </div>
+
+                          <div class="col-sm-2">
+                            <div class="input-group input-group-sm mb-3">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">From:</span>
+                              </div>
+                              <input type="date" class="form-control" id="pdfdate">
+                            </div>
+                          </div>
+                          <div class="col-sm-2">
+                            <div class="input-group input-group-sm mb-3">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">To:</span>
+                              </div>
+                              <input type="date" class="form-control" id="pdtdate">
+                            </div>
+                          </div>
+                           <div class="col-sm-2">
+                            <input type="button" class="btn btn-sm btn-warning btnpendrep" value="Load">
+                          </div>
+
+                        </div>
+
+                      </div>                      
+                      <div class="card-body"> 
+                        <div class="row mt-2">
+                          <div class="col-sm-12">
+                            <table class="table table-sm table-hover" id="filterTable">
+                              <thead> 
+                                <th> Date</th>                               
+                                <th> Card no</th>
+                                <th> Patient Name</th>
+                                <th> Gender</th>
+                                <th> Age</th>
+                                <th> Examination</th>
+                                <th> Image ID</th>
+                                <th> Status</th>
+                              </thead>
+                              <tbody class="filterTableBody">             
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+
+                      </div>
+                    
+                    </div>
+                  </div>
+
+                  <div class="tab-pane fade" id="nav-complete" role="tabpanel" aria-labelledby="nav-complete-tab">                      
+                    <div class="card"> 
+                      <div class="card-header">
+                        <div class="row">
+                          <div class="col-sm-2">
+                            <button class="btn btn-sm btn-primary float-left btn_ref_list" id="btncreflist">Refresh List</button>
+                          </div>
+                          <div class="col-sm-2">
+                            <div class="form-group">                          
+                              <input class="form-control form-control-sm" type="text" id="rcsearch" placeholder="search in list">                         
+                             </div>
+                          </div>
+
+                          <div class="col-sm-2">
+                            <div class="input-group input-group-sm mb-3">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">From:</span>
+                              </div>
+                              <input type="date" class="form-control" id="cfdate">
+                            </div>
+                          </div>
+                          <div class="col-sm-2">
+                            <div class="input-group input-group-sm mb-3">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">To:</span>
+                              </div>
+                              <input type="date" class="form-control" id="ctdate">
+                            </div>
+                          </div>
+                           <div class="col-sm-2">
+                            <input type="button" class="btn btn-sm btn-warning btncomprep" value="Load">
+                          </div>
+
+                        </div>
+
+                      </div>                      
+                      <div class="card-body"> 
+                        <div class="row mt-2">
+                          <div class="col-sm-12">
+                            <table class="table table-sm table-hover" id="filtercpTable">
+                              <thead> 
+                                <th> Date</th>                               
+                                <th> Card no</th>
+                                <th> Patient Name</th>
+                                <th> Gender</th>
+                                <th> Age</th>
+                                <th> Examination</th>
+                                <th> Image ID</th>
+                                <th> Reported By</th>
+                              </thead>
+                              <tbody class="filtercpTableBody">             
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+
+                      </div>
+                    
+                    </div>
+                  </div>
+
+                  <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+                    <div class="card">                       
+                      <div class="card-body">
+                        <div class="row">                            
+                          <div class="col-sm-6">
+                            <div class="form-group">                          
+                              <input class="form-control" type="text" id="rsearchimage" placeholder="filter by card no">                         
+                             </div>
+                          </div>
+                        </div>
+                      </div>
+                    
+                    </div>
+                  </div> 
+          </div>
+              </div>
+             
+            </div>          
+        </div>
+</div>
+<!--/.container-->
+
+ <!--image request modal-->
+ <div class="modal fade" id="pendtest" tabindex="-1" aria-labelledby="bill_modal" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-top modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header"> 
+        <h5 class="modal-title text-center" id="modalTitle">Requested Images</h5> 
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>        
+      </div>
+      <div class="modal-body">        
+        <div class="row">
+          
+          <div class="col-sm-5">
+            <div class="input-group input-group-sm">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Name:</span>
+              </div> 
+              <input type="text" class="form-control" readonly  id="ptname">
+            </div>
+          </div>
+
+          <div class="col-sm-4">
+            <div class="input-group input-group-sm">
+              <div class="input-group-prepend">
+                <span class="input-group-text">card no:</span>
+              </div> 
+              <input type="text" class="form-control" readonly  id="pid">
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-2">
+          <div class="col-sm-2">
+            <div class="input-group input-group-sm">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Age:</span>
+              </div> 
+              <input type="text" class="form-control" readonly  id="ptage">
+            </div>
+          </div>
+
+          <div class="col-sm-3">
+            <div class="input-group input-group-sm">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Gender:</span>
+              </div> 
+              <input type="text" class="form-control" readonly  id="ptgend">
+            </div>
+          </div>
+
+          <div class="col-sm-4">
+            <div class="input-group input-group-sm">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Paymode:</span>
+              </div> 
+              <input type="text" class="form-control" readonly  id="ptpmode">
+            </div>
+          </div>
+
+          <div class="col-sm-3">
+            <div class="input-group input-group-sm">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Visit No:</span>
+              </div> 
+              <input type="text" class="form-control" readonly  id="visitNo">
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-2">
+          <div class="col-sm-12" style="max-height:300px;overflow-y:scroll;" id="divtbraise">
+            <table class="table table-sm  table-fixed table-bordered " id="pendtestable">
+              <thead style="position: sticky;top: 0" class="thead-dark">                        
+                <th width="25%" style="word-wrap:break-word ;">Test name</th>                          
+                <th> Quantity</th>
+                <th> Price</th>
+                <th> Total</th>
+                <th> Pay Status</th>
+                <th></th>
+                <th></th>
+              </thead>
+              <tbody id="pendtestBody">             
+              </tbody>
+            </table>            
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-sm-3" id="raisebilldiv">
+            <button class="btn btn-sm btn-primary btnraisebill">Request Payment</button>
+          </div>
+          <div class="col-sm-3">
+            <button class="btn btn-sm btn-info btnprintreq">Print request</button>
+          </div>
+          <div class="col-sm-3">
+            <button class="btn btn-sm btn-secondary btnptcard">Patient Card</button>
+          </div>
+        </div>
+          
+        </div>        
+        
+      </div>          
+    </div>
+  </div>
+
+<!-- Service request Modal -->
+<div class="modal fade" id="serviceModal" tabindex="-1" role="dialog" aria-labelledby="servicemodalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-top" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="modal_header"></h4>
+        <div class="alert hidden" role="alert" id="modalAlert"></div> 
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div> 
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">                    
+              <input class="form-control" type="text" id="search_service" placeholder="service to order"> 
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            
+            <table class="table table-hover" id="resultTable">
+              <thead>
+                <tr>                     
+                  <th scope="col">Service Name</th>
+                  <th scope="col">Normal Rate</th> 
+                  <th scope="col">Special Rate</th>                    
+                  <th scope="col">Department</th>                    
+                </tr>
+              </thead>
+              <tbody class="resultTableBody">
+    
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>       
+    </div>
+  </div>
+</div>
+
+<!-- alert Modal -->
+<div class="modal fade" id="unavailModal" tabindex="-1" aria-labelledby="bill_modal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header"> 
+        <h5 class="modal-title text-center" id="modalTitle"></h5>         
+      </div>
+      <div class="modal-body">        
+          <div class="row">
+            <input type="text" name="" id="req_ref" hidden>
+            <select name="paymode" class="form-control m-4" id="miss_reason">
+              <option selected>Select reason.....</option>
+              <option value="Equipment Breakdown">Equipment Breakdown</option>
+              <option value="Staff Unavailable">Staff Unavailable</option>
+              <option value="lack of material">lack of material</option>
+            </select>
+            <div class="col-sm-6">
+              <input type="button" class="btn btn-success float-left" id="btn_unvail_confirm" value="Confirm">               
+            </div>
+            <div class="col-sm-6">
+              <button type="button" class="btn-close btn btn-danger float-right" data-dismiss="modal" aria-label="Close">
+                cancel
+              </button>
+             </div>
+          </div>          
+        </div>       
+      </div>          
+    </div>
+  </div>
+
+
+
+
+    <div class="modal fade" id="notesModal" tabindex="-1" aria-labelledby="notes_modal" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header"> 
+            <h5 class="modal-title text-center" id="notesTitle"></h5>         
+          </div>
+          <div class="modal-body">        
+              <div class="row">
+                <div class="col-sm-12">
+                <div>
+                  <p id="us_alert" class="text-danger text-center"></p>
+                </div>
+                <form action="" id="radNotesForm">
+                  <input type="text" name="exam_ref"  hidden id="exam_ref">
+                  <div class="form-group">
+                    <div class="input-group input-group-sm">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">Specialization:</span>
+                      </div> 
+                      <select name="radtech" class="form-control" id="radtech">                  
+                        <option value="Radiographer">Radiographer</option>
+                        <option value="Radiologist">Radiologist</option>                  
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <div class="input-group input-group-sm">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">Match Dicom:</span>
+                      </div> 
+                      <select name="imageId" class="form-control" id="imageId">                  
+                        <option value="">-----------</option>
+                        <option value="image one">image one</option>
+                        <option value="image 2">image 2</option>                  
+                      </select>
+                    </div>
+                  </div>
+                  <!--<div class="form-group">
+                    <textarea name="exnotes" id="exnotes" cols="30" rows="3" class="form-control"></textarea>
+                  </div>-->
+                  <div class="form-group">
+                    <div id="editor" style="min-height:300px;">                      
+                    </div>
+                  </div>
+                
+                </div>
+                
+                <div class="col-sm-4" id="divsave">
+                  <input type="submit" class="btn btn-success float-left" id="btn_save_notes" value="Save">              
+                </div>
+                <div class="col-sm-4" id="divedit">
+                  <input type="button" class="btn btn-info float-left" id="btneditnotes" value="Update">               
+                </div>
+                <div class="col-sm-4">
+                  <button type="button" class="btn-close btn btn-danger float-right" data-dismiss="modal" aria-label="Close">
+                    cancel
+                  </button>
+                </div>
+                </form>
+              </div>          
+            </div>       
+          </div>          
+        </div>
+      </div>
+
+       <!--Patient card summary-->
+  <div class="modal fade" id="patcard" tabindex="-1" aria-labelledby="pcardmodal" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-top modal-dialog-scrollable ">
+      <div class="modal-content">
+        <div class="modal-header"> 
+          <h5 class="modal-title text-center" id="prevnotesModal">Patient Card Notes</h5> 
+          <button type="button" class="btn-close btn-danger" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>        
+        </div>
+        <div class="modal-body"> 
+          <div class="row">
+            <div class="col-sm-3">
+              <div class="input-group input-group-sm mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">From</span>
+                </div>
+                <input type="date" class="form-control" id="pcfdate">
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="input-group input-group-sm mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">To</span>
+                </div>
+                <input type="date" class="form-control" id="pctdate">
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="form-check">
+                <label class="form-check-label">
+                  <input type="checkbox" class="form-check-input" id="chkdate">use dates
+                </label>
+              </div>                      
+            </div>
+            <div class="col-sm-2">
+              <button type="button" class="btn btn-sm btn-primary" id="pdfgenerate">Generate</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12" id="divpcardpdf"><!---->
+              <table class="table pcard table-fixed table-bordered " id="pcardpdf">
+                
+                  {% for prof in profile %}
+                  <thead><th style="text-align: center;" colspan='5'>{{prof.facName}}({{prof.facAbbreviation}})</th></thead>
+                  <thead><th style="text-align: center;" colspan='5'>Phone:{{prof.phoneNo}}, Email: {{prof.email}}</th></thead>
+                    
+                  {%endfor%} 
+                  <thead><th style="text-align: center;" colspan='5'>Patient Card Notes</th></thead>
+                  <tbody id="pcardpdfbody"> 
+                </tbody>
+              </table>
+            </div>
+          </div>             
+        </div>          
+      </div>
+    </div>
+</div>
+      <script>
+        var now = new Date();
+       var month = (now.getMonth() + 1);               
+       var day = now.getDate();
+       if (month < 10) 
+           month = "0" + month;
+       if (day < 10) 
+           day = "0" + day;
+       var today = now.getFullYear() + '-' + month + '-' + day;
+       $('#rqfdate').val(today);
+       $('#rqtdate').val(today); 
+    
+       $('#pdfdate').val(today);
+       $('#pdtdate').val(today);
+    
+       
+       $('#cfdate').val(today);
+       $('#ctdate').val(today); 
+
+       $('#pcfdate').val(today);
+       $('#pctdate').val(today);
+    </script>
+
+    <!-- Initialize Quill editor -->
+<script>
+  var quill = new Quill('#editor', {
+    theme: 'snow' 
+  });
+</script>
+
+   <script src="{% static 'js/rad_reception.js' %}"></script>
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}

@@ -1,0 +1,52 @@
+{% extends 'partials/base.html' %}
+{%block title%}UserProfile{%endblock%}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{%block content%}
+  <!--profile section-->
+   <div class="container">
+       <div class="row my-4">
+           <div class="col-md-4"></div>
+           <div class="col-md-8">
+               <div class="card">
+                   <div class="card-header bg-info text-white">
+                       <h4>Profile Page</h4>
+                   </div>
+                   <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <span class="h4">Staff information</span><a class="btn btn-info btn-sm float-right" href="">Edit</a>
+                                <hr>
+                                <table class="table bg-white table-borderless">
+                                  <tbody>
+                                    <tr>
+                                        <th scope="row">Name</th>
+                                        <td>{{ user.username}}</td>
+                                     </tr>
+                                    <tr>
+                                        <th scope="row">Email</th>
+                                        <td>{{ user.email}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Phone</th>
+                                        <td>{{ user.Profile.phone }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Address</th>
+                                        <td>{{ user.Profile.address }}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-md-4">
+                                <img class="img-thumbnail" src="{{ user.Profile.image.url }}">
+                            </div>
+                        </div>
+                   </div>
+               </div>
+           </div>
+       </div>
+
+   </div>
+   <!--end of profile section-->
+
+{%endblock%}

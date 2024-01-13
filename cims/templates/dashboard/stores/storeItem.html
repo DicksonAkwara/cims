@@ -1,0 +1,96 @@
+{% extends "partials/base.html" %}
+{% block title %}Stores{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/store_nav.html'%}
+<div class="container-fluid" id="main">
+    <div class="row mt-2"> 
+         <div class="col-sm-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    Add new Item to Store 
+                </div>
+                <div class="card-body">
+                    <form id="storeItemAdd">
+                        {% csrf_token %}
+                        {{ form | crispy}}
+                        <div class="row">
+                         <input type="text" name="itemid" id="itemid" hidden>
+                         <div class="col-sm-4">
+                             <input class="btn btn-success btn-block" id="buttonAddItem" type="button" value="Add">
+                         </div>
+                         <div class="col-sm-4">
+                             <input class="btn btn-warning btn-block" id="buttonEditItem" type="button" value="Edit">
+                         </div>
+                         <div class="col-sm-4">
+                             <input class="btn btn-danger btn-block" id="buttonDelItem" type="button" value="dormant">
+                         </div>
+                        </div>
+                      
+                     </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-8">
+            <div class="card h-100">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <input class="form-control" type="text" name="" id="itemsearch" placeholder="search in list">
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row mt-2">
+                        <div class="col-sm-12">
+                            <div style="max-height:500px;overflow-y:scroll;" >
+                                <table class="table table-sm table-hover table-fixed " id="tblitems">
+                                  <thead style="position: sticky;top: 0" class="thead-dark text-nowrap">
+                                    <tr>
+                                        <th >Date</th>
+                                        <th >Name</th>
+                                        <th >Category</th>
+                                        <th >strength</th>
+                                        <th >Added by</th>
+                                       
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                     {% if items %}
+                                    {% for item in items %}
+                                    <tr>
+                                        <td style="display:none;">{{item.itemId}}</td>
+                                        <td>{{item.dateAdded}}</td>
+                                        <td>{{item.itemName}}</td>
+                                        <td style="display:none;">{{item.itemDescp}}</td>
+                                        <td>{{item.itemCategory}}</td>                       
+                                        <td>{{item.strength}}</td>                                             
+                                        <td>{{item.addedBy}}</td>
+                                        <td style="display:none;">{{item.price}}</td>
+                                        <td style="display:none;">{{item.package}}</td>
+
+
+                                    </tr>
+                                    {% endfor %}
+                                    {% else %}
+                                    <td colspan="6"> No item listed</td>
+                                    {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--/.container-->
+<script src="{% static 'js/supplier.js' %}"></script>
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}

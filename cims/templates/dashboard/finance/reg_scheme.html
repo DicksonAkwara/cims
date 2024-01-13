@@ -1,0 +1,87 @@
+{% extends "partials/base.html" %}
+{% block title %}Finance{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/finance_nav.html'%}
+<div class="container-fluid" id="main">
+    <div class="row mt-1">
+        <div class="col-sm-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    Medical Scheme Registration
+                </div>
+                <div class="card-body">
+                    <form id="storeAdd">
+                        {% csrf_token %}
+                        {{ form | crispy}}
+                        <div class="row">
+                         <div class="col-sm-4">
+                             <input class="btn btn-success btn-block" id="buttonAddShm" type="button" value="Add">
+                         </div>
+                         <div class="col-sm-4">
+                             <input class="btn btn-warning btn-block" id="buttonEditShm" type="button" value="Edit">
+                         </div>
+                         <div class="col-sm-4">
+                             <input class="btn btn-danger btn-block" id="buttondelShm" type="button" value="Dormant">
+                         </div>
+                        </div>
+                      
+                     </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-8">
+            <div class="card h-100">
+                <div class="card-header">
+                    List of registered medical schemes
+                </div>
+                <div class="card-body">
+                    <div style="max-height:500px;overflow-y:scroll;" >
+                        <table class="table table-sm table-hover table-fixed " id="tblschemes">
+                          <thead style="position: sticky;top: 0" class="thead-dark">
+                            <tr>
+                                <th >Date Added</th>
+                                <th >Scheme Name</th>
+                                <th >Payer</th>
+                                <th >Sub-Scheme Name</th>
+                                <th >Payment Mode</th>
+                                <th >Termination date</th>
+                                <th >Added by</th>
+                               
+                            </tr>
+                            </thead>
+                            <tbody>
+                             {% if scheme %}
+                            {% for item in scheme %}
+                            <tr>
+                                <td style="display:none;">{{item.scheme_id}}</td>
+                                <td>{{item.dateCreated}}</td>
+                                <td>{{item.scheme_name}}</td>
+                                <td>{{item.payer}}</td>                       
+                                <td>{{item.sub_name}}</td>                                             
+                                <td>{{item.paymode}}</td>                          
+                                <td>{{item.expiryDate}}</td>                          
+                                <td>{{item.staff}}</td>                          
+                            </tr>
+                            {% endfor %}
+                            {% else %}
+                            <td colspan="6"> No scheme listed</td>
+                            {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <table></table>
+        </div>
+      
+    </div>
+
+</div>
+<!--/.container-->
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}

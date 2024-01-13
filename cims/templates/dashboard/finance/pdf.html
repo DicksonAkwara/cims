@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+   
+    <title></title>
+    <style>
+      img{
+        width: 50px;
+        height: 50px;
+      }
+      .header{
+        width: 100%;
+      }
+      .img1{
+        width: 20%;
+      }
+      .facheader{
+        width: 60%;
+      }
+      .img2{
+        width: 20%;
+      }
+    </style>  
+    <link rel="stylesheet" href="static/css/bootstrapxhtml2pdf.css">  
+  </head>
+  <body>
+    <div class="container-fluid" id="main">
+      <div class="row my-2">
+        <div class="col-sm-12">
+          <div class="modal-body" id="divinvoice">
+            <div class="header">
+              <div class="col-sm-2 img1">
+                <img src="static/images/hosplogo.png" alt="logo.jpg" class="img-circle img-fluid mx-auto d-block">
+              </div>
+              <div class="col-sm-8 text-center facheader">
+                <p class ="text-center">
+                  <h5 id="fname">shdshdhsd</h5>
+                  <h6 id="address">sfdfdffg</h6>
+                  <h6 id="contact">rtgrttrtyt</h6>
+                </p>
+              </div>
+              <div class="col-sm-2 img2">
+                <img src="static/images/hosplogo.png" alt="logo.jpg" class=" img-fluid mx-auto d-block">
+              </div>
+            </div><hr>
+             <div class="row">
+              <div class="col-sm-4">
+                <h6>Invoice Date: <label id="invdate"></label></h6>
+              </div>
+              <div class="col-sm-4">
+                <h6>Invoice No: <label id="invnumber"></label></h6>
+              </div>
+               <div class="col-sm-4">
+                <h6>Scheme: <label id="patfnscheme"></label></h6>
+              </div>
+            </div>  
+            <div class="row">
+              <div class="col-sm-3">
+                <h6>Card Number: <label id="patfnnumber"></label></h6>
+              </div>
+              <div class="col-sm-6">
+                <h6>Patient Name: <label id="patfnname"></label></h6>
+              </div>
+              <div class="col-sm-3">
+                <h6>Id No: <label id="patfnid"></label></h6>
+              </div>
+            </div>      
+            <div class="row mt-2">
+              <div class="col-sm-12">              
+                  <table class="table table-sm table-hover tblfnmodal" id="tblfnmodal">
+                    <thead>
+                      <th>Date</th>
+                      <th>Service/item</th>
+                      <th>Quantity</th>                                     
+                      <th>Price</th>                                     
+                      <th>Total price</th>                                     
+                      <th>Staff</th>                                     
+                    </thead>
+                    <tbody id="tblfnmodalBody"></tbody>
+                  </table>             
+              </div>                     
+            </div> 
+            </div> 
+                                
+        </div>
+      </div>
+         
+      
+  
+  </div>
+
+  </body>
+</html>
+
+
+

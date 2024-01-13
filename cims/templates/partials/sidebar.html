@@ -1,0 +1,171 @@
+<div class="sidebar-offcanvas  bg-light pl-0 list-group list-group-flush" id="sidebar" role="navigation">
+    <ul class="nav flex-column sticky-top pl-0">
+
+        <li><i class="menu-icon fa fa-sign-in"></i><a href="#">Purchase/order</a></li>
+                            <li><i class="menu-icon fa fa-sign-in"></i><a href="#">Receive/reverse Delivery</a></li>
+                            <li><i class="menu-icon fa fa-paper-plane"></i><a href="#">Stock issue/reverse</a></li>
+                            <li><i class="menu-icon fa fa-paper-plane"></i><a href="#">Stock Management</a></li>
+                            <li><i class="menu-icon fa fa-paper-plane"></i><a href="#">Store Items</a></li>
+                            <li><i class="fa fa-file-pdf-o"></i><a href="#">Reports</a></li>
+        
+        <li class="nav-item list-group-item list-group-item-action list-group-item-light p-2"><a class="nav-link text-dark" href="#">Overview</a></li>
+        <li class="nav-item list-group-item list-group-item-action list-group-item-light p-2">
+            <a class="nav-link text-dark dropdown-toggle" href="#" data-toggle="collapse" data-target="#recmenu">Records
+                <span class="dropdown-toggle  float-right"></span>
+            </a>
+            <ul class="list-unstyled flex-column pl-3 collapse" id="recmenu" aria-expanded="false">                       
+               <li class="nav-item "><a class="nav-link " href="#" data-toggle="collapse" data-target="#regmenu">Registration
+                <span class="dropdown-toggle  float-right"></span>
+               </a>
+                <ul class="list-unstyled flex-column pl-3 collapse" id="regmenu" aria-expanded="false">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'rec-register'%}">Out-Patient</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'mchregistration'%}">MCH-Fp</a></li>
+                    </ul>  
+                </li>
+                <li class="nav-item "><a class="nav-link text-dark" href="#" data-toggle="collapse" data-target="#admmenu">Admission
+                    <span class="dropdown-toggle  float-right"></span>
+                </a>
+                    <ul class="list-unstyled flex-column pl-3 collapse" id="admmenu" aria-expanded="false">
+                        <li class="nav-item"><a class="nav-link" href="{% url 'registerInpatient'%}">General</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'registerInpatient'%}">Maternity</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">Ward Transfer</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">Farewell</a></li>
+                        </ul>  
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'rec-book-clinic'%}">Clinics Booking</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'rec-billing'%}">Billing</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'recChangeMode'%}">Patient paymode</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'rec-index'%}">Medical reports</a></li>
+            </ul>
+        </li>
+        <li class="nav-item list-group-item list-group-item-action list-group-item-light p-2">
+            <a class="nav-link " href="#" data-toggle="collapse" data-target="#nursemenu">Nursing
+                <span class="dropdown-toggle  float-right"></span>
+            </a>
+            <ul class="list-unstyled flex-column pl-3 collapse" id="nursemenu" aria-expanded="false">
+               <li class="nav-item"><a class="nav-link" href="{% url 'triage-desk'%}">Triage</a></li>
+               <li class="nav-item"><a class="nav-link" href="#">Billing</a></li>                       
+               <li class="nav-item"><a class="nav-link" href="#">Administer Drug/injection</a></li>                       
+               <li class="nav-item"><a class="nav-link" href="#">Dressings &amp; Sutures</a></li>                       
+               <li class="nav-item"><a class="nav-link" href="#">Theatre</a></li>                       
+               <li class="nav-item"><a class="nav-link" href="#">Discharge</a></li>                       
+               <li class="nav-item"><a class="nav-link" href="#">Referrals</a></li> 
+               <li class="nav-item"><a class="nav-link" href="{% url 'nurse-index'%}">Briefs &amp; Reports </a></li>
+            </ul>
+        </li>
+        <li class="nav-item list-group-item list-group-item-action list-group-item-light p-2">
+            <a class="nav-link " href="#" data-toggle="collapse" data-target="#consmenu">Consultation
+                <span class="dropdown-toggle  float-right"></span>
+            </a>
+            <ul class="list-unstyled flex-column pl-3 collapse" id="consmenu" aria-expanded="false">
+               <li class="nav-item"><a class="nav-link" href="{% url 'general-cons'%}">General</a></li>
+               <li class="nav-item"><a class="nav-link" href="{% url 'consmchpage'%}">MCH &amp; Fp</a></li>
+               <li class="nav-item"><a class="nav-link" href="{% url 'conspecialpage'%}">Special Clinics</a></li>
+               <li class="nav-item"><a class="nav-link" href="#">Mental Health</a></li>
+               <li class="nav-item"><a class="nav-link" href="{% url 'cons-index'%}">Briefs &amp; Reports </a></li>                      
+            </ul>
+        </li>
+
+        <li class="nav-item list-group-item list-group-item-action list-group-item-light p-2">
+            <a class="nav-link " href="#" data-toggle="collapse" data-target="#labmenu">Laboratory
+                <span class="dropdown-toggle  float-right"></span>
+            </a>
+            <ul class="list-unstyled flex-column pl-3 collapse" id="labmenu" aria-expanded="false">
+               <li class="nav-item"><a class="nav-link" href="{% url 'lab-reception'%}">Operations</a></li>
+               <li class="nav-item"><a class="nav-link" href="#">Test management</a></li>
+               <li class="nav-item"><a class="nav-link" href="#">Lab Parameters</a></li>
+               <li class="nav-item"><a class="nav-link" href="#">Lab Store</a></li>
+               <li class="nav-item"><a class="nav-link" href="{% url 'lab-index'%}">Briefs &amp; Reports </a></li> 
+               
+            </ul>
+        </li>
+        <li class="nav-item list-group-item list-group-item-action list-group-item-light p-2">
+            <a class="nav-link " href="#" data-toggle="collapse" data-target="#radmenu">Radiology
+                <span class="dropdown-toggle  float-right"></span>
+            </a>
+            <ul class="list-unstyled flex-column pl-3 collapse" id="radmenu" aria-expanded="false">
+                <li class="nav-item"><a class="nav-link" href="{% url 'rad-reception'%}">Operation</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Service management</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'rad-index'%}">Briefs &amp; Reports </a></li> 
+            </ul>
+        </li>
+        <li class="nav-item list-group-item list-group-item-action list-group-item-light p-2">
+            <a class="nav-link " href="#" data-toggle="collapse" data-target="#pharmenu">Pharmacy
+                <span class="dropdown-toggle  float-right"></span>
+            </a>
+            <ul class="list-unstyled flex-column pl-3 collapse" id="pharmenu" aria-expanded="false">               
+               <li class="nav-item"><a class="nav-link" href="{% url 'phar-reception'%}">Dispense drugs</a></li>                      
+               <li class="nav-item"><a class="nav-link" href="#">Return drugs</a></li>                      
+               <li class="nav-item"><a class="nav-link" href="#">Set Price</a></li>                     
+               <li class="nav-item"><a class="nav-link" href="#">Stock taking</a></li>                     
+               <li class="nav-item"><a class="nav-link" href="{% url 'phar-index'%}">Briefs &amp; Reports </a></li>                    
+            </ul>
+        </li>
+        <li class="nav-item list-group-item list-group-item-action list-group-item-light p-2">
+            <a class="nav-link " href="#" data-toggle="collapse" data-target="#finmenu">Accounts/Finance
+                <span class="dropdown-toggle  float-right"></span>
+            </a>
+            <ul class="list-unstyled flex-column pl-3 collapse" id="finmenu" aria-expanded="false">                       
+               <li class="nav-item "><a class="nav-link " href="#" data-toggle="collapse" data-target="#cashmenu">Billing
+                <span class="dropdown-toggle  float-right"></span>
+               </a>
+                <ul class="list-unstyled flex-column pl-3 collapse" id="cashmenu" aria-expanded="false">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'cashpoint'%}">Cash Point</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Shift Report</a></li>
+                    </ul>  
+                </li>
+                <li class="nav-item "><a class="nav-link" href="#" data-toggle="collapse" data-target="#schemenu">Scheme
+                    <span class="dropdown-toggle  float-right"></span>
+                </a>
+                    <ul class="list-unstyled flex-column pl-3 collapse" id="schemenu" aria-expanded="false">
+                        <li class="nav-item"><a class="nav-link" href="#">Invoicing</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">Invoice reports</a></li>
+                        </ul>  
+                    </li>
+               <li class="nav-item"><a class="nav-link" href="{% url 'financeIndex'%}">Briefs &amp; Reports </a></li>                    
+                
+            </ul>
+        </li>
+        <li class="nav-item list-group-item list-group-item-action list-group-item-light p-2">
+            <a class="nav-link " href="#" data-toggle="collapse" data-target="#storemenu">Stores
+                <span class="dropdown-toggle  float-right"></span>
+            </a>
+            <ul class="list-unstyled flex-column pl-3 collapse" id="storemenu" aria-expanded="false">                       
+               <li class="nav-item "><a class="nav-link dropdown-toggle" href="#" data-toggle="collapse" data-target="#stmenu">Stock Management</a>
+                <ul class="list-unstyled flex-column pl-3 collapse" id="stmenu" aria-expanded="false">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'makeorder'%}">Order Items</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'receivestock'%}">Receive Items</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'issuestock'%}">Issue Items</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Stock Reconciliation</a></li>
+                    </ul>  
+                </li>
+                <li class="nav-item "><a class="nav-link" href="#" data-toggle="collapse" data-target="#stpmenu">Store setup
+                    <span class="dropdown-toggle  float-right"></span>
+                </a>
+                    <ul class="list-unstyled flex-column pl-3 collapse" id="stpmenu" aria-expanded="false">
+                        <li class="nav-item"><a class="nav-link" href="{% url 'supplier'%}">Suppliers</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'storeitems'%}">Store Items</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'stores'%}">Sub-stores</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'storeallocate'%}">Store Allocation</a></li>
+                        </ul>  
+                    </li>
+               <li class="nav-item"><a class="nav-link" href="{% url 'storeindex'%}">Briefs &amp; Reports</a></li>
+            </ul>
+        </li>
+        <li class="nav-item list-group-item list-group-item-action list-group-item-light p-2"><a class="nav-link" href="#">Management Reports</a></li>
+        <li class="nav-item list-group-item list-group-item-action list-group-item-light p-2">
+            <a class="nav-link " href="#" data-toggle="collapse" data-target="#sysmenu">System Setup
+                <span class="dropdown-toggle  float-right"></span>
+            </a>
+            <ul class="list-unstyled flex-column pl-3 collapse" id="sysmenu" aria-expanded="false">
+               <li class="nav-item"><a class="nav-link" href="#">Hospital Profile</a></li>
+               <li class="nav-item"><a class="nav-link" href="#">Medical Services</a></li>
+               <li class="nav-item"><a class="nav-link" href="#">Medical Schemes</a></li>
+               <li class="nav-item"><a class="nav-link" href="#">Referal Facility</a></li>                       
+               <li class="nav-item"><a class="nav-link" href="#">Departments</a></li>                      
+               <li class="nav-item"><a class="nav-link" href="#">Vaccines</a></li>                      
+            </ul>
+        </li>
+        
+    </ul>
+</div>

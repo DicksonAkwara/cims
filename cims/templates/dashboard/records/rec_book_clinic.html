@@ -1,0 +1,196 @@
+{% extends "partials/base.html" %}
+{% block title %}Clinics{% endblock %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% load static %}
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/rec_nav.html' %}
+<div class="container-fluid" id="main">
+    <div class="row mt-3 row-offcanvas row-offcanvas-left ">
+        <main class="col main overflow-auto">            
+          <div class=" card col-md-12">
+            <div class="card-header">
+              <div class="row">
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <div class="input-group input-group-sm">
+                      <div class="input-group-prepend">
+                      </div> 
+                      <select id="clinicCat" class="custom-select">
+                        <option selected>Select option</option>
+                        <option value="today">Today Clinic List</option>
+                        <option value="Prescribed">Request by doctor</option>
+                        <option value="Pending">Future Booked Clinics</option>                   
+                      </select>
+                    </div>
+                  </div>                    
+                </div>
+                
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <input type="button" value="Make Appointment" id="btnmakeappt" class="btn btn-sm btn-info">
+                  </div>                  
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group">
+                    <div class="input-group input-group-sm">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">Search:</span>
+                      </div> 
+                      <input type="text" name="" id="bkfilter" class="form-control " placeholder="filter in list">
+                    </div>
+                  </div>                 
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <input type="submit" value="Export to Excel" class="btn btn-sm btn-success float-right">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-sm-12" style="max-height:600px;overflow-y:scroll;">
+                  <table class="table table-hover table-sm" id="registerListTbl">
+                    <thead style="position: sticky;top: 0" class="thead-dark">
+                      <tr>                     
+                        <th scope="col">Clinic Date</th>
+                        <th scope="col">card number</th>
+                        <th scope="col">patient name</th>
+                        <th scope="col">Age</th>                    
+                        <th scope="col">Gender</th>                                         
+                        <th scope="col">Clinic Name</th>                 
+                        <th scope="col">Record By</th>                 
+                      </tr>
+                    </thead>
+                    <tbody class="ListTblBody">
+                      {% for item in clinicList %}
+                        <tr>
+                        <td>{{item.clinic_date}}</td>
+                        <td>{{item.op_number.op_number}}</td>
+                        <td>{{item.op_number.fullname}}</td>
+                        <td>{{item.op_number.patient_age}}</td>
+                        <td>{{item.op_number.gender}}</td>                        
+                        <td>{{item.clinic_name.clinic_name}}</td>
+                        <td>{{item.staff.username}}</td>
+                      </tr>                    
+                      {% endfor%}
+          
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+              
+        
+            </div>
+          </div>
+
+        </main>
+    </div>
+
+  <!-- alert Modal -->
+  <div class="modal fade" id="bookmodal" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="bookmodalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-md modal-dialog-top" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4>Clinic booking</h4>
+        <button type="button" class="btn-close bg-danger" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body"> 
+        <div class="row">
+          <div class="col-md-12 " id="div_search">
+           <form id="ClinicBookForm">
+           <input class="form-control" type="text" id="pCardNo" name="pCardNo" placeholder="search by card number"> 
+           <small class="text-danger" id="psearchStatus"></small>
+          </div>             
+        </div>          
+        <hr>
+        <div class="row">
+        <div class="col-md-12">                       
+           <input id="cl_patid" type="text" hidden>
+           <input id="activity" type="text" hidden>
+           <input id="refno" type="text" hidden>
+           <div class="form-group">
+               <div class="input-group ">
+                 <div class="input-group-prepend">
+                   <span class="input-group-text">Name:</span>
+                 </div> 
+                 <input class="form-control" readonly type="text" id="pname" name="pname" required>
+               </div>
+           </div>
+           <div class="form-group">
+            <div class="input-group ">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Age:</span>
+              </div> 
+              <input class="form-control" readonly type="text" id="patage" name="patage" required>
+            </div>
+        </div>
+        <div class="form-group">
+          <div class="input-group ">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Gender:</span>
+            </div> 
+            <input class="form-control" readonly type="text" id="patgend" name="patgend" required>
+          </div>
+        </div>
+           <div class="form-group">
+             <div class="input-group ">
+               <div class="input-group-prepend">
+                 <span class="input-group-text">Phone:</span>
+               </div> 
+               <input class="form-control" type="text" id="pphone" name="pphone" required>
+             </div>
+           </div>
+           <div class="form-group">
+
+             <div class="input-group">
+               <div class="input-group-prepend">
+                 <span class="input-group-text">Clinic:</span>
+               </div> 
+               <select id="cl_name" name="cl_name" class="custom-select">
+                 <option value="none" selected>Choose...</option>
+                 {% for point in pos %}
+                 <option value="{{point.clinic_name}}">{{point.clinic_name}}</option>
+                 {% endfor%}                    
+               </select>
+             </div>
+           </div>
+           <div class="form-group" >
+             <div class="input-group ">
+               <div class="input-group-prepend">
+                 <span class="input-group-text">Clinic Date:</span>
+               </div> 
+               <input class="form-control" type="date" id="cl_date" name="cl_date" required>
+             </div>
+           </div>
+         </form>
+         <div class="row">
+          <div class="col-sm-4">
+            <div class="form-group">
+              <button id="btnSave" class="btn  btn-success">Save Clinic</button>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="form-group">
+              <button id="btnSave" class="btn  btn-info">Update Clinic</button>
+            </div>
+          </div>
+          <div class="col-sm-4"></div>
+         </div>
+           
+        </div>
+        </div>
+    </div>
+  </div>
+</div>
+ </div>
+<!--/.container-->
+<script src="{% static 'js/op_book_clinics.js' %}"></script>
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}

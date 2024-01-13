@@ -1,0 +1,102 @@
+{% extends "partials/base.html" %}
+{% block title %}lab-reports{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/lab_nav.html'%}
+{% csrf_token %}
+<div class="container-fluid" id="main">
+    <div class="row row-offcanvas row-offcanvas-left vh-100">
+       <main class="col main overflow-auto">
+        <div class="card mt-2 h-100">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="input-group input-group-sm mb-3">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">Report name:</span>
+                            </div>
+                            <select id="rpname" class="custom-select custom-select-sm">
+                                <option  value="none">---------</option>
+                                {% for rep in reports %}
+                                <option value="{{rep.id}}">{{rep.reportName}}</option>
+                                {% endfor %} 
+                            </select>
+                          </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="input-group input-group-sm mb-3">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">From:</span>
+                            </div>
+                            <input type="date" class="form-control" id="rpfdate">
+                          </div>                       
+                    </div>
+
+                    <div class="col-sm-2">
+                        <div class="input-group input-group-sm mb-3">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">To:</span>
+                            </div>
+                            <input type="date" class="form-control" id="rptdate">
+                          </div>                       
+                    </div>
+                    
+                    <div class="col-sm-5">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <input type="button" class="btn btn-sm btn-success" value="Load Report">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <input type="button" class="btn btn-sm btn-info" value="Excel export">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <input type="button" class="btn btn-sm btn-warning" value="print pdf">
+                                </div>
+                            </div>
+                        </div>
+                    </div>              
+                    
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="col-sm-12" style="max-height:500px;overflow-y:scroll;" id="divtbreport">
+                    <table class="table table-sm  table-fixed table-bordered " id="reporttable">
+                      <thead style="position: sticky;top: 0" class="thead-dark">
+                      </thead>
+                      <tbody id="reporttableBody">             
+                      </tbody>
+                    </table>            
+                  </div>
+            </div>
+        </div>
+         
+        </main>
+        <!--/main col-->
+    </div>
+
+</div>
+<script>
+    var now = new Date();
+   var month = (now.getMonth() + 1);               
+   var day = now.getDate();
+   if (month < 10) 
+       month = "0" + month;
+   if (day < 10) 
+       day = "0" + day;
+   var today = now.getFullYear() + '-' + month + '-' + day;
+   $('#rpfdate').val(today);
+   $('#rptdate').val(today);
+</script>
+<!--/.container-->
+
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}

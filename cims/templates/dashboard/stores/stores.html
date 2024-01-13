@@ -1,0 +1,113 @@
+{% extends "partials/base.html" %}
+{% block title %}Stores{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/store_nav.html'%}
+<div class="container-fluid" id="main">
+            <div class="row mt-2">
+               
+                <div class="col-sm-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h4>Create new Store</h4>
+                        </div>
+                        <div class="card-body">
+                                                 
+                                <form id="storeAdd">
+                                    {% csrf_token %}
+                                    {{ form | crispy}}
+                                    <div class="row">
+                                     <div class="col-sm-4">
+                                         <input class="btn btn-success btn-block" id="buttonAddStore" type="button" value="Create">
+                                     </div>
+                                     <div class="col-sm-4">
+                                         <input class="btn btn-warning btn-block" id="buttonEditStore" type="button" value="Update">
+                                     </div>
+                                     <div class="col-sm-4">
+                                         <input class="btn btn-danger btn-block" id="buttondelStore" type="button" value="Dormant">
+                                     </div>
+                                    </div>
+                                  
+                                 </form>
+                        </div>
+                       </div>
+                </div>
+
+                <div class="col-sm-8">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <input class="form-control" type="text" name="" id="itemsearch" placeholder="search in list">
+                                </div>
+                                <div class="col-sm-4">
+                                   <div id="spinners" style="display:none;">
+                                       <div class="spinner-border text-success" role="status">
+                                           <span class="sr-only">Loading...</span>
+                                         </div>
+                                         <div class="spinner-border text-danger" role="status">
+                                           <span class="sr-only">Loading...</span>
+                                         </div>
+                                         <div class="spinner-border text-warning" role="status">
+                                           <span class="sr-only">Loading...</span>
+                                         </div>
+                                   </div>
+                                   <!--<button id="cpitem" class="btn btn-success " disabled >copy items</button>-->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row ">
+                                <div class="col-sm-12">
+                                    <div style="max-height:500px;overflow-y:scroll;" >
+                                        <table class="table table-sm table-hover table-fixed " id="tblitems">
+                                          <thead style="position: sticky;top: 0" class="thead-dark">
+                                            <tr>
+                                                <th >Date</th>
+                                                <th >Name</th>
+                                                <th >category</th>
+                                                <th >ServePoint</th>
+                                                <th >status</th>
+                                                <th >Created by</th>
+                                               
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                             {% if store %}
+                                            {% for item in store %}
+                                            <tr>
+                                                <td style="display:none;">{{item.store_Id}}</td>
+                                                <td>{{item.dateAdded}}</td>
+                                                <td>{{item.store_name}}</td>
+                                                <td>{{item.category}}</td>                       
+                                                <td>{{item.servePoint}}</td>                       
+                                                <td>{{item.status}}</td>                                             
+                                                <td>{{item.addedBy}}</td>                          
+                                            </tr>
+                                            {% endfor %}
+                                            {% else %}
+                                            <td colspan="6"> No store listed</td>
+                                            {% endif %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                             </div>
+                        </div>
+                    </div>
+                
+                 
+                 
+                    
+                </div>
+            </div>
+       
+</div>
+<!--/.container-->
+<script src="{% static 'js/supplier.js' %}"></script>
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}

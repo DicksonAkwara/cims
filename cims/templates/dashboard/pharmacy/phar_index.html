@@ -1,0 +1,26 @@
+{% include 'partials/base.html' %}
+{% block title%}Pharmacy{%endblock%}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% load static %}
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/topnav.html' %}
+<div class="container-fluid" id="main">
+    <div class="row row-offcanvas row-offcanvas-left vh-100">
+        <!--sidebar.html-->
+        {% include 'partials/sidebar.html' %}
+        <!--/col-->
+        <main class="col main pt-5 mt-3 h-100 overflow-auto">
+          {% include 'phar_partials/phar_topnav.html' %}
+   <!--Graphs-->
+        </main>
+        <!--/main col-->
+    </div>
+
+</div>
+<!--/.container-->
+
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}

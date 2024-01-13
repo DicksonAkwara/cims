@@ -1,0 +1,233 @@
+{% extends "partials/base.html" %}
+{% block title %}lab | test-parameters{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/lab_nav.html'%}
+<div class="container-fluid" id="main">
+            <div class="row mt-2">
+                <div class="col-md-12 border p-3 bg-white">                      
+                    <div id="accordion">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link collapsed text-decoration-none" id="btn_testdetail" data-toggle="collapse" data-target="#testdetailsacc" aria-expanded="false" aria-controls="testdetailsacc">
+                                      Test Management
+                                    </button>
+                                  </h5>
+                            </div>
+                            <div id="testdetailsacc" class="collapse" aria-labelledby="ptdetails" data-parent="#accordion">
+                            <div class="card-body">
+                                <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="border p-2 bg-white">
+                                       <h4>Add/Edit Laboratory Test</h4>
+                                       <hr>
+                                       <form id="testform">
+                                           {% csrf_token %}
+                                           {{ form | crispy}}
+                                           <div class="row">
+                                            <input type="text" name="testid" id="testid" hidden>
+                                            <div class="col-sm-6">
+                                                <input class="btn btn-success btn-block" id="buttonAddst" type="button" value="Add">
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <input class="btn btn-warning btn-block" id="buttonEditst" type="button" value="update">
+                                            </div>
+                                        
+                                           </div>
+                                         
+                                        </form>
+                                   </div>
+                               </div>
+                               <div class="col-sm-8">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <input class="form-control" type="text" name="" id="testsearch" placeholder="search in list">
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                   <div class="col-sm-12">
+                                       <div style="max-height:350px;overflow-y:scroll;" >
+                                           <table class="table table-sm table-hover table-fixed " id="tbltests">
+                                             <thead style="position: sticky;top: 0" class="thead-dark">
+                                               <tr>
+                                                   <th >Date Added</th>
+                                                   <th >Test Name</th>
+                                                   <th >Cash</th>                                    
+                                                   <th >Scheme</th>                                    
+                                                   <th >Added by</th>
+                                                   <th >status</th>
+                                                  
+                                               </tr>
+                                               </thead>
+                                               <tbody id="tblbodytests">
+                                                {% if lbtest %}
+                                               {% for item in lbtest %}
+                                               <tr>
+                                                   <td style="display:none;">{{item.scode}}</td>
+                                                   <td>{{item.date_added}}</td>
+                                                   <td>{{item.service_name}}</td>
+                                                   <td>{{item.normal_rate}}</td>
+                                                   <td>{{item.scheme_rate}}</td> 
+                                                   <td>{{item.staff}}</td>                                                  
+                                                   <td>{{item.status}}</td>
+                                               </tr>
+                                               {% endfor %}
+                                               {% else %}
+                                               <td colspan="5"> No item found</td>
+                                               {% endif %}
+                                               </tbody>
+                                           </table>
+                                       </div>
+                                   </div>
+                                </div>
+                                
+                                   
+                               </div>
+                               </div>
+                            </div>
+                            </div>
+                        </div>
+
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link collapsed text-decoration-none" id="btn_testparamdetail" data-toggle="collapse" data-target="#testparamdetacc" aria-expanded="false" aria-controls="testparamdetacc">
+                                      Test Parameter(s) Management
+                                    </button>
+                                  </h5>
+                            </div>
+                            <div id="testparamdetacc" class="collapse" aria-labelledby="ptdetails" data-parent="#accordion">
+                            <div class="card-body">
+                                <div class="col-sm-12">
+                                    <div class="border p-2 bg-white">
+                                   
+                                       <div class="row">
+                                        <div class="col-sm-6">
+                                            <select name="testname" id="testname" class="form-control">
+                                                <option value="">Select Test name</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <select name="posresult" id="posresult" class="form-control">
+                                                <option value="">Select Possible Result </option>
+                                                <option value="values">Numerical Values </option>
+                                                <option value="options">Defined Options </option>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <button class="btn btn-info btnAddParam">Add Parameter</button>
+                                        </div>
+                                       </div>
+                                       <div class="row mt-3">
+                                        <div class="col-sm-12">
+                                            <div style="max-height:400px;overflow-y:scroll;" id="tblvalues" >
+                                                <table class="table table-sm table-hover table-fixed " id="tblparamvalues">
+                                                  <thead style="position: sticky;top: 0" class="thead-dark">
+                                                    <tr>
+                                                        <th >Parameter no</th>
+                                                        <th >Parameter Name</th>
+                                                        <th >Lower limit</th>
+                                                        <th >Upper limit</th>                                    
+                                                        <th >Measure Units</th> 
+                                                        <th style="width:70%; display: none;">Possible Outcome (<small class="text-danger">Enter all possible result of each parameter seperated by "/"  e.g a/b/c/d</small>)</th>
+                                                        <th></th>
+                                                     
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody id="tblparamvaluesbody">
+                                                  
+                                                    </tbody>
+                                                </table>
+                                            </div>                                     
+                                        </div>
+                                     </div>
+                                           <div class="row mt-3">                                            
+                                            <div class="col-sm-6">
+                                                <input class="btn btn-success" id="buttonConfParam" type="button" value="Confirm Parameter(s)">
+                                            </div>                                                                                 
+                                           </div>
+                                       
+                                   </div>
+                               </div>
+                           
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+          
+            </div>
+    </div>
+    <!--Add parameter modal-->
+    <div class="modal fade" id="paramModal" tabindex="-1" aria-labelledby="paramd" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-top modal-dialog-scrollable">
+          <div class="modal-content">
+            <div class="modal-header"> 
+              <h5 class="modal-title text-center" id="paramTitle"></h5> 
+              <button type="button" class="btn-close btn-danger" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>        
+            </div>
+            <div class="modal-body"> 
+                <form id="paramaddform">
+                    {% csrf_token %}                       
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">Possible Result</span>
+                    </div>
+                    <input type="text" id="rstform" class="form-control" readonly >
+                    <input type="text" name="testmno" id="testmno" hidden>
+                    <input type="text" name="rstformv" id="rstformv" hidden>
+                  </div>   
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">Parameter Name</span>
+                    </div>
+                    <input type="text" id="prmname" name="prmname" class="form-control" >                    
+                  </div> 
+                  <div class="input-group mb-3" id="divlower">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">Lower Limit</span>
+                    </div>
+                    <input type="text" id="lwlimit" name="lwlimit" class="form-control" >                    
+                  </div>   
+                  <div class="input-group mb-3" id="divupper">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">Upper Limit</span>
+                    </div>
+                    <input type="text" id="uplimit" name="uplimit" class="form-control" >                    
+                  </div> 
+                  <div class="input-group mb-3" id="divunits">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">Measure Units</span>
+                    </div>
+                    <input type="text" id="msunits" name="msunits" class="form-control" placeholder="10^9/L or %">                    
+                  </div> 
+                  <div class="input-group mb-3" id="divposrst">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">Possible Outcome</span>                      
+                    </div>                   
+                    <textarea class="form-control" id="psOutcome" name="psOutcome"></textarea>
+                    <small class="text-danger">Enter all possible result of each parameter seperated by "/"  e.g a/b/c/d</small>                   
+                  </div>
+                </form>
+                  <div class="form-group">
+                        <input class="btn btn-success" id="btnsaveParam" type="button" value="save details">
+                                                                                             
+                   </div>
+
+              </div>        
+              
+            </div>          
+          </div>
+        </div>
+
+<!--/.container-->
+<script src="{% static 'js/labtest.js' %}"></script>
+
+{% endblock%}

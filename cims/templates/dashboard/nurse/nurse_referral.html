@@ -1,0 +1,211 @@
+{% extends "partials/base.html" %}
+{% block title %}Referral{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/nurse_nav.html'%}
+<div class="container-fluid" id="main">
+        <main class="col main overflow-auto">
+          <div class="row mt-2">
+            <div class="col-sm-8 ">              
+                    <div class="card h-100">
+                        <div class="card-header" id="headingOne">
+                          <h5 class="mb-0">
+                            List of Referrals
+                           </h5>
+                        </div>                  
+                        <div class="card-body"> 
+                          <div class="row">
+                            <div class="col-sm-3">
+                              <div class="form-group ">
+                                <div class="input-group">
+                                  <input class="form-control " type="text" id="cardrefno" placeholder="filter by file no" aria-label="Search">
+                                  <span class="input-group-text ">&#128269;</span>
+                                 </div>
+                               </div>
+                            </div>                               
+                             <div class="col-sm-3">
+                              <select class="form-select form-control" id="pat_type2"> 
+                                <option value="">Patient Category</option>                             
+                                {% for ptype in patType %}
+                                <option value="{{ptype.category}}">{{ptype.category}}</option>
+                                {%endfor%}                                
+                              </select>
+                             </div>
+                             <div class="col-sm-4">
+                               <div class="input-group mb-3">                                                            
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">From Date</span>
+                                </div> 
+                                <input type="date" class="form-control" id="frefdate" name="frefdate">                               
+                                </div>
+                             </div>
+                             <div class="col-sm-2">
+                              <div class="form-group">
+                                <input type="button" class="btn btn-warning float-right" value="Filter List">
+                              </div>                              
+                             </div>
+                          </div>
+                          <div class="row mt-2">
+                            <div class="col-sm-12">
+                              <div style="max-height:400px;overflow-y:scroll;" >
+                                  <table class="table table-sm table-striped table-fixed  " id="tblreff">
+                                    <thead style="position: sticky;top: 0" class="thead-dark">
+                                      <tr>
+                                          <th>Patient Name</th>
+                                          <th >Doctor</th>
+                                          <th >Referral To</th>
+                                          <th >Bill balance</th>                                                                                                                                                  
+                                          <th>Action</th>                                                    
+                                      </tr>
+                                      </thead>
+                                      <tbody id="tblreffbody">
+                                   
+                                      </tbody>
+                                  </table>
+                              </div>
+                          </div>
+                          </div>
+                         
+                        </div>
+                                                   
+               
+              </form>
+            </div>
+            </div>
+            <div class="col-sm-4 ">
+                  <div class="card h-100">
+                       <div class="card-header">
+                        Patient Referral Details
+                       </div>
+                       <div class="card-body">
+                          <div class="form-group">
+                            <label>Patient Fullname</label>
+                            <input class="form-control" readonly type="text" id="pname3">
+                          </div>
+                          <div class="form-group">
+                           <label>Card/File Number</label>
+                            <input class="form-control" readonly type="text" id="filenum" >
+                          </div>   
+                          <div class="form-group">
+                            <div class="row">
+                              <div class="col-sm-6">
+                                <label>Gender</label>
+                               <input class="form-control" readonly type="text" id="pgender" >
+                              </div>
+                              <div class="col-sm-6">
+                               <label>Age(yrs)</label>
+                               <input class="form-control" readonly type="text" id="pat_age" >
+                              </div>
+                              </div>                           
+                            </div>
+                            <div class="row">
+                             <div class="col-sm-6">
+                              <div class="form-group">
+                                <label>Total Bill</label>
+                                <input class="form-control" readonly type="text" id="paidAmt" >                         
+                               </div>
+                             </div>
+                             <div class="col-sm-6">
+                               <div class="form-group ">
+                                 <label>Balance</label>
+                                 <input class="form-control border-danger" readonly type="text" id="ttbill" >                         
+                                </div>
+                             </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-sm-12">                                
+                                 <div class="form-group">
+                                  <label>Referred Facility</label>
+                                  <select name="" id="" class="form-control border-danger">
+                                    
+                                    {%for fac in reffact%}
+                                    <option value="{{fac.facilityId}}">{{fac.facilityName}}</option>
+                                    {%endfor%}
+                                  </select>                         
+                                 </div>
+                              </div>
+                                                            
+                              <div class="col-sm-12">
+                                <div class="form-group ">
+                                  <label></label>
+                                  <input class="form-control btn btn-success" type="button" value="Confirm Referral" >                         
+                                 </div>
+                              </div>
+                             </div>                                                     
+                       </div>
+                  </div> 
+              </div>
+              
+              
+          </div>
+        </main>
+        <!--/main col-->
+</div>
+<!--/.container-->
+<!-- Service request Modal -->
+<div class="modal fade" id="serviceModal" tabindex="-1" role="dialog" aria-labelledby="servicemodalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-top" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="modal_header">Doctor's Notes and Prescription</h4>
+        <div class="alert hidden" role="alert" id="modalAlert"></div> 
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div> 
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group"> 
+              <label for="">Discharge Notes</label> 
+              <textarea name="" id="" class="form-control" readonly rows="10"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <input class="btn btn-info" type="button" id="printprescip" value="Print Prescription">            
+            <table class="table table-hover" id="prescTable">
+              <thead>
+                <tr>                     
+                  <th scope="col">Drug Name</th>
+                  <th scope="col">Route</th> 
+                  <th scope="col">Dosage</th> 
+                  <th scope="col">Frequency</th>                    
+                  <th scope="col">Quantity</th>                    
+                </tr>
+              </thead>
+              <tbody class="prescTableBody">
+    
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>       
+    </div>
+  </div>
+</div>
+<!--end of modal-->
+
+<!-- alert Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="paymodalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="alert hidden" role="alert" id="modalAlert"></div> 
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>        
+    </div>
+  </div>
+</div>
+<!--end of modal-->
+<script src="{% static 'js/nurse_triage.js' %}"></script>
+
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}

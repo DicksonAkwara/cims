@@ -1,0 +1,128 @@
+{% extends "partials/base.html" %}
+{% block title %}records-patient-files{% endblock %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% load static %}
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/rec_nav.html' %}
+        
+        <div class="container-fluid">
+          <div class="row m-2">
+              <div class="col-sm-12">
+                <div class="card h-100">
+                  <div class="card-header">
+                    Patient Medical Files
+                  </div>
+                  <div class="card-body">
+                    <div class="row mt-2">
+                      <div class="col-md-3">                        
+                        <select class="form-control border-danger" id="pat_fltype">  
+                          <option value="#">Patient Category</option>                            
+                          {% for item in patType %}
+                          <option value="{{item.category}}">{{item.category}}</option>
+                          {%endfor%}                                
+                        </select>               
+                      </div>
+                      <div class="col-md-3">
+                        <input type="text" name="" id="" class="form-control searchfile" placeholder="filter by hosp no/name/residence">
+                      </div>
+                    </div>
+      
+                    <div class="row mt-2">
+                      <div class="col-md-12 mt-3">
+                         <div style="max-height:500px;overflow-y:scroll;" >
+                          <table class="table table-sm table-striped table-fixed" id="tbpatfile">
+                            <thead style="position: sticky;top: 0" class="thead-dark">
+                                  <th >Visit/Adm Date</th>
+                                  <th >Hospital No</th>
+                                  <th >Patient Name</th>
+                                  <th >Patient Age</th>
+                                  <th >Gender</th>
+                                  <th >Phone Number</th>
+                                  <th >NoK Name</th>
+                                  <th >Relation</th>
+                                  <th >Residence</th>
+                                </thead>
+                              <tbody id='tbpatfilebody'>
+                           
+                              </tbody>
+                          </table>
+                      </div>
+                      </div>
+      
+                    </div>
+
+                  </div>
+                
+                 
+           
+               </div>          
+               
+               </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- pay mode Modal -->
+<div class="modal fade" id="serviceModal" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="servicemodalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-top" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4>Search by service name</h4>
+        <div class="alert hidden" role="alert" id="modalAlert"></div> 
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div> 
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">                    
+              <input class="form-control" type="text" id="search-service" placeholder="service to bill"> 
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            
+            <table class="table table-hover" id="tableOutputSvs">
+              <thead>
+                <tr>                     
+                  <th scope="col">Service Name</th>
+                  <th scope="col">Normal Rate</th> 
+                  <th scope="col">Special Rate</th>                    
+                  <th scope="col">Department</th>                    
+                </tr>
+              </thead>
+              <tbody class="svs-table-body">
+    
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>       
+    </div>
+  </div>
+</div>
+<!--end of modal-->
+
+<!-- alert Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="paymodalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="alert hidden" role="alert" id="modalAlert"></div> 
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>        
+    </div>
+  </div>
+</div>
+<!--end of modal-->
+<script src="{% static 'js/op_billing.js' %}"></script>
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}

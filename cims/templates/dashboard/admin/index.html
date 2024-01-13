@@ -1,0 +1,96 @@
+{% include 'partials/base.html' %}
+{% include 'partials/topnav.html' %}
+{% block content %}
+   <!--Graphs-->
+   <div class="container">
+     <div class="row my-5">
+       <div class="col-md-6">
+           <div class="bg-white">
+            <canvas id="myChart" width="400" height="300"></canvas>
+           <script>
+            const ctx = document.getElementById('myChart').getContext('2d');
+            const myChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['General-OPD','Injection','Triage','Laboratory','Radiology','Pharmacy','special-clinics'],
+                    datasets: [{
+                        label: 'Workload',
+                        data: [200,150,40,60,20,100,50],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            </script>
+           </div>
+       </div>
+         <div class="col-md-6">
+             <div class="bg-white">
+        <canvas id="barGraph" width="400" height="300"></canvas>
+           <script>
+            const ctx1 = document.getElementById('barGraph').getContext('2d');
+            const barGraph = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: ['OPD-cons','laboratory','radiology','pharmacy','inpatient','special-clinics'],
+                    datasets: [{
+                        label: 'Revenue(Total-255,000)',
+                        data: [50000,30000,35000,63000,110000,22000],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            </script>
+         </div>
+       </div>
+     </div>
+   </div>
+   <!--end of Graphs-->
+{% endblock%}

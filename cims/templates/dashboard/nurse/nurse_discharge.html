@@ -1,0 +1,236 @@
+{% extends "partials/base.html" %}
+{% block title %}Discharge{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/nurse_nav.html'%}
+<div class="container-fluid" id="main">
+        <main class="col main overflow-auto">
+          <div class="row mt-2">
+            <div class="col-sm-12 ">              
+                    <div class="card h-100">
+                        <div class="card-header" id="headingOne">
+                          <div class="row">
+                            <div class="col-sm-3">
+                              <div class="form-group">
+                                <div class="input-group input-group-sm mb-3"> 
+                                  <div class="input-group-prepend">
+                                    <span class="input-group-text">Ward:</span>
+                                  </div>  
+                                  <select class=" form-control" id="patwards"> 
+                                    <option value="none">select ward</option>                             
+                                    {% for pward in wards %}
+                                    <option value="{{pward.wardName}}">{{pward.wardName}}</option>
+                                    {%endfor%}                                
+                                  </select>                                   
+                                </div>                                      
+                              </div>                              
+                            </div> 
+                            <div class="col-sm-3">
+                              <div class="form-group">
+                               <div class="input-group input-group-sm mb-3">                                                            
+                                 <div class="input-group-prepend">
+                                   <span class="input-group-text">Search Patient:</span>
+                                 </div> 
+                                 <input class="form-control " type="text" id="pCardNo" placeholder="filter by file no">                               
+                                 </div>
+                              </div>
+                            </div>
+
+                             <div class="col-sm-3">
+                               <div class="form-group">
+                                <div class="input-group input-group-sm mb-3">                                                            
+                                  <div class="input-group-prepend">
+                                    <span class="input-group-text">Discharge From:</span>
+                                  </div> 
+                                  <input type="date" class="form-control" id="frdate" name="frdate">                               
+                                  </div>
+                               </div>
+                             </div>
+                             <div class="col-sm-2">
+                              <input type="button" class="btn btn-sm btn-info" id="btnviewlist" value="view list">
+                             </div>
+                          </div>
+
+                        </div>                  
+                        <div class="card-body"> 
+                          
+                          <div class="row mt-2">
+                            <div class="col-sm-12">
+                              <div style="max-height:400px;overflow-y:scroll;" >
+                                  <table class="table table-sm table-striped table-fixed  " id="tbliplist">
+                                    <thead style="position: sticky;top: 0" class="thead-dark">
+                                      <tr>
+                                          <th>File No</th>
+                                          <th>Patient Name</th>
+                                          <th>Age</th>
+                                          <th>Gender</th>                                          
+                                          <th>Admission date</th>
+                                          <th>Discharge date</th>
+                                          <th>Doctor</th>
+                                          <th>Bill balance</th>                                                                                                                                                  
+                                          <th></th>                                                    
+                                          <th></th>                                                    
+                                      </tr>
+                                      </thead>
+                                      <tbody id="tbliplistbody">
+                                   
+                                      </tbody>
+                                  </table>
+                              </div>
+                          </div>
+                          </div>
+                         
+                        </div>
+                                                   
+               
+              </form>
+            </div>
+            </div>
+          </div>
+        </main>
+        <!--/main col-->
+</div>
+<!--/.container-->
+<!-- Service request Modal -->
+<div class="modal fade" id="serviceModal" tabindex="-1" role="dialog" aria-labelledby="servicemodalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-top" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="modal_header">Doctor's Notes and Prescription</h4>
+        <div class="alert hidden" role="alert" id="modalAlert"></div> 
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div> 
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group"> 
+              <label for="">Discharge Notes</label> 
+              <textarea name="" id="" class="form-control" readonly rows="10"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <input class="btn btn-info" type="button" id="printprescip" value="Print Prescription">            
+            <table class="table table-hover" id="prescTable">
+              <thead>
+                <tr>                     
+                  <th scope="col">Drug Name</th>
+                  <th scope="col">Route</th> 
+                  <th scope="col">Dosage</th> 
+                  <th scope="col">Frequency</th>                    
+                  <th scope="col">Quantity</th>                    
+                </tr>
+              </thead>
+              <tbody class="prescTableBody">
+    
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>       
+    </div>
+  </div>
+</div>
+<!--end of modal-->
+
+<!-- summarized invoice Modal -->
+<div class="modal fade" id="dischargeModal" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="dischargeModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-md modal-dialog-top modal-dialog-scrollable " role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="alert hidden" role="alert" id="modalAlert"></div> 
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div> 
+      <div class="modal-body">
+        <div class="card h-100">
+          <div class="card-header">
+           Discharge Details
+          </div>
+          <div class="card-body">
+             <div class="form-group">
+               <label>Patient Fullname</label>
+               <input class="form-control" readonly type="text" id="pname3">
+             </div>
+             <div class="form-group">
+              <label>File Number</label>
+               <input class="form-control" readonly type="text" id="filenum" >
+             </div>
+
+             <div class="form-group">
+               <div class="row">
+                 <div class="col-sm-6">
+                   <label>Gender</label>
+                  <input class="form-control" readonly type="text" id="pgender" >
+                 </div>
+                 <div class="col-sm-6">
+                  <label>Age(yrs)</label>
+                  <input class="form-control" readonly type="text" id="pat_age" >
+                 </div>
+                 </div>                           
+               </div>
+               <div class="row">
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label>Paymode</label>
+                    <input class="form-control" readonly type="text" id="pymode3" >                         
+                   </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group ">
+                    <label>Total Bill</label>
+                    <input class="form-control border-danger" readonly type="text" id="ttbill" >                         
+                   </div>
+                </div>
+               </div>
+               <div class="row">
+                 <div class="col-sm-6">
+                   <div class="form-group">
+                     <label>Amount Paid</label>
+                     <input class="form-control" readonly type="text" id="paidAmt" >                         
+                    </div>
+                 </div>
+                 <div class="col-sm-6">
+                   <div class="form-group ">
+                     <label>Balance</label>
+                     <input class="form-control border-danger" readonly type="text" id="Tbal" >                         
+                    </div>
+                 </div>
+                </div>
+                <div class="row">
+                 <div class="col-sm-12">
+                   <div class="form-group">
+                     <select name="" id="" class="form-control">
+                       <option value="">---Discharge Condition--</option>
+                       <option value="HM">Normal to Home</option>
+                       <option value="SC">Sick to home care</option>
+                       <option value="RIP">RIP to morgue</option>
+                     </select>
+                   </div>                               
+                 </div>
+                 <div class="col-sm-12">
+                   <div class="form-group">
+                     <input type="button" value="Confirm Discharge" class="form-control btn btn-success">
+                   </div>                                
+                 </div>
+                </div>                                                     
+          </div>
+     </div>
+      </div>       
+    </div>
+  </div>
+</div>
+<!--end of modal-->
+
+<script src="{% static 'js/nurse_ipdischarge.js' %}"></script>
+
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}

@@ -1,0 +1,186 @@
+{% extends "partials/base.html" %}
+{% block title %}farewell-Registration{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}    
+<!--navbar.html-->
+{% include 'partials/fwnav.html' %}
+<div class="container-fluid" id="main">
+      <div class="row mt-2">
+        <div class="col-sm-12">
+            <div class="card h-100">
+              <div class="card-header">
+                Deceased Details
+              </div>
+              <div class="card-body">                         
+                 <div class="row mt-2">
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label>farewell Number<small class="text-danger">(Bid/int number)</small></label>
+                      <input class="form-control" type="text" placeholder="enter to search" id="fwno" name="fwno">
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label>Fullname<small class="text-danger">*</small></label>
+                      <input class="form-control" type="text" id="dc_name" name="dc_name" readonly>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label>Age<small class="text-danger">*</small><small>(Years)</small></label>
+                      <input class="form-control" type="number" id="dc_age" name="dc_age" min="1" max="150" readonly >
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label>Gender<small class="text-danger">*</small></label>
+                      <select name="dc_gender" id="dc_gender" disabled class="form-control">
+                        <option selected>Select...</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>                    
+                      </select>
+                    </div>
+                  </div> 
+                </div>
+                <div class="row mt-2">
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label>Tag Number<small class="text-danger">*</small></label>
+                      <input class="form-control" type="text" id="dc_tagno" name="dc_tagno" readonly>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label>Date of Death<small class="text-danger">*</small></label>
+                      <input class="form-control" type="text" id="dc_dod" name="dc_dod" readonly>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label>Date of Registration<small class="text-danger">*</small></label>
+                      <input class="form-control" type="text" id="dc_dor" name="dc_dor" readonly>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label>OB number<small class="text-danger">*</small></label>
+                      <input class="form-control" type="text" id="dc_obnumber" readonly name="dc_obnumber">
+                    </div>
+                  </div>
+                </div> 
+            </div>
+          </div>
+        </div> 
+
+          <div class="col-sm-12">
+            <div class="card h-100">
+              <div class="card-header">
+                Next of Kin Details
+              </div>
+              <div class="card-body"> 
+                <div class="row mt-2">
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label>Fullname<small class="text-danger">*</small></label>
+                      <input class="form-control" type="text" id="dc_nkfullname" name="dc_nkfullname" required>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label>Phone Number<small class="text-danger">*</small></small></label>
+                      <input class="form-control" type="number" id="dc_nkage" name="dc_nkage" min="1" max="150" required >
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label>National IdNo<small class="text-danger">*</small></label>
+                      <input class="form-control" type="number" id="dc_nkidno" name="dc_nkidno" required >
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label>Relation To Deceased<small class="text-danger">*</small></label>
+                      <select name="dc_relation" id="dc_relation" class="form-control">
+                        <option value="none" selected>Choose...</option>
+                          {% for rel in relation %}
+                          <option value="{{rel.relName}}">{{rel.relName}}</option>
+                          {%endfor%}                  
+                      </select>
+                  </div>
+                  </div>
+                </div> 
+                <div class="row mt-2">
+                  <div class="col-sm-4">
+                    <div class="form-group">                  
+                      <input class="btn btn-info" type="button" id="vw_bill" value="View Bill">
+                      <input type="text" hidden id="fw_bill">
+                    </div>
+                  </div>
+                  <div class="col-sm-4 text-center">
+                    <div class="form-group">                  
+                      <input class="btn btn-secondary" type="button" id="addnok" value="Add another">
+                    </div>
+                  </div>
+                  <div class="col-sm-4 text-center">
+                    <div class="form-group">                  
+                      <input class="btn btn-warning" type="button" id="vw_nok" value="View List">
+                    </div>
+                  </div>
+                  <textarea style="display: none;" name="nkname" id="nkname"></textarea>
+                </div>
+            </div>
+          </div>
+          </div>
+
+          <div class="col-sm-12">
+            <div class="card h-100">
+              <div class="card-header">
+                Legal Details
+              </div>
+              <div class="card-body"> 
+                <div class="row mt-2">
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label>County of Burial<small class="text-danger">*</small></label>
+                      <select name="county" class="form-control" id="county">
+                        {% for cnty in county%}
+                          <option value="{{cnty.county_code}}">{{cnty.county_name}}</option>                        
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label>Location<small class="text-danger">*</small></label>
+                      <input class="form-control" type="text" id="location" name="location" required>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label>Village/Cemetry<small class="text-danger">*</small></label>
+                      <input class="form-control" type="text" id="village" name="village">
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label>Permit Number<small class="text-danger">*</small></label>
+                      <input class="form-control" type="text" id="pnumber" name="pnumber">
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="col-sm-12 text-center">
+                  <button class="btn btn-success"> Dispatch Deceased</button>
+                </div>
+               
+            </div>
+          </div>
+          </div>
+      </div>
+      
+
+</div>
+<script src="{% static 'js/farewell.js' %}"></script>
+{% include 'partials/footer.html' %}
+{% endblock%}

@@ -1,0 +1,203 @@
+{% extends "partials/base.html" %}
+{% block title %}Nurse-OPs{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/nurse_nav.html'%}
+<div class="container-fluid" id="main">
+        <main class="col main overflow-auto">
+          <div class="row mt-2">
+            <div class="col-md-3 col-sm-3 ">
+                  <div class="card h-100">
+                       <div class="card-header">
+                        <h5 class="mb-0">
+                          Patient Details
+                        </h5>                        
+                       </div>
+                       <div class="card-body">
+                                            
+                           <div class="form-group" id="divpatward">
+                            <select class=" form-control" id="patward"> 
+                              <option value="">select ward</option>                             
+                              {% for pward in wards %}
+                              <option value="{{pward.wardName}}">{{pward.wardName}}</option>
+                              {%endfor%}                                
+                            </select>
+                           </div>
+                          <div class="form-group ">
+                            <div class="input-group">
+                              <input class="form-control " type="text" id="pCardNo2" placeholder="search by cardNo" aria-label="Search">
+                              <span class="input-group-text ">&#128269;</span>
+                             </div>
+                             <small class="text-danger txtsearch2"></small>
+                           </div>
+                           <div class="form-group">
+                            <label>Patient Fullname</label>
+                            <input class="form-control" readonly type="text" id="pname2">
+                          </div>
+                          <div class="form-group">
+                           <label>Card Number</label>
+                            <input class="form-control" readonly type="text" id="last_visit2" >
+                          </div>
+   
+                          <div class="form-group">
+                            <div class="row">
+                              <div class="col-sm-6">
+                                <label>Gender</label>
+                               <input class="form-control" readonly type="text" id="pgender2" >
+                              </div>
+                              <div class="col-sm-6">
+                               <label>Age(yrs)</label>
+                               <input class="form-control" readonly type="text" id="pat_age2" >
+                              </div>
+                              </div>                           
+                            </div>
+                            <div class="row">
+                             <div class="col-sm-6">
+                               <div class="form-group">
+                                 <label>Paymode</label>
+                                 <input class="form-control" readonly type="text" id="pymode2" >                         
+                                </div>
+                             </div>
+                             <div class="col-sm-6">
+                               <div class="form-group ">
+                                 <label>Urgency</label>
+                                 <input class="form-control border-danger" readonly type="text" id="urgency2" >                         
+                                </div>
+                             </div>
+                            </div>
+                                                                
+                       </div>
+                  </div> 
+              </div>
+              
+              <div class="col-md-9 col-sm-9 ">
+                  <form action="" id="triageForm">
+                        <div class="card h-100">
+                            <div class="card-header" id="headingOne">
+                              <h5 class="mb-0">
+                                Operations
+                               </h5>
+                            </div>                  
+                            <div class="card-body"> 
+                              <div class="row">
+                                <div class="col-sm-4">
+                                  <select name="" id="" class="form-control">
+                                    <option value="">---select operation---</option>
+                                    <option value="">Administer Drugs</option>
+                                    <option value="">Nursing Procedures</option>
+                                    <option value=""></option>
+                                  </select>
+                                </div>                              
+                                
+                                <div class="col-sm-3">
+                                   <select name="" id="" class="form-control disabled">
+                                      <option value="">Nursing Desk</option>                                      
+                                      <option value=""></option>
+                                    </select>                                  
+                                </div>
+
+                              </div>
+                                   
+                              <div class="row mt-2">
+                                <div class="col-sm-12">
+                                    <div style="max-height:400px;overflow-y:scroll;" >
+                                        <table class="table table-sm table-striped table-fixed  " id="tblitems">
+                                          <thead style="position: sticky;top: 0" class="thead-dark">
+                                            <tr>
+                                                <th style="width:40%;" >Item/procedure Name</th>
+                                                <th >Quantity</th>
+                                                <th >Cost</th>
+                                                <th >Pay Status</th>                                                                                                        
+                                                <th ></th>                                                    
+                                            </tr>
+                                            </thead>
+                                            <tbody id="tblitemsbody">
+                                         
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-4">
+                              <div class="col-sm-6">                  
+                                  <input class="btn btn-success btnconfitm" type="button" value="Bill/Administer/Proceed">
+                              </div>
+                          </div>
+
+
+
+                             </div>
+                                                       
+                        </div>
+                  </form>
+                </div>
+          </div>
+        </main>
+        <!--/main col-->
+</div>
+<!--/.container-->
+<!-- Service request Modal -->
+<div class="modal fade" id="serviceModal" tabindex="-1" role="dialog" aria-labelledby="servicemodalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-top" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="modal_header"></h4>
+        <div class="alert hidden" role="alert" id="modalAlert"></div> 
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div> 
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">                    
+              <input class="form-control" type="text" id="search_service" placeholder="service to order"> 
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            
+            <table class="table table-hover" id="resultTable">
+              <thead>
+                <tr>                     
+                  <th scope="col">Service Name</th>
+                  <th scope="col">Normal Rate</th> 
+                  <th scope="col">Special Rate</th>                    
+                  <th scope="col">Department</th>                    
+                </tr>
+              </thead>
+              <tbody class="resultTableBody">
+    
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>       
+    </div>
+  </div>
+</div>
+<!--end of modal-->
+
+<!-- alert Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="paymodalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="alert hidden" role="alert" id="modalAlert"></div> 
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>        
+    </div>
+  </div>
+</div>
+<!--end of modal-->
+<script src="{% static 'js/nurse_triage.js' %}"></script>
+
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}

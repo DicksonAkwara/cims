@@ -1,0 +1,141 @@
+{% extends "partials/base.html" %}
+{% block title %}Store-Requisition{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/store_nav.html'%}
+<div class="container-fluid" id="main">
+    <div class="row row-offcanvas row-offcanvas-left vh-100">
+     
+        <main class="col main  h-100 overflow-auto">
+            <div class="row my-4 ml-0">
+
+                <div class="col-sm-3">
+                    <label for="">Order Category</label>
+                    <select name="" id="category" class="form-select form-control">
+                        <option  value="none" >---------</option>
+                        <option value="internal">Internal</option>
+                        <option value="external">external</option>
+                    </select>
+                </div>
+                <div class="col-sm-3">
+                    <label for="">Store Allocated</label>
+                    <select name="" id="storefr" class="form-select form-control">
+                        <option  value="none">---------</option>
+                        {% for store in usstore %}
+                        <option value="{{store.storeName.store_Id}}">{{store.storeName}}</option>
+                        {% endfor %}
+                    
+                    </select>
+                </div>
+                <div class="col-sm-3">
+                    <label for="">Request To</label>
+                    <select name="" id="storeto" class="form-select form-control">
+                        <option  value="none">---------</option>
+                        {% for store in stores %}
+                        <option value="{{store.store_Id}}">{{store.store_name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-sm-3">
+                    <label for="">Pending Orders</label>
+                    <select name="" id="pendorder" class="form-select form-control">
+                        <option  value="none">---------</option>
+                        
+                    </select>
+                </div>
+            
+               </div>
+               <div class="row my-4 ml-0">
+                   <div class="col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <input class="form-control bg-light"  type="text" id="itemsearchItem" placeholder="search by item name" >
+                            <div class="form-group" id="divtbsearch">
+                                <table class="bg-light table-hover" id="searchtb">
+                                    <tbody class="searchtbody"></tbody>                                    
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-sm-12">
+                            <div style="max-height:400px;overflow-y:scroll;" >
+                                <table class="table table-sm table-striped table-fixed tblitems" id="tblitems">
+                                  <thead style="position: sticky;top: 0" class="thead-dark">
+                                    <tr>
+                                        <th style="width:30%;" >Item Name</th>
+                                        <th >Available <small>(single items)</small></th>
+                                        <th >Request Amount</th>
+                                        <th >Urgency</th>                                                    
+                                        <th ></th>                                                    
+                                    </tr>
+                                    </thead>
+                                    <tbody id="tblitemsbody">
+                                 
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <input class="btn btn-success m-3 "  id="btnConfirm" type="button" value="Confirm Requisition">
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                       
+                   </div>
+               </div>
+        </main>
+        <!--/main col-->
+    </div>
+
+</div>
+ <!-- Modal confirm delivery-->
+ <div class="modal fade " id="pendmodal" tabindex="-1" role="dialog" aria-labelledby="pendmodal" aria-hidden="true">
+    <div class="modal-dialog modal-lg " role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="pendTitle"></h5>
+          <button type="button" class="btn-close bg-danger text-white" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-sm-6">
+                    <input type="text" name="" id="pditemsearch" placeholder="search by item name" class="form-control form-control-sm">
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-sm-12">
+                    <div style="max-height:400px;overflow-y:scroll;" >
+                        <table class="table table-sm table-striped table-fixed" id="tblpend">
+                          <thead style="position: sticky;top: 0" class="thead-dark text-nowrap">
+                            
+                                <th>Request Date</th>
+                                <th style="width: 30%;">Item</th>
+                                <th >Quantity</th>
+                                <th >Request To</th>
+                                <th >Request By</th>
+                                <th >Status</th>
+                            </thead>
+                            <tbody id='tblpendbody'>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+  </div>
+<!--/.container-->
+<script src="{% static 'js/supplier.js' %}"></script>
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}

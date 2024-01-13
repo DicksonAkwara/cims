@@ -1,0 +1,192 @@
+{% extends "partials/base.html" %}
+{% block title %}Security-Guard{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/gatepassnav.html'%}
+<div class="container-fluid" id="main">  
+  <div class="card mt-3">
+    <div class="card-header">
+      <div class="row">
+        <div class="col-sm-3">
+          <div class="form-group">
+              <div class="input-group input-group-sm mb-3">                                                            
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Search Patient #:</span>
+                </div> 
+                <input type="text" class="form-control text-center" id="pCardNo"> 
+                <input type="text" hidden id="pid" > 
+                <input type="text" hidden id="vsno" > 
+              </div>
+            </div>
+      </div>
+
+      <div class="col-sm-1">
+        <div class="form-group">
+          <small class="text-danger" id="psearch"></small>
+        </div>
+      </div>
+
+      <div class="col-sm-4 ">
+        <div class="form-group">
+          <input type="button" class="btn btn-sm btn-info " value="Pending Discharge">
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <div class="card-body"> 
+      <h6>Patient Details</h6>                           
+      <div class="row">
+         
+         <div class="col-sm-3">
+        <div class="form-group">
+            <div class="input-group input-group-sm mb-3">                                                            
+              <div class="input-group-prepend">
+                <span class="input-group-text">Fullname:</span>
+              </div> 
+              <input type="text" class="form-control text-center" id="pname" readonly > 
+            </div>
+          </div>
+    </div>
+
+    <div class="col-sm-3">
+      <div class="form-group">
+          <div class="input-group input-group-sm mb-2">                                                            
+            <div class="input-group-prepend">
+              <span class="input-group-text">Age:</span>
+            </div> 
+            <input type="text" class="form-control text-center" readonly id="age" > 
+          </div>
+        </div>
+  </div>
+  <div class="col-sm-3">
+    <div class="form-group">
+        <div class="input-group input-group-sm mb-3">                                                            
+          <div class="input-group-prepend">
+            <span class="input-group-text">Gender:</span>
+          </div> 
+          <input type="text" class="form-control text-center" readonly id="pgender">
+        </div>
+      </div>
+</div>
+<div class="col-sm-3">
+  <div class="form-group">
+      <div class="input-group input-group-sm mb-3">                                                            
+        <div class="input-group-prepend">
+          <span class="input-group-text">Ward:</span>
+        </div> 
+        <input type="text" class="form-control text-center" readonly id="pward"> 
+      </div>
+    </div>
+</div>
+      </div>
+      <div class="row mt-2"> 
+         <div class="col-sm-3">
+        <div class="form-group">
+            <div class="input-group input-group-sm mb-3">                                                            
+              <div class="input-group-prepend">
+                <span class="input-group-text">Paymode:</span>
+              </div> 
+              <input type="text" class="form-control text-center" id="pymode" readonly > 
+            </div>
+          </div>
+    </div>
+
+    <div class="col-sm-3">
+      <div class="form-group">
+          <div class="input-group input-group-sm mb-2">                                                            
+            <div class="input-group-prepend">
+              <span class="input-group-text">Total Bill:</span>
+            </div> 
+            <input type="text" class="form-control text-center" readonly id="ttbill" > 
+          </div>
+        </div>
+  </div>
+  <div class="col-sm-3">
+    <div class="form-group">
+        <div class="input-group input-group-sm mb-3">                                                            
+          <div class="input-group-prepend">
+            <span class="input-group-text">Paid:</span>
+          </div> 
+          <input type="text" class="form-control text-center" readonly id="ttpaid">
+        </div>
+      </div>
+</div>
+<div class="col-sm-3">
+  <div class="form-group">
+      <div class="input-group input-group-sm mb-3">                                                            
+        <div class="input-group-prepend">
+          <span class="input-group-text">Balance:</span>
+        </div> 
+        <input type="text" class="form-control text-center" readonly id="tbalance"> 
+      </div>
+    </div>
+</div>
+      </div>
+      <div><h6>Accompanied By:</h6></div>
+      <div class="row mt-2">      
+      <div class="col-sm-3">
+        <div class="form-group">
+            <div class="input-group input-group-sm mb-3">                                                            
+              <div class="input-group-prepend">
+                <span class="input-group-text">Fullname:</span>
+              </div> 
+              <input type="text" class="form-control text-center" id="nkname"> 
+            </div>
+          </div>
+    </div>
+    <div class="col-sm-3">
+      <div class="form-group">
+          <div class="input-group input-group-sm mb-2">                                                            
+            <div class="input-group-prepend">
+              <span class="input-group-text">Id number:</span>
+            </div> 
+            <input type="text" class="form-control text-center" id="nkid" > 
+          </div>
+        </div>
+  </div>
+  <div class="col-sm-3">
+    <div class="form-group">
+        <div class="input-group input-group-sm mb-3">                                                            
+          <div class="input-group-prepend">
+            <span class="input-group-text">Phone:</span>
+          </div> 
+          <input type="text" class="form-control text-center" id="nkphone"> 
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <div class="form-group">
+          <div class="input-group input-group-sm mb-3">                                                            
+            <div class="input-group-prepend">
+              <span class="input-group-text">Relation:</span>
+            </div>
+            <select id="nkrelation" class="custom-select">
+              {% for rel in relation %}
+              <option value="{{rel.relName}}">{{rel.relName}}</option>
+              {% endfor %}
+            </select> 
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-2">
+      <div class="col-sm-4"></div>
+      <div class="col-sm-4 text-center">
+        <div class="form-group">
+          <input type="button" class="btn btn-sm btn-success " value="Release patient">
+        </div>
+      </div>
+      <div class="col-sm-4"></div>
+    </div>
+    </div>
+  </div> 
+<!--/.container-->
+<script src="{% static 'js/securitygate.js' %}"></script>
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}

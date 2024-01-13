@@ -1,0 +1,1037 @@
+{% extends "partials/base.html" %}
+{% block title %}Pharmacy{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/phar_nav.html'%}
+{% csrf_token %}
+<div class="container-fluid" id="main">
+   <div class="row mt-2">
+              <div class="col-sm-12">
+                <div class="border p-3 bg-white">
+                  <nav>
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                      <button class="nav-link active" id="navbtnpend" data-toggle="tab" data-target="#nav-pending"
+                        type="button" role="tab" aria-controls="nav-home" aria-selected="true">Pending Prescriptions</button>
+                      <button class="nav-link" id="nav-paid-tab" data-toggle="tab" data-target="#nav-paid"
+                        type="button" role="tab" aria-controls="nav-paid" aria-selected="true">Paid Requests</button>
+                      <button class="nav-link nav_btn_refresh" id="nav-profile-tab" data-toggle="tab" data-target="#nav-disp"
+                        type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Dispensed</button>
+
+                      <button class="nav-link" id="nav-workload-tab" data-toggle="tab" data-target="#nav-workload"
+                        type="button" role="tab" aria-controls="nav-workload" aria-selected="false">Workload</button>
+
+                       <!-- <button class="nav-link" id="navstockAvail" data-toggle="tab" data-target="#nav-contact"
+                        type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Stock available</button>
+
+                        <button class="nav-link" id="nav-issue-tab" data-toggle="tab" data-target="#nav-issue"
+                        type="button" role="tab" aria-controls="nav-issue" aria-selected="false">Issue Drugs</button>-->
+                    </div>
+                  </nav><hr>
+
+                  <div class="row">
+                    <label id="shftlabel" hidden></label>
+                    <div class="col-sm-2">
+                      <div class="input-group input-group-sm">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">Category</span>
+                        </div> 
+                        <select class="custom-select custom-select-sm " id="pat_type">  
+                          <!--<option value="0">-----------</option> -->                           
+                          {% for item in patType %}                                    
+                          <option value="{{item.category}}">{{item.category}}</option>
+                          {%endfor%}                                
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="col-sm-3">
+                      <div class="input-group input-group-sm">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">Counter</span>
+                        </div> 
+                        <select class="custom-select custom-select-sm " id="pharm_stores">
+                          {% for store in substore %}
+                          <option value="{{store.store_Id}}">{{store.store_name}}</option>
+                          {%endfor%}
+                        </select>
+                      </div>
+                    </div>                   
+                  </div>  
+
+                  <div class="tab-content" id="nav-tabContent">
+
+                    <div class="tab-pane fade show active" id="nav-pending" role="tabpanel" aria-labelledby="nav-home-tab">                     
+                      <div class="card"> 
+                        <div class="card-header card-header-sm">
+                          <div class="row">
+                            <div class="col-sm-5"></div>
+                            <div class="col-sm-1">
+                              <input class="btn btn-sm btn-primary" type="button" id="btnpendrefresh" value="Refresh" > 
+                            </div>
+                            <div class="col-sm-2">
+                              <div class="input-group input-group-sm">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">Filter</span>
+                                </div> 
+                                <input type="text" class="form-control" name="patient_id" id="patient_id" placeholder="card number">
+                              </div>
+                            </div>
+                            <div class="col-sm-4"></div>
+                          </div>
+
+                        </div>
+                        <div class="card-body">
+                          <div class="row">
+                            <div class="col-sm-12" style="max-height:500px;overflow-y:scroll;" >
+                              <table class="table table-sm table-hover table-fixed " id="tbpendpresc">
+                                <thead style="position: sticky;top: 0" class="thead-dark">
+                                  <th> Date</th>
+                                  <th> Card Number</th>
+                                  <th> Full Name</th> 
+                                  <th> Age</th> 
+                                  <th> Gender</th> 
+                                  <th> Prescription no</th>
+                                  <th> Doctor</th>
+                                  <th> Payment Mode</th>
+                                  <th> Prescription</th>
+                                  <th> Treatment Card</th>
+                                </thead>
+                                <tbody class="tbpendprescBody">                            
+                                </tbody>                       
+                              </table>                        
+                            </div>
+                          </div>
+                        </div>
+                      </div>  
+                    </div>
+
+                    <div class="tab-pane fade" id="nav-paid" role="tabpanel" aria-labelledby="nav-contact-tab">
+                      <div class="card"> 
+                        <div class="card-header card-header-sm">
+                          <div class="row">
+                            <div class="col-sm-5"></div>
+                            <div class="col-sm-1">
+                              <input class="btn btn-sm btn-warning" type="button" id="btnpaidrefresh" value="Refresh" > 
+                            </div>
+                            <div class="col-sm-3">
+                              <div class="form-group">
+                                <div class="input-group input-group-sm mb-3">                                                            
+                                  <div class="input-group-prepend">
+                                    <span class="input-group-text">Receipt Number:</span>
+                                  </div> 
+                                  <input type="text" class="form-control text-center" id="receiptno"  name="receiptno" placeholder="enter receipt no/card no" > 
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-sm-4"></div>
+                          </div>
+                        </div>                      
+                        <div class="card-body">
+                          <div class="row">                               
+                            <div class="col-sm-12" style="max-height:300px;overflow-y:scroll;" id="divtbdisp">
+                              <table class="table table-sm dispTable table-fixed " id="dispTable">
+                                <thead style="position: sticky;top: 0" class="thead-dark"> 
+                                  <th> Date</th>
+                                  <th> Receipt No</th>
+                                  <th> Card Number</th>
+                                  <th> Full Name</th> 
+                                  <th> Age</th> 
+                                  <th> Gender</th>
+                                  <th> Billed by</th>
+                                  <th> Action</th>
+                                  <!--<th width="25%" style="word-wrap:break-word ;"> Drug/item</th>                          
+                                  <th> Dosage</th>
+                                  <th> freq</th>
+                                  <th> Days</th>
+                                  <th> qty</th>
+                                  <th> Paid</th>-->
+                                </thead>
+                                <tbody class="dispTableBody">             
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                      
+                      </div>
+                    </div>
+                    
+                    <div class="tab-pane fade" id="nav-disp" role="tabpanel" aria-labelledby="nav-profile-tab">                      
+                      <div class="card">                       
+                        <div class="card-body">
+                          <div class="row">
+                            <div class="col-sm-3">
+                              <div class="form-group">                          
+                                <input class="form-control form-control-sm" type="text" id="dispsearch" placeholder="search in list">                         
+                               </div>
+                            </div>
+                            <div class="col-sm-2">
+                              <div class="input-group input-group-sm">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">From</span>
+                                </div> 
+                                <input type="date" class="form-control" id="datefrom">
+                              </div>
+                            </div>
+                            <div class="col-sm-2">
+                              <div class="input-group input-group-sm">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">To</span>
+                                </div> 
+                                <input type="date" class="form-control" id="dateto">
+                              </div>
+                            </div>
+                            <div class="col-sm-2">
+                              <button class="btn btn-sm btn-primary float-left btn_ref_list">load report</button>
+                            </div>
+                           
+                            <div class="col-sm-2">
+                              <button class="btn btn-sm btn-info float-left btnpdf">Export pdf</button> 
+                              
+                            </div>
+                          </div>
+                          
+                          <div class="row mt-2">
+                            <div class="col-sm-12" style="max-height:500px;overflow-y:scroll;">
+                              <table class="table table-sm disptblist table-fixed " id="disptblist">
+                                <thead style="position: sticky;top: 0" class="thead-dark"> 
+                                  <th>Request Date</th>                       
+                                  <th>Card Number</th>                       
+                                  <th>Patient Name</th>                       
+                                  <th width="25%" style="word-wrap:break-word ;"> Drug/item</th>                          
+                                  <th>Quantity</th>
+                                  <th>Paid</th>
+                                  <th>Status</th>
+                                  <th>Pharmacist</th>
+                                  <th>Dispense date</th>
+                                </thead>
+                                <tbody id="disptblistbody">             
+                                </tbody>
+                              </table>                                 
+
+                            </div>
+                          </div>
+    
+                        </div>
+                      
+                      </div>
+                    </div>
+    
+                     
+
+                    
+                    <div class="tab-pane fade" id="nav-workload" role="tabpanel" aria-labelledby="nav-workload-tab">
+                      <div class="card">                       
+                        <div class="card-body">
+                          <div class="row">                            
+                            <div class="col-sm-4">
+                              <div class="input-group input-group-sm">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">Pharmacist</span>
+                                </div> 
+                                <input type="text" class="form-control" id="user">
+                              </div>
+                            </div>
+                            <div class="col-sm-2">
+                              <div class="input-group input-group-sm">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">From</span>
+                                </div> 
+                                <input type="date" class="form-control" id="datefromw">
+                              </div>
+                            </div>
+                            <div class="col-sm-2">
+                              <div class="input-group input-group-sm">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">To</span>
+                                </div> 
+                                <input type="date" class="form-control" id="datetow">
+                              </div>
+                            </div>
+                            <div class="col-sm-2">
+                              <button class="btn btn-sm btn-primary float-left btnworkload">load Report</button>
+                            </div>
+                           
+                            <div class="col-sm-2">
+                              <button class="btn btn-sm btn-info float-left btnpdfw">Export pdf</button>                               
+                            </div>
+                          </div>
+
+                          <div class="row mt-2">
+                            <div class="col-sm-12" style="max-height:500px;overflow-y:scroll;">
+                              <table class="table table-sm workload table-fixed " id="workload">
+                                <thead style="position: sticky;top: 0" class="thead-dark"> 
+                                  <th>Date</th>                       
+                                  <th>Patients</th>                       
+                                  <th>Requests made</th> 
+                                  <th>Dispense made</th>
+                                </thead>
+                                <tbody id="workloadbody">             
+                                </tbody>
+                              </table>                                 
+
+                            </div>
+                          </div>
+
+
+                        </div>
+                      
+                      </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="nav-issue" role="tabpanel" aria-labelledby="nav-issue-tab">
+                      <div class="card">                       
+                        <div class="card-body">
+                          <div class="row">                            
+                            <div class="col-sm-6">
+                              <div class="form-group">  
+                                <label>Isssue drugs to nurses</label>                        
+                                <input class="form-control" type="text" id="rsearchimage" placeholder="filter by card no">                         
+                               </div>
+                            </div>
+                          </div>
+                        </div>
+                      
+                      </div>
+                    </div>
+
+
+                    <div class="tab-pane fade" id="nav-stockbal" role="tabpanel" aria-labelledby="nav-contact-tab">
+                      <div class="card">                       
+                        <div class="card-body">
+                          <div class="row">                            
+                            
+                            <div class="col-sm-2">
+                              <div class="form-group">
+                                <select class="form-control " id="bal_stores">
+                                  <option value="0">Select store</option>
+                                  {% for store in substore %}
+                                  <option value="{{store.store_Id}}">{{store.store_name}}</option>
+                                  {%endfor%}
+                                </select>
+                              </div>
+                            </div>
+                            <div class="col-sm-2">
+                              <div class="form-group">
+                                <input type="button" value="Show Balance" id="btnloadbal" class="form-control btn btn-info">
+                              </div>                              
+                            </div>
+                            <div class="col-sm-2">
+                              <div class="form-group">                          
+                                <input class="form-control" type="text" id="stsearchitem" placeholder="filter by card no">                         
+                               </div>
+                            </div>
+                            <div class="col-sm-4">
+                              <div  id="spinners"  style="display:none;">
+                                <div class="d-flex justify-content-center">
+                                  <div class="spinner-border text-success" role="status">
+                                    <span class="sr-only">...</span>
+                                  </div>
+                                  <div class="spinner-border text-danger" role="status">
+                                    <span class="sr-only">...</span>
+                                  </div>
+                                  <div class="spinner-border text-warning" role="status">
+                                    <span class="sr-only">...</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <div class="col-sm-2">
+                              <div class="form-group">
+                                <input type="button" value="Export Excel" id="btnbalexport" class="form-control btn btn-info">
+                              </div>                              
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-sm-12" style="max-height:500px;overflow-y:scroll;">
+                              <table class="table table-sm stavail table-fixed " id="stavail">
+                                <thead style="position: sticky;top: 0" class="thead-dark">                                                    
+                                  <th width="25%" style="word-wrap:break-word ;"> Drug/item</th>                          
+                                  <th> Available</th>
+                                  <th> Non-Scheme Cost</th>
+                                  <th> Scheme Cost</th>
+                                  <th> Store</th>                                 
+                                </thead>
+                                <tbody id="stavailbody">             
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                      
+                      </div>
+                    </div>
+                  </div>
+                </div>      
+               </div> 
+                     
+               
+  </div>
+</div>
+<!--/.container-->
+<!-- Service request Modal -->
+<div class="modal fade" id="serviceModal" tabindex="-1" role="dialog" aria-labelledby="servicemodalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-top" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        Patient Details
+        <div class="alert hidden" role="alert" id="modalAlert"></div> 
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div> 
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">                    
+              <input class="form-control" type="text" id="pCardNo" placeholder="card number"> 
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            
+            <table class="table table-hover" id="pttable">
+              <thead>
+                <th></th>
+                <th> Card No</th>
+                <th> Patient Name</th>                         
+                <th> Paymode</th>
+                <th> Doctor/Clinician</th>                                          
+              </thead>
+              <tbody class="pttableBody">
+    
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>       
+    </div>
+  </div>
+</div>
+
+<!-- Service request Modal -->
+<div class="modal fade" id="drugModal" tabindex="-1" role="dialog" aria-labelledby="drugModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-top modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        Search drug
+        <div class="alert hidden" role="alert" id="modalAlert"></div> 
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div> 
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">                    
+              <input class="form-control" type="text" id="search_item" placeholder="type to search"> 
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            
+            <table class="table table-hover" id="drugtable">
+              <thead>               
+                <th> Item Name</th>
+                <th> Strength</th>                         
+                <th> cash</th>
+                <th> scheme</th>                                          
+                <th> Balance</th>                    
+              </thead>
+              <tbody class="drugtableBody">
+    
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>       
+    </div>
+  </div>
+</div>
+  
+
+
+<!-- pending presc Modal -->
+<div class="modal fade" id="pendprescmodal" tabindex="-1" role="dialog" aria-labelledby="pendprescmodalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-top modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5>Prescription Details</h5>
+        <div class="alert hidden" role="alert" id="modalAlert"></div> 
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div> 
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-5">
+              <div class="input-group input-group-sm">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Prescription No:</span>
+                </div> 
+                <input type="text" class="form-control" readonly  id="prno">
+              </div>
+          </div> 
+          
+          <div class="col-sm-4">
+            <div class="input-group input-group-sm">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Name:</span>
+              </div> 
+              <input type="text" class="form-control" readonly  id="ptname">
+            </div>
+          </div>
+
+          <div class="col-sm-3">
+            <div class="input-group input-group-sm">
+              <div class="input-group-prepend">
+                <span class="input-group-text">card no:</span>
+              </div> 
+              <input type="text" class="form-control" readonly  id="pid">
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-2">
+          <div class="col-sm-2">
+            <div class="input-group input-group-sm">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Age:</span>
+              </div> 
+              <input type="text" class="form-control" readonly  id="ptage">
+            </div>
+          </div>
+
+          <div class="col-sm-3">
+            <div class="input-group input-group-sm">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Gender:</span>
+              </div> 
+              <input type="text" class="form-control" readonly  id="ptgend">
+            </div>
+          </div>
+
+          <div class="col-sm-4">
+            <div class="input-group input-group-sm">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Paymode:</span>
+              </div> 
+              <input type="text" class="form-control" readonly  id="ptpmode">
+            </div>
+          </div>
+
+          <div class="col-sm-3">
+            <div class="input-group input-group-sm">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Visit No:</span>
+              </div> 
+              <input type="text" class="form-control" readonly  id="visitNo">
+            </div>
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-sm-12" style="max-height:300px;overflow-y:scroll;" id="divtbraise">
+            <table class="table table-sm requestTable table-fixed table-bordered " id="requestTable">
+              <thead style="position: sticky;top: 0" class="thead-dark">                        
+                <th width="25%" style="word-wrap:break-word ;"> Drug/item</th>                          
+                <th> Dosage</th>
+                <th> freq</th>
+                <th> Days</th>
+                <th> Avl.qty</th>
+                <th> qty</th>                          
+                <th> price</th>
+                <th> Total</th>
+                <th></th>
+                <th></th>
+              </thead>
+              <tbody class="requestTableBody">             
+              </tbody>
+            </table>            
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-sm-6">
+            <div class="input-group input-group-sm">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Type to search:</span>
+              </div> 
+              <input list="stitemlist" value="" class="form-control" id="dlvitem">
+              <div>
+                <ul id="searchResult"></ul>
+              </div>              
+            </div>            
+          </div>
+         
+        </div><hr>
+        <div class="row mt-3">
+          <div class="col-sm-3">
+            <input class="btn btn-sm btn-primary" id="btnreqpat" type="button" value="Request Payment">
+          </div>          
+          <div class="col-sm-2">
+            <input class="btn btn-sm btn-success" id="btndispense" type="button" value="Dispense">
+          </div>
+          <div class="col-sm-3">
+            <div class="input-group input-group-sm">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Total Bill:</span>
+              </div> 
+              <input class="form-control text-center text-danger" readonly type="text" name="bill_amt" id="bill_amt"> 
+             </div>
+           </div>
+            <div class="col-sm-2">
+              <input class="btn btn-sm btn-info float-right" id="btnprintpresc" type="button" value="Print">
+            </div>
+            <div class="col-sm-2">
+              <input class="btn btn-sm btn-secondary float-right btnptcard" type="button" value="Patient card">
+            </div>
+          </div>
+        </div>
+      </div>       
+    </div>
+  </div>
+
+  <!-- paid presc Modal -->
+<div class="modal fade" id="paidprescmodal" tabindex="-1" role="dialog" aria-labelledby="paidprescmodalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-top modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5>Receipt Details</h5>
+        <div class="alert hidden" role="alert" id="modalAlert"></div> 
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div> 
+      <div class="modal-body">
+        <div class="row">         
+          <div class="col-sm-4">
+            <div class="input-group input-group-sm">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Name:</span>
+              </div> 
+              <input type="text" class="form-control" readonly  id="pptname">
+            </div>
+          </div>
+
+          <div class="col-sm-3">
+            <div class="input-group input-group-sm">
+              <div class="input-group-prepend">
+                <span class="input-group-text">card no:</span>
+              </div> 
+              <input type="text" class="form-control" readonly  id="ppid">
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-2">
+          <div class="col-sm-2">
+            <div class="input-group input-group-sm">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Age:</span>
+              </div> 
+              <input type="text" class="form-control" readonly  id="pptage">
+            </div>
+          </div>
+
+          <div class="col-sm-3">
+            <div class="input-group input-group-sm">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Gender:</span>
+              </div> 
+              <input type="text" class="form-control" readonly  id="pptgend">
+            </div>
+          </div>
+
+          <div class="col-sm-4">
+            <div class="input-group input-group-sm">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Paymode:</span>
+              </div> 
+              <input type="text" class="form-control" readonly  id="pptpmode">
+            </div>
+          </div>
+
+          <div class="col-sm-3">
+            <div class="input-group input-group-sm">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Visit No:</span>
+              </div> 
+              <input type="text" class="form-control" readonly  id="pvisitNo">
+            </div>
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-sm-12" style="max-height:300px;overflow-y:scroll;" id="divtbpaid">
+            <table class="table table-sm requestTable table-fixed " id="paidrequestTable">
+              <thead style="position: sticky;top: 0" class="thead-dark">                        
+                <th width="25%" style="word-wrap:break-word ;"> Drug/item</th>                          
+                <th> Dosage</th>
+                <th> freq</th>
+                <th> Days</th>
+                <th> Available</th>
+                <th> qty</th>                          
+                <th> price</th>
+                <th> Total</th>
+                <th> Receipt</th>
+              </thead>
+              <tbody class="paidrequestTableBody">             
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-sm-3">
+            <input class="btn btn-sm btn-success float-right" id="btndispensepd" type="button" value="Dispense">
+          </div>
+          <div class="col-sm-3">
+            <div class="input-group input-group-sm">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Total Bill:</span>
+              </div> 
+              <input class="form-control text-center text-danger" readonly type="text"  id="pbill_amt"> 
+             </div>
+          </div>
+          <div class="col-sm-3">
+             <div class="input-group input-group-sm">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Paid Amount:</span>
+              </div> 
+              <input class="form-control text-center text-danger" readonly type="text"  id="pdbill_amt"> 
+             </div>
+
+            </div>
+            <div class="col-sm-3">
+              <input class="btn btn-sm btn-info" id="btnpprintpresc" type="button" value="Print">
+            </div>
+          </div>
+        
+          
+        </div>
+      </div>       
+    </div>
+  </div>
+</div>
+
+
+<!--Patient card summary-->
+     <div class="modal fade" id="patcard" tabindex="-1" aria-labelledby="pcardmodal" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-top modal-dialog-scrollable ">
+        <div class="modal-content">
+          <div class="modal-header"> 
+            <h5 class="modal-title text-center" id="prevnotesModal">Patient Card Notes</h5> 
+            <button type="button" class="btn-close btn-danger" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>        
+          </div>
+          <div class="modal-body"> 
+            <div class="row">
+              <div class="col-sm-3">
+                <div class="input-group input-group-sm mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">From</span>
+                  </div>
+                  <input type="date" class="form-control" id="pcfdate">
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="input-group input-group-sm mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">To</span>
+                  </div>
+                  <input type="date" class="form-control" id="pctdate">
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-check">
+                  <label class="form-check-label">
+                    <input type="checkbox" class="form-check-input" id="chkdate">use dates
+                  </label>
+                </div>                      
+              </div>
+              <div class="col-sm-2">
+                <button type="button" class="btn btn-sm btn-primary" id="pdfgenerate">Generate</button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12" id="divpcardpdf"><!---->
+                <table class="table pcard table-fixed table-bordered " id="pcardpdf">
+                  
+                    {% for prof in profile %}
+                    <thead><th style="text-align: center;" colspan='5'>{{prof.facName}}({{prof.facAbbreviation}})</th></thead>
+                    <thead><th style="text-align: center;" colspan='5'>Phone:{{prof.phoneNo}}, Email: {{prof.email}}</th></thead>
+                      
+                    {%endfor%} 
+                    <thead><th style="text-align: center;" colspan='5'>Patient Card Notes</th></thead>
+                    <tbody id="pcardpdfbody"> 
+                  </tbody>
+                </table>
+              </div>
+            </div>             
+          </div>          
+        </div>
+      </div>
+  </div>
+
+  <!-- walking presc Modal -->
+<div class="modal fade" id="wlkmodal" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="wlkmodalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-top modal-dialog-scrollable prettybigmodal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5>Prescription Details</h5>
+        <div class="alert hidden" role="alert" id="modalAlert"></div> 
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div> 
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-5"  style="display: none;">
+              <div class="input-group input-group-sm">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Prescription No:</span>
+                </div> 
+                <input type="text" class="form-control" readonly  id="prno">
+                <input type="text" class="form-control" readonly  id="visitno">
+              </div>
+          </div>          
+          <div class="col-sm-6">
+            <div class="input-group input-group-sm">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Name:</span>
+              </div> 
+              <input type="text" class="form-control"   id="wlkptname">
+            </div>
+          </div>
+
+          <div class="col-sm-2">
+            <div class="input-group input-group-sm">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Age:</span>
+              </div> 
+              <input type="text" class="form-control" id="wlktage">
+            </div>
+          </div>
+
+          <div class="col-sm-4">
+            <div class="input-group input-group-sm">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Gender:</span>
+              </div> 
+              <select name="" id="wlkgend" class="custom-select">
+                <option value="Female">Female</option>
+                <option value="Male">Male</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-sm-12" style="max-height:300px;overflow-y:scroll;" id="wlkraisebill">
+            <table class="table table-sm wlkrequestTable table-fixed table-bordered " id="wlkrequestTable">
+              <thead style="position: sticky;top: 0" class="thead-dark">                        
+                <th width="25%" style="word-wrap:break-word ;"> Drug/item</th>                          
+                <th> Dosage</th>
+                <th> freq</th>
+                <th> Days</th>
+                <th> Available</th>
+                <th> qty</th>                          
+                <th> price</th>
+                <th> Total</th>
+                <th></th>
+              </thead>
+              <tbody class="wlkrequestTableBody">             
+              </tbody>
+            </table>            
+          </div>
+        </div>
+        <div class="row mt-4">
+          <div class="col-sm-6">
+            <div class="input-group input-group-sm">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Type to search item:</span>
+              </div> 
+              <input list="wlkstitemlist" value="" class="form-control" id="wlkdlvitem">
+              <div>
+                <ul id="wlksearchResult"></ul>
+              </div>              
+            </div>            
+          </div>
+          <div class="col-sm-3">
+            <div class="input-group input-group-sm">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Total Bill:</span>
+              </div> 
+              <input class="form-control text-center text-danger" readonly type="text" name="bill_amt" id="wlkbill_amt"> 
+             </div>
+           </div>
+           <div class="col-sm-3">
+            <div class="input-group input-group-sm">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Paymode:</span>
+              </div> 
+              <select name="" id="wlkpaymode" class="custom-select">
+                <option value="cash">Cash</option>
+                <option value="mobile">mobile</option>
+                <option value="bank-card">bank-card</option>
+              </select>
+            </div>
+          </div> 
+         
+        </div><hr>
+        <div class="row mt-4"> 
+          <div class="col-sm-3" id="divphoneno" style="display: none;">
+            <div class="input-group input-group-sm">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Phone #:</span>
+              </div> 
+              <input class="form-control text-center" type="text" name="" id="wlkphone" placeholder="07xx or 01xx"> 
+              <input hidden  type="text" name="" id="wlkcheckoutid"> 
+              <input hidden type="text" id="mpesatxno"> 
+             </div>
+           </div>
+           <div class="col-sm-1 form-group" id="divsendstk" style="display: none;">
+              <input class="btn btn-sm btn-warning" type="button" id="btnsendstk" value="send stk"> 
+           </div>
+           <div class="col-sm-1 form-group" id="divrefstk" style="display: none;">
+            <input class="btn btn-sm btn-info" type="button" id="btnrefstk" value="Refresh"> 
+         </div>
+
+         <div class="col-sm-3" id="divbanktxno" style="display: none;">
+          <div class="input-group input-group-sm">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Transaction #:</span>
+            </div> 
+            <input class="form-control text-center text-danger" type="text" name="" id="wlkbanktxn"> 
+           </div>
+         </div>
+
+          <div class="col-sm-3">
+            <div class="input-group input-group-sm">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Paid:</span>
+              </div> 
+              <input class="form-control text-center text-danger" type="text" name="" id="wlkpaid_amt"> 
+              
+             </div>
+           </div>         
+              
+           
+           <div class="col-sm-2">
+            <input class="btn btn-sm btn-success" id="wlkbtndispense" type="button" value="Dispense &amp; print">
+          </div>
+            <!--<div class="col-sm-2">
+              <input class="btn btn-sm btn-info float-right" id="btnprintpresc" type="button" value="Print Presc">
+            </div>-->
+          </div>
+        </div>
+      </div>       
+    </div>
+  </div>
+
+     <!--receipt  modal-->
+     <div class="modal fade" id="mobile_modal" tabindex="-1" aria-labelledby="mobile_modal" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-top modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">         
+            <button type="button" class="btn-close btn-danger" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>         
+          </div>
+          <div class="modal-body">
+            <div id="divreceipt" class="receiptdiv" >   
+                  <table class="receiptb table table-sm table-bordered" style="width:100%;border: 1px solid">
+                    <thead>
+                      {% for fac in facility %}
+                      <tr>
+                        <th colspan="4" style="text-align:center;"><small id="hospname">{{fac.facName |title}}</small></th>                        
+                      </tr>
+                      <tr>
+                        <th style="text-align:center;" colspan="4">
+                          <small id="hosphone">Phone:{{fac.phoneNo}}</small>
+                          <small id="hosploc">{{fac.location}}</small>
+                        </th>
+                      </tr>                  
+                      <tr>
+                        <th>
+                          <small>Date:</small>
+                          <small id="trasnsdate"></small>
+                        </th>
+                        <th colspan="3">
+                          <small>Rcpt No:</small>
+                          <small id="rcptno"></small>
+                        </th>                                                                
+                      </tr>
+    
+                      <tr>
+                        <th>
+                          <small>CardNo:</small>
+                          <small id="patid"></small>
+                         </th>
+                         <th colspan="2">
+                          <small>FullName:</small>
+                          <small id="patname"></small>
+                        </th>
+                        <th>
+                          <small>Age:</small>
+                          <small id="patage"></small>
+                         </th>                                               
+                      </tr>
+                      
+                      <tr>
+                        <th style="width:40%"><small>Service/Item</small></th>
+                        <th><small>Qty</small></th>
+                        <th><small>@</small></th>
+                        <th><small>Price(Ksh)</small></th>
+                      </tr>
+    
+                    </thead>
+                    <tbody class="receiptbody">
+                    </tbody>
+                    <tfooter>
+                      <tr>
+                        <td colspan="3"><small>Served by:</small></td>
+                        <td><small id="cashier">{{user.username}}</small></td>                       
+                      </tr>
+                      <tr>
+                        <td colspan="4" style="text-align:center ;"><small id="stmtfooter">{{fac.facAbbreviation}} {{fac.stmtFooter}}</small></td>
+                      </tr>
+                      {% endfor %}
+                    </tfooter>
+    
+                    
+                  </table>
+            </div>
+          
+              
+            </div>        
+            
+          </div>          
+        </div>
+      </div>
+<script>
+  var now = new Date();
+ var month = (now.getMonth() + 1);               
+ var day = now.getDate();
+ if (month < 10) 
+     month = "0" + month;
+ if (day < 10) 
+     day = "0" + day;
+ var today = now.getFullYear() + '-' + month + '-' + day;
+ $('#datefrom').val(today);
+ $('#dateto').val(today);
+ $('#datefromw').val(today);
+ $('#datetow').val(today);
+
+ $('#pcfdate').val(today);
+ $('#pctdate').val(today);
+ 
+
+</script>
+<script src="{% static 'js/phar_reception.js' %}"></script>
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}

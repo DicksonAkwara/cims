@@ -1,0 +1,84 @@
+{% extends "partials/base.html" %}
+{% block title %}Stores{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/store_nav.html'%}
+<div class="container-fluid" id="main">
+    <div class="row row-offcanvas row-offcanvas-left vh-100">
+     
+        <main class="col main h-100 overflow-auto">
+            <div class="row my-4 ml-0">
+        
+                <div class="col-sm-3">
+                    {% for message in messages %}
+                    {% if message %}
+                    <div class="alert alert-{{message.tags}}">
+                        {{message}}
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                    <div class="border p-2 bg-white">
+                        <h4>Add new Supplier</h4>
+                        <hr>
+                        <form id="supplierAdd">
+                            {% csrf_token %}
+                            {{ form | crispy}}
+                          <input class="btn btn-success btn-block" id="buttonAddSupp" type="button" value="Add Supplier">
+                         </form>
+                    </div>
+                </div>
+                <div class="col-sm-9">
+                    <table class="table bg-white">
+                        <thead class="bg-info text-white">
+                        <tr>
+                            <th scope="col">Date</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Phone</th>
+                            <th scope="col">Business Reg.No</th>                       
+                            <th scope="col">status</th>
+                            <th scope="col">Added by</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                         {% if suppliers %}
+                        {% for supp in suppliers %}
+                        <tr>
+                            <td style="display:none;">{{supp.supplierId}}</td>
+                            <td>{{supp.dateAdded}}</td>
+                            <td>{{supp.supplierName}}</td>
+                            <td>{{supp.phoneNo}}</td>                       
+                            <td>{{supp.registrationNo}}</td>
+                            <td>{{supp.accountStatus}}</td>                      
+                            <td>{{supp.addedBy}}</td>   
+                            <td>  
+                             {% if supp.accountStatus.is_dormant %} 
+                             <button class="btn btn-danger btn-small">disable</button>
+                             {% else %} 
+                             <button class="btn btn-success btn-small">enable</button>
+                             {% endif %}           
+                             
+                             
+                         </td>                   
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        <td colspan="6"> No supplier found</td>
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+        <!--/main col-->
+    </div>
+
+</div>
+<!--/.container-->
+<script src="{% static 'js/supplier.js' %}"></script>
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}

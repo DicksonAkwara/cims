@@ -1,0 +1,102 @@
+{% extends "partials/base.html" %}
+{% block title %}Stores{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/store_nav.html'%}
+<div class="container-fluid" id="main">
+     <div class="row my-4 ml-0">        
+                <div class="col-sm-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            Allocate Staff to Store/Substore
+                        </div>
+                        <div class="card-body">
+                            {% if message %}
+                                {% for message in messages %}                    
+                                <div class="alert alert-{{message.tags}}">
+                                    {{message}}
+                                </div>                    
+                                {% endfor %}
+                                {% endif %}
+                                <form id="storeAlloc" method="POST">
+                                    {% csrf_token %}
+                                    {{ form | crispy}}
+                                    <div class="row">
+                                     <div class="col-sm-4">
+                                         <input class="btn btn-success btn-block" id="buttonAllocate" type="submit" value="Allocate">
+                                     </div>
+                                     <div class="col-sm-4">
+                                         <input class="btn btn-warning btn-block" id="buttonEdit" type="button" value="Update">
+                                     </div>
+                                     <div class="col-sm-4">
+                                         <input class="btn btn-danger btn-block" id="buttondorm" type="button" value="Suspend">
+                                     </div>
+                                    </div>                          
+                                 </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            Staff Allocated 
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <input class="form-control" type="text" name="" id="storestaffind" placeholder="search in list">
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                               <div class="col-sm-12">
+                                   <div style="max-height:400px;overflow-y:scroll;" >
+                                       <table class="table table-sm table-hover table-fixed " id="tblitems">
+                                         <thead style="position: sticky;top: 0" class="thead-dark">
+                                           <tr>
+                                               <th >Date Assigned</th>
+                                               <th >Staff Name</th>
+                                               <th >Store Name</th>
+                                               <th >Status</th>
+                                               <th >Assigned by</th>
+                                           </tr>
+                                           </thead>
+                                           <tbody>
+                                            {% if allocate %}
+                                           {% for item in allocate %}
+                                           <tr>
+                                               <td style="display:none;">{{item.enrtyNo}}</td>
+                                               <td>{{item.date}}</td>
+                                               <td>{{item.staffName}}</td>
+                                               <td>{{item.storeName}}</td>                       
+                                               <td>{{item.status}}</td>                                             
+                                               <td>{{item.assignedBy}}</td>                          
+                                           </tr>
+                                           {% endfor %}
+                                           {% else %}
+                                           <td colspan="6"> No store allocated</td>
+                                           {% endif %}
+                                           </tbody>
+                                       </table>
+                                   </div>
+                               </div>
+                            </div>
+
+                        </div>
+                    </div>
+                
+                 
+                    
+                </div>
+    </div>
+     
+     
+
+</div>
+<!--/.container-->
+<script src="{% static 'js/supplier.js' %}"></script>
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}

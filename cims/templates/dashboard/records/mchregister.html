@@ -1,0 +1,311 @@
+{% extends "partials/base.html" %}
+{% block title %}MCH register{% endblock %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% load static %}
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/rec_nav.html' %}
+<div class="container-fluid" id="main">
+    <div class="row">    
+        <main class="col main overflow-auto">
+          <form id="mchregistrationform">
+            {% csrf_token %}
+          <div class="row my-2">
+            <div class="col-md-4 col-sm-4 p-2">
+              <h4>MCH clinic registration</h4>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <select id="patient_type" name="patient_type" class="form-control border-danger">
+                  <option value="">Select visit type</option>
+                  <option value="newPatient">New Patient</option>
+                  <option value="revisit">Revisit</option>                   
+                 </select>
+              </div>
+            </div>
+          </div>       
+               
+              <div class="row my-2"> 
+                <div class="col-sm-4">
+                  <div class="card h-100">
+                    <div class="card-header">
+                      Patient Details
+                    </div>
+                    <div class="card-body">   
+                      <input type="text" hidden name="editPatno" id="editPatno"> 
+                               
+                      <div class="form-group">
+                        <label>Patient Fullname*</label>
+                        <input class="form-control" type="text" id="fullname" name="fullname" required>
+                      </div>
+                      <div class="form-group">
+                        <label>Patient IdNo*</label>
+                        <input class="form-control" type="number" id="idno" name="idno" required >
+                      </div>
+                      <div class="form-group">
+                        <label>Patient PhoneNo*</label>
+                        <input class="form-control" type="number" id="phone" name="phone" placeholder="07xx xxx xxx" required>
+                      </div>
+                      <div class="row">
+                        <div class="col-sm-8">
+                          <div class="form-group">
+                            <label>Patient Age*</label>
+                            <input class="form-control" type="number" id="age" name="age" min="1" max="150" required >
+                          </div>
+                        </div>
+                        <div class="col-sm-4 mt-4">
+                          <small class="text-danger" id="act_years"></small>
+                        </div>
+                      </div>
+                      
+                      <div class="form-group">
+                        <label for="">Date of Birth</label>
+                        <input type="date" class="form-control" name="dob" id="dob">
+                     </div>
+                      <div class="form-group">
+                        <label>Patient Gender*</label>
+                        <select name="gender" id="gender" class="form-control">                      
+                          <option selected value="Female">Female</option>                    
+                        </select>
+                    </div>
+    
+                  </div>
+                </div>
+                </div>           
+    
+               
+                  <div class="col-sm-4">
+                    <div class="card h-100">
+                      <div class="card-header">
+                        Other Details
+                      </div>
+                      <div class="card-body">
+                        <div class="form-group">
+                          <label>County of Residence*</label>
+                          <select name="county" id="county" class="form-control">
+                            <option selected>choose...</option>
+                            {% for county in county %}
+                            <option value="{{county.county_name}}">{{county.county_name}}</option>
+                            {% endfor%} 
+                          </select>
+                        </div>
+                        <div class="form-group">
+                          <label>Sub-county*</label>
+                          <select name="scounty" id="scounty" class="form-control">
+                            <option selected>choose...</option>                        
+                          </select>
+                        </div>
+                        <div class="form-group">
+                          <label>Locality(village)*</label>
+                          <input class="form-control" type="text" id="residence" name="residence"  required>
+                        </div>
+                        <div class="form-group">
+                          <label>Next of Kin Fullname*</label>
+                          <input class="form-control" type="text" id="nokname" name="nokname" required>
+                        </div>
+                        <div class="form-group">
+                          <label>Next of Kin Phone*</label>
+                          <input class="form-control" type="text" id="nokphone" name="nokphone" placeholder="07xx xxx xxx" required>
+                        </div>
+                        <div class="form-group">
+                          <label>Relation to Patient*</label>
+                          <select name="relation" id="relation" class="form-control">
+                            <option selected>Choose...</option>
+                            <option value="Sibling">Sibling</option>
+                            <option value="Spouse">Spouse</option> 
+                            <option value="Parent">Parent</option>
+                            <option value="Guardian">Guardian</option>
+                            <option value="Cousin">Cousin</option>
+                            <option value="Neigbour">Neigbour</option>
+                            <option value="Friend">Friend</option>
+                            <option value="Well-wisher">Well-wisher</option>                   
+                          </select>
+                      </div>
+                    </div>
+                  </div>
+                  </div>
+    
+    
+                  <div class="col-sm-4">
+                    <div class="card h-100">
+                      <div class="card-header">
+                        Visit Details
+                      </div>
+                      <div class="card-body">
+                        <div class="form-group">            
+                          <label>Clinic to visit*</label>
+                          <select id="pos" name="pos" class="form-control">
+                            <option selected>Choose...</option>
+                            {% for point in clinics %}
+                            <option value="{{point.clinicName}}">{{point.clinicName}}</option>
+                            {% endfor%}                    
+                          </select>
+                        </div>
+                        <div class="form-group">
+                          <label>Today's Paymode*</label>
+                          <select name="ppaymode" id="ppaymode" onchange="check_paymode()" class="form-control">
+                            <option selected>Choose...</option>
+                            <option value="Non-scheme">Non-scheme</option>
+                            <option value="Scheme">Scheme</option>                    
+                          </select>
+                        </div>
+                        <div class="form-group">
+                          <label>scheme name*</label>
+                          <select name="pscheme" id="pscheme" class="form-control"><!--Should be fetched dynamically from background-->
+                            <option selected>choose...</option>
+                            {% for item in schemes %}
+                            <option value="{{item.sub_name}}">{{item.sub_name}}</option>
+                            {% endfor%} 
+                          </select>
+                        </div>
+                        <div class="form-group">
+                          <label>Member scheme No.*</label>
+                          <input class="form-control" type="text" id="mbNumber" name="mbNumber">
+                        </div>                    
+                        <button type="submit" name="btnMchReg" id="btnMchReg" class=" mt-3 btn btn-primary">Save Maternal Details</button>
+                        <input class=" mt-3 btn btn-success btnSubmit" style="display:none ;" type="submit" value="Save Details"> <!--to counter javscript error-->
+                        <hr>
+                        <div class="row">
+                          <h6>For new postnatal clinic register Baby/Babies</h6>
+                          <input class=" mt-3 btn btn-success form-control btnRegBaby" type="button" value="Capture Details"> <!--to counter javscript error-->
+                        </div>
+                      </div>
+                    </div>
+                  </div> 
+    
+                </div>          
+            </form>
+        </main>
+        <!--/main col-->
+    </div>
+
+</div>
+<!--/.container-->
+<!-- revisit mode Modal -->
+<div class="modal fade " id="revisitModal" tabindex="-1" role="dialog" aria-labelledby="revisitModal" aria-hidden="true">
+  <div class="modal-dialog modal-lg " role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="revisitModalLongTitle">Search by Patient's CardNo/IDnumber</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <input type="text" class="form-control" id="patno" >
+          </div>         
+        </form>  
+        <table class="table table-hover tableOutput">
+          <thead>
+            <tr>
+              <th scope="col">CardNo</th>
+              <th scope="col">Fullname</th>
+              <th scope="col">IdNumber</th>
+              <th scope="col">Residence</th>
+            </tr>
+          </thead>
+          <tbody class="rs-table-body">
+
+          </tbody>
+        </table>           
+      </div>
+      </div>
+  </div>
+</div>
+<!--end of revisit modal-->
+<!--register baby modal-->
+
+<div class="modal fade " id="bregisterModal" tabindex="-1" role="dialog" aria-labelledby="bregisterModal" aria-hidden="true">
+  <div class="modal-dialog " role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="bregisterModalLongTitle">Register New Baby</h5>
+        <button type="button" class="btn-close btn-danger p-2" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="bbdetailForm">
+          {% csrf_token %}
+          <div class="row mt-2">
+            <div class="col-sm-12">
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label>Maiden Card Number</label>
+                     <input type="text" name="mdcardNo" id="mdcardNo" class="form-control" placeholder="search">                    
+                     <input type="text" id="mdcardNo2" hidden>                    
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <label>Maiden Name</label>
+                  <p id="maidenm" class="text-danger mt-2"></p>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Baby's full Name</label>
+                 <input type="text" name="bbname" id="bbname" class="form-control ">
+              </div>
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label>Sex</label>
+                  <select class="form-control " name="bbsex">
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Inter-sex">Inter-sex</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label>Date of Birth</label>
+                  <input type="date"  name="bdob" id="bdob" class="form-control ">
+                </div>
+              </div>
+            </div>    
+            <div class="form-group">
+              <label>birth place</label>
+              <select class="form-control" name="bbplace">
+                <option value="health facility">health facility</option>
+                <option value="Home with-CHV">Home with-CHV</option>
+                <option value="Home without-CHV">Home without-CHV</option>
+                <option value="on transit">on transit</option>
+              </select>
+            </div> 
+            <div class="form-group">            
+              <input type="button" id="buttonSaveBaby" class="form-control  btn btn-success" value="Save baby details">
+            </div>
+            </div>
+           </div>
+        </form>
+                   
+      </div>
+      </div>
+  </div>
+</div>
+<!--end of revisit modal-->
+
+<!-- alert Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="paymodalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="alert hidden" role="alert" id="modalAlert"></div> 
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>        
+    </div>
+  </div>
+</div>
+<!--end of modal-->
+<script src="{% static 'js/op_register.js' %}"></script>
+
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}

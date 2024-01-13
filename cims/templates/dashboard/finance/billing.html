@@ -1,0 +1,368 @@
+{% extends "partials/base.html" %}
+{% block title %}Patient-billing{% endblock %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% load static %}
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/finance_nav.html' %}
+        
+        <div class="container-fluid">
+          <div class="row my-2">
+            <div class="col-sm-4">
+               <div class="card h-100">
+                <div class="card-header">
+                  Services/items Billing
+                </div>
+                <div class="card-body">
+                  <div class="row">             
+                    <div class="col-sm-6">
+                      <label>Patient Category</label>
+                      <select class="form-control border-danger" id="pat_type">                              
+                        {% for item in patType %}
+                        <option value="{{item.category}}">{{item.category}}</option>
+                        {%endfor%}                                
+                      </select>
+                    </div>
+                     <div class="col-sm-6 " id="div_search"> 
+                      <label>Card Number</label>                
+                      <input class="form-control" type="text" id="pCardNo" placeholder="search by number"> 
+                      <small class="text-danger" id="psearchStatus"></small>
+                     </div>            
+                   </div>
+                   <div class="row mt-3">
+                    <div class="col-sm-12">
+                     <form>
+                       
+                       <input id="cl_patid" type="text" hidden>
+                       <input id="visitno" type="text" hidden>
+
+                      <div class="form-group">
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">Fullname:</span>
+                          </div> 
+                          <input class="form-control" readonly type="text" id="pname">
+                        </div>
+                      </div>
+
+                      <div class="form-group">
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">Paymode:</span>
+                          </div> 
+                          <input class="form-control" readonly type="text" id="pymode">
+                        </div>
+                      </div> 
+
+                     <div id="ipdiv" style="display: none;">
+                      <div class="form-group">
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">Ward:</span>
+                          </div> 
+                          <input class="form-control" readonly type="text" id="pyward">
+                        </div>
+                       </div>
+  
+                        <div class="form-group">
+                          <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">Admitted:</span>
+                            </div> 
+                            <input class="form-control" readonly type="text" id="dateadm">
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">Days:</span>
+                            </div> 
+                            <input class="form-control" readonly type="text" id="admdays">
+                          </div>
+                        </div>
+                     </div> 
+
+                     </form>
+                     <!--<a href="{% url 'future-clinics' %}">click here</a>-->
+                    </div>
+                    </div>
+                </div>
+             
+          
+              </div>          
+              
+              </div>
+            
+              <div class="col-sm-8">
+                <div class="card h-100">
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-md-3">
+                        <input type="button" value="Add Service" class="btn btn-sm form-control btn-success btn-search">                 
+                      </div>
+                      <div class="col-md-3"></div>
+                      <div class="col-md-3">
+                        <input type="button" value="Invoice-summary" class="btn btn-sm  btn-primary" id="btn_inv_summ">
+                      </div>
+                      <div class="col-md-3">
+                        <input type="button" value="Invoice-detailed" class="btn btn-sm  btn-secondary" id="btn_view_invoice">
+                      </div>
+                      
+                    </div>
+      
+                    <div class="row">
+                      <div class="col-md-12 mt-3">
+                         <div style="max-height:500px;overflow-y:scroll;" >
+                          <table class="table table-sm table-striped table-fixed" id="billOutputSvs">
+                            <thead style="position: sticky;top: 0" class="thead-dark">
+                                  <th style="width: 30%;">Service</th>
+                                  <th >Quantity</th>
+                                  <th >Cost</th>
+                                  <th >Total</th>
+                                  <th >Department</th>
+                                  <th ></th>
+                                </thead>
+                              <tbody id='tbservicebody'>
+                           
+                              </tbody>
+                          </table>
+                      </div>
+                      </div>
+      
+                    </div>
+
+                    <div class="row mt-4">
+                      <div class="col-md-3">
+                        <input type="button" value="Generate Preauth" class="btn btn-sm  btn-info" id="btn_preauth">
+                      </div>
+                      <div class="col-md-3">
+                        <input type="button" value="Save Bill" class="btn btn-sm form-control  btn-primary btn-confirm">
+                      </div>
+                      <div class="col-md-3"></div>
+                      <div class="col-md-3">
+                        <div class="form-group">
+                          <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">Bill:</span>
+                            </div> 
+                            <input class="form-control" readonly type="text" id="ttbill" placeholder="0.0">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                
+                 
+           
+               </div>          
+               
+               </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Search service Modal -->
+<div class="modal fade" id="serviceModal" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="servicemodalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-top modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4>Search by service name</h4>
+        <div class="alert hidden" role="alert" id="modalAlert"></div> 
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div> 
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">                    
+              <input class="form-control" type="text" id="search-service" placeholder="service to bill"> 
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            
+            <table class="table table-hover" id="tableOutputSvs">
+              <thead>
+                <tr>                     
+                  <th scope="col">Service Name</th>
+                  <th scope="col">Normal Rate</th> 
+                  <th scope="col">Special Rate</th>                    
+                  <th scope="col">Department</th>                    
+                </tr>
+              </thead>
+              <tbody class="svs-table-body">
+    
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>       
+    </div>
+  </div>
+</div>
+<!--end of modal-->
+
+<!-- Search invoice Modal -->
+<div class="modal fade" id="invoiceModal" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="invoiceModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-top modal-dialog-scrollable verybigmodal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="invheader"></h4>
+        <div class="alert hidden" role="alert" id="modalAlert"></div> 
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div> 
+      <div class="modal-body">       
+        <div class="row">
+          <div class="col-md-12">            
+            <table class="table table-hover" id="tbinvoiceitems">
+              <thead>
+                <tr>                     
+                  <th scope="col">Bill Date</th>
+                  <th scope="col">Department</th>
+                  <th scope="col">Service/Item</th>                   
+                  <th scope="col">Quantity</th>                    
+                  <th scope="col">Cost</th>                    
+                  <th scope="col">Staff</th>                    
+                </tr>
+              </thead>
+              <tbody id="invoicetbbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>       
+    </div>
+  </div>
+</div>
+<!--end of modal-->
+
+
+<!-- summarized invoice Modal -->
+<div class="modal fade" id="suminvoiceModal" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="suminvoiceModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-top modal-dialog-scrollable verybigmodal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4>Summarized Interim Invoice</h4>
+        <div class="alert hidden" role="alert" id="modalAlert"></div> 
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div> 
+      <div class="modal-body">       
+        <div class="row">
+          <div class="col-md-12">            
+            <table class="table table-hover" id="suminvoicetb">
+              <thead>
+                <tr>
+                  <th scope="col">Department</th> 
+                  <th scope="col">Service/Item</th>                  
+                  <th scope="col">Quantity</th>                    
+                  <th scope="col">Cost</th>                    
+                </tr>
+              </thead>
+              <tbody id="suminvoicebody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>       
+    </div>
+  </div>
+</div>
+<!--end of modal-->
+
+
+   <!--preath invoice modal-->
+   <div class="modal fade" id="preauthinvmodal" tabindex="-1" data-backdrop="static" aria-labelledby="preauthinvmodal" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-top modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header"> 
+          <button class="btn btn-sm btn-warning" id="prtinvoice">Download</button> 
+          <button type="button" class="btn-close btn-danger" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>         
+        </div>
+        <div class="modal-body" id="divinvoice">
+          <div class="row">
+            <div class="col-sm-2">
+              <img src="{% static 'images/hosplogo.png' %}" alt="logo.jpg" class=" img-fluid mx-auto d-block">
+            </div>
+            <div class="col-sm-8 text-center">
+              {% for fa in  facility %}
+              <p class ="text-center">
+                <h5 id="fname">{{fa.facName}}({{fa.facAbbreviation}})</h5>
+                <h6 id="address">Address: {{fa.location}}</h6>
+                <h6 id="contact">Contacts:{{fa.phoneNo}} Email:{{fa.email}}</h6>
+              </p>
+              {%endfor%}
+            </div>
+            <div class="col-sm-2">
+              <img src="{% static 'images/hosplogo.png' %}" alt="logo.jpg" class=" img-fluid mx-auto d-block">
+            </div>
+          </div>
+          <h6 class="text-center font-weight-bold">Preauthorization Invoice</h6>
+          <hr>
+
+          <div class="row">
+            <div class="col-sm-3">
+              <h6>Date: <label id="invdate"></label></h6>
+            </div>
+            <div class="col-sm-3">
+              <h6>Scheme: <label id="patfnscheme"></label></h6>
+            </div>
+            <div class="col-sm-3">
+              <h6>Hosp #: <label id="patfnnumber"></label></h6>
+            </div>
+            <div class="col-sm-3">
+              <h6>Patient Name: <label id="patfnname"></label></h6>
+            </div>
+          </div>       
+          <div class="row mt-2">
+            <div class="col-sm-12">              
+                <table class="table table-sm table-bordered tblfnmodal" id="tblfnmodal">
+                  <thead>
+                    <th>Date</th>
+                    <th>Service/item</th>
+                    <th>Quantity</th>                                     
+                    <th>Price</th>                                     
+                    <th>Cost</th>                                    
+                  </thead>
+
+                  <tbody id="tblfnmodalBody"></tbody>
+                  <tfoot id="tblfnmodalfooter"></tfoot>
+                  
+                </table>             
+            </div>                     
+          </div> 
+          </div>        
+          
+        </div>          
+      </div>
+    </div>
+<!--end of modal-->
+<script src="{% static 'js/op_billing.js' %}"></script>
+<script>
+
+  var now = new Date();
+  var month = (now.getMonth() + 1);               
+  var day = now.getDate();
+  if (month < 10) 
+      month = "0" + month;
+  if (day < 10) 
+      day = "0" + day;
+  var today = now.getFullYear() + '-' + month + '-' + day;
+ 
+var daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+var dayName = daysOfWeek[now.getDay()];
+  $('#invdate').text(dayName+','+today);
+
+</script>
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}

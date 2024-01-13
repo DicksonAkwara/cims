@@ -1,0 +1,7 @@
+body {
+    /*background: #d1d5db;*/
+    background-image: url("/static/images/loginimage.jpg");
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    background-size: cover;
+  }

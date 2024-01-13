@@ -1,0 +1,167 @@
+{% extends 'partials/base.html' %}
+{%block title%}User Account {%endblock%}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{%load static%}
+{%block content%}
+<!--<div class="container">
+    <div class="row mt-4 mb-3">
+        <div class="col-md-8 offset-md-2">
+                {% for message in messages %}
+               {% if message %}
+               <div class="alert alert-{{message.tags}}">
+                   {{message}}
+               </div>
+               {% endif %}
+               {% endfor %}
+            <div class="border p-3 bg-light text-dark">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="text-center">New Staff Registration</h3>
+                        <label class="float-right" for="">Already have an account? <a class="text-decoration-none" href="{% url 'user-login' %}">Login</a></label>
+                    </div>
+                </div>
+                <div class="card-body">                 
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-sm-6">
+                            {{form.fullname|as_crispy_field}}
+                        </div>
+                        <div class="col-sm-6">
+                            {{form.national_Id_No|as_crispy_field}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            {{form.email|as_crispy_field}}
+                        </div>
+                        <div class="col-sm-6">
+                            {{form.phone|as_crispy_field}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            {{form.department|as_crispy_field}}
+                        </div>
+                        <div class="col-sm-4">
+                           {{form.user_type|as_crispy_field}}                            
+                        </div>
+                        <div class="col-sm-4">
+                            
+                            {{form.username|as_crispy_field}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            {{form.password1|as_crispy_field}}
+                        </div>
+                        <div class="col-sm-6">
+                            {{form.password2|as_crispy_field}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <input class="btn btn-success form-control" type="submit" value="Create Account">
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="float-right" for="">Already have an account? <a class="text-decoration-none" href="{% url 'user-login' %}">Login</a></label>
+                        </div>
+                    </div>                    
+                </form>
+            </div>
+                
+            </div>
+        </div>
+    </div>
+</div>-->
+<div class="container-fluid" id="main">
+    <!--navbar.html-->
+{% include 'partials/usernav.html' %}
+    <div class="row mt-2">
+      <div class="col-sm-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    Staff Management
+                </div>
+                <div class="card-body">
+                    {% for message in messages %}                    
+                    <div class="alert alert-{{message.tags}}">
+                        {{message}}
+                    </div>                    
+                    {% endfor %}
+                    <form id="usermgmtform" method="POST">
+                        {% csrf_token %}
+                        {{ form | crispy}}
+                        
+                        <div class="row" >
+                         <input type="text" name="userid" id="userid" hidden>
+                         <div class="col-sm-4">
+                             <!--<input class="btn btn-success btn-block" id="buttonAdduser" type="button" value="Create">-->
+                             <input class="btn btn-success form-control" type="submit" value="Create">
+                         </div>
+                         <div class="col-sm-4">
+                             <input class="btn btn-warning btn-block" id="buttonEdituser" type="button" value="Update">
+                         </div>
+                         <div class="col-sm-4">
+                             <input class="btn btn-danger btn-block" id="buttonDeluser" type="button" value="dormant">
+                         </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-8">
+            <div class="card h-100">
+                <div class="card-header">
+                    Staff account Management
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <input class="form-control" type="text" name="" id="usersearch" placeholder="search in list">
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                       <div class="col-sm-12">
+                           <div style="max-height:400px;overflow-y:scroll;" >
+                               <table class="table table-sm table-hover table-fixed " id="tblitems">
+                                 <thead style="position: sticky;top: 0" class="thead-dark">
+                                   <tr>
+                                       <th >staff name</th>
+                                       <th >National Id</th>
+                                       <th >Phone Number</th>
+                                       <th >Username</th>
+                                       <th >Is Active</th>
+                                      
+                                   </tr>
+                                   </thead>
+                                   <tbody id="tblitems">
+                                    {% if users %}
+                                   {% for item in users %}
+                                   <tr>
+                                       <td style="display:none;">{{item.id}}</td>
+                                       <td>{{item.fullname}}</td>
+                                       <td>{{item.national_Id_No}}</td>
+                                       <td>{{item.phone}}</td> 
+                                       <td style="display:none;">{{item.email}}</td>
+                                       <td>{{item.username}}</td>
+                                       <td>{{item.is_active}}</td>
+                                   </tr>
+                                   {% endfor %}
+                                   {% else %}
+                                   <td colspan="6"> No item found</td>
+                                   {% endif %}
+                                   </tbody>
+                               </table>
+                           </div>
+                       </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{% static 'js/'%}"></script>
+{% endblock %}

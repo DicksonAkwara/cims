@@ -1,0 +1,83 @@
+{% extends "partials/base.html" %}
+{% block title %}Paymode{% endblock %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% load static %}
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/rec_nav.html' %}
+<div class="container-fluid" id="main">
+    <div class="row row-offcanvas row-offcanvas-left">
+
+        <main class="col main overflow-auto">
+          <div class="row my-2">
+            <div class="col-md-6 offset-md-3">
+               <div class="border p-3 bg-white">                  
+                 <div class="row">
+                   <div class="col-md-12 " id="div_search">
+                    <h5 class="text-center">Payment Method form</h5> 
+                    <input class="form-control" type="text" id="pCardNo" placeholder="Enter exact cardNo"> 
+                    <small class="text-danger" id="psearchStt"></small>
+                   </div>            
+                 </div>          
+                 <hr>
+                 <div class="row">             
+                   <div class="col-sm-12">                           
+                    <input id="pid" type="text" hidden>
+                    <input id="visitno" type="text" hidden>
+                    <div class="form-group">
+                      <label>Patient Fullname*</label>
+                      <input class="form-control" readonly type="text" id="pname" required>
+                    </div>
+                    <div class="form-group">
+                      <label>Current Paymode*</label>
+                      <input class="form-control" readonly type="text" id="pymode" required>
+                      <input hidden type="text" id="pymode2">
+                    </div> 
+    
+                      <div class="form-group">
+                        <label> Payment method*</label>
+                        <select name="ppaymode" id="ppaymode" class="form-control">
+                          <option selected>Choose...</option>
+                          <option value="Non-scheme">Non-scheme</option>
+                          <option value="Scheme">Scheme</option>                    
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label>scheme name*</label>
+                        <select name="pscheme" id="pscheme" class="form-control"><!--Should be fetched dynamically from background-->
+                          <option selected>choose...</option>
+                          {% for item in schemes %}
+                          <option value="{{item.sub_name}}">{{item.sub_name}}</option>
+                          {% endfor%} 
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label>Member scheme No.*</label>
+                        <input class="form-control" type="text" id="mbNumber" name="mbNumber">
+                      </div>
+                      <div class="row">
+                        <div class="col-sm-12">
+                          <button id="pmodeButton" class="btn btn-success p-2 form-control">Change Method</button>
+                        </div>
+                      </div>            
+                   </div>           
+                 </div>
+          
+              </div>          
+              
+              </div>
+            
+           
+            </div>
+
+        </main>
+        <!--/main col-->
+    </div>
+
+</div>
+<!--/.container-->
+<script src="{% static 'js/recpaymode.js' %}"></script>
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}

@@ -1,0 +1,237 @@
+{% extends "partials/base.html" %}
+{% block title %}Cardex{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/nurse_nav.html'%}
+
+<div class="container-fluid" id="main">        
+          <div class="row mt-2">
+            <div class="col-md-12 col-sm-12 ">                  
+                        <div class="card h-100">
+                            <div class="card-header" id="headingOne">
+                              <div class="row"> 
+                                                             
+                                 <div class="col-sm-3">
+                                    <div class="form-group">
+                                      <div class="input-group input-group-sm mb-3"> 
+                                        <div class="input-group-prepend">
+                                          <span class="input-group-text">Select ward</span>
+                                        </div>
+                                        <select class=" form-control form-control-sm" id="patward"> 
+                                          <option value="none">------------</option>
+                                          {% for ward in wards %}
+                                           <option value="{{ward.wardName}}">{{ward.wardName}}</option>
+                                        {%endfor%}                                                              
+                                        </select>                                        
+                                      </div>                                      
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                  <div class="form-group">
+                                    <div class="input-group input-group-sm mb-3"> 
+                                      <input class="form-control form-control-sm " type="text" id="pCardNo" placeholder="search by card number or name" aria-label="Search">
+                                      <div class="input-group-postpend">
+                                        <small class="text-danger txtsearch"></small>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                               </div>
+                            </div>
+                            
+                            <div class="card-body"> 
+                              <div class="container col-md-12">
+                                <div style="max-height:500px;overflow-y:scroll;" >
+                                  <table class="table table-sm table-bordered table-striped table-fixed" id="ptriage">
+                                    <thead style="position: sticky;top: 0" class="thead-dark">
+                                          <th >Visit Date</th>
+                                          <th >Patient No</th>
+                                          <th >Fullname</th>
+                                          <th >Age</th>
+                                          <th >Sex</th>
+                                          <th >Clinic/ward</th>
+                                          <th >Paymode</th>
+                                          <th >Urgency</th>
+                                        </thead>
+                                      <tbody id='ptriageBody'>
+                                        <tr>
+                                          <td colspan="9">No patients found</td>
+                                        </tr>
+                                      </tbody>
+                                  </table>
+                              </div>
+
+                              </div>
+                           </div>
+                          </div>                       
+                        </div>
+                </div>
+          </div>       
+</div>
+<!--/.container-->
+<!-- cardex Modal -->
+<div class="modal fade" id="cardexModal" tabindex="-1" role="dialog" aria-labelledby="cardexmodalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-top" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-secondary">
+        <h4 id="modal_header"></h4>
+        <div class="alert hidden" role="alert" id="modalAlert"></div> 
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span class="text-danger"  aria-hidden="true">&times;</span>
+        </button>
+      </div> 
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-3"> 
+            <h6 id="cpid"></h6>
+          </div>
+          <div class="col-sm-3"> 
+            <h6 id="cpname"></h6>
+          </div>
+          <div class="col-sm-3"> 
+            <h6 id="cpage"></h6>
+          </div>
+          <div class="col-sm-3"> 
+            <h6 id="cpsex"></h6>
+          </div>
+        </div><hr>
+        <div class="row">
+          <div class="col-sm-8">
+            <div class="form-group">
+              <div class="input-group input-group-sm mb-3"> 
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Cardex Notes</span>
+                </div>
+                <textarea id="cardex_notes_txt" class="form-control" placeholder="start typing..." rows="10"></textarea>                                        
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="row">
+              <div class="col-sm-12 mt-2">
+                <div class="form-group">
+                  <div class="input-group input-group-sm mb-3"> 
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">Date</span>
+                    </div>
+                    <input type="date" class="form-control text-center" id="cdate">                                        
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-12 mt-2">
+                <div class="input-group input-group-sm mb-3"> 
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">Time</span>
+                  </div>
+                  <input type="time" class="form-control text-center" id="timepicker">                                       
+                  <input type="text" readonly hidden id="pno">                                       
+                  <input type="text" readonly hidden id="vno">                                       
+                </div>
+              </div>
+              </div>
+              <div class="row mt-2">
+                <div class="col-sm-4">
+                  <input type="button" class="text-center btn btn-success" id="save_cdx" value="Save Cadex">
+                </div>
+              </div>
+
+              <div class="row mt-4">
+                <div class="col-sm-4">
+                  <input type="button" class="text-center btn btn-info" id="cdx_patcard" value="Patient Card">
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>       
+    </div>
+  </div>
+</div>
+<!--end of modal-->
+
+<!-- Cardex view Modal -->
+<div class="modal fade" id="cdxModal" tabindex="-1" role="dialog" aria-labelledby="cdxModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-top modal-dialog-scrollable verybigmodal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 id="mdheader"></h5>
+        <button type="button" class="close text-danger" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>     
+      <div class="modal-body">
+        <div class="row mt-1">
+           <div class="col-sm-4">
+            <div class="form-group">
+                <div class="input-group input-group-sm mb-3">                                                            
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">From:</span>
+                  </div> 
+                  <input type="date" class="form-control text-center" id="datefrom" > 
+                </div>
+              </div>
+        </div>
+          <div class="col-sm-4">
+              <div class="form-group">
+                  <div class="input-group input-group-sm mb-3">                                                            
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">To:</span>
+                    </div> 
+                    <input type="date" class="form-control text-center" id="dateto" > 
+                    <input type="text" hidden readonly id="rvno" > 
+                    <input type="text" hidden readonly id="rpno" > 
+                  </div>
+                </div>
+          </div>
+          <div class="col-sm-4">
+              <div class="form-group">
+                  <input type="button" value="Refresh" id="cdx_list" class="btn btn-sm btn-primary float-right">
+              </div>
+          </div>
+        </div>
+        <div class="row mt-1">
+          <div class="col-sm-12" style="max-height:300px;overflow-y:scroll;">
+            <table class="table table-sm table-fixed " id="cdxtable">
+              <thead style="position: sticky;top: 0" class="thead-dark"> 
+                <th> Date</th>
+                <th> Time</th>
+                <th> Notes</th>
+                <th> Nurse</th>
+                <th> Recorded at</th>
+                <th></th>
+              </thead>
+              <tbody id="cdxtableBody">             
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>   
+    </div>
+  </div>
+</div>
+<!--end of modal-->
+
+
+<script src="{% static 'js/nurse_cardex.js' %}"></script>
+<script>
+  var now = new Date();
+ var month = (now.getMonth() + 1);               
+ var day = now.getDate();
+ if (month < 10) 
+     month = "0" + month;
+ if (day < 10) 
+     day = "0" + day;
+ var today = now.getFullYear() + '-' + month + '-' + day;
+ $('#cdate').val(today);
+ $('#datefrom').val(today);
+ $('#dateto').val(today);
+</script>
+
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}

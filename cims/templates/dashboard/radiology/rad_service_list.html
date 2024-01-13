@@ -1,0 +1,112 @@
+{% extends "partials/base.html" %}
+{% block title %}rad-reports{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/rad_nav.html'%}
+{% csrf_token %}
+<div class="container-fluid" id="main">
+    <div class="row row-offcanvas row-offcanvas-left vh-100">
+       <main class="col main overflow-auto">
+        <div class="card mt-2 h-100">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                           <input type="text" name="" id="radsvcsearch" class="form-control form-control-sm" placeholder="type to filter">
+                        </div>
+                    </div> 
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                           <input type="button" id="add_svc" class="btn btn-sm btn-primary" value="Add New Exam">
+                        </div>
+                    </div> 
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="col-sm-12" style="max-height:500px;overflow-y:scroll;">
+                    <table class="table table-sm table-fixed " id="radsvctable">
+                      <thead style="position: sticky;top: 0" class="thead-dark">
+                        <th width="25%" style="word-wrap:break-word ;"> Service Name</th>                          
+                        <th> Normal Price</th>
+                        <th> Scheme Price</th>
+                        <th> Availability</th>
+                        <th> </th>
+                      </thead>
+                      <tbody id="radsvctableBody">   
+                        {% for svs in service %}
+                          <tr>
+                            <td style="display: none;">{{svs.scode}}</td>
+                            <td>{{svs.service_name}}</td>
+                            <td>{{svs.normal_rate}}</td>
+                            <td>{{svs.scheme_rate}}</td>
+                            <td>{{svs.status}}</td>
+                            <td><button class="btn btn-warning" id="btnEditSvs">Edit</button></td>
+                          </tr>
+                        {%endfor%}          
+                      </tbody>
+                    </table>
+                  </div>
+            </div>
+        </div>
+         
+        </main>
+        <!--/main col-->
+    </div>
+
+</div>
+<!--/.container-->
+<div class="modal fade" id="addsvcModal" tabindex="-1" aria-labelledby="bill_modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title text-center" id="modalTitle">
+            Add new radiology examination
+          </h5>
+          <button type="button" class="close text-danger" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>         
+        </div>
+        <div class="modal-body">        
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label>Service Name</label>
+                        <input readonly hidden type="text" id="sid" >
+                        <input class="form-control" type="text" id="svname" >
+                    </div>
+                    <div class="form-group">
+                        <label>Normal price</label>
+                        <input class="form-control" type="number" id="svnprice" >
+                    </div>
+                    <div class="form-group">
+                        <label>Scheme price</label>
+                        <input class="form-control" type="number" id="schprice" >
+                    </div>
+                    <div class="form-group">
+                        <label>Availability</label>
+                        <select class="form-control" id="avstatus">
+                            <option value="none">-------</option>
+                            <option value="Active">Active</option>
+                            <option value="Os">Out of Service</option>
+                          </select>
+                    </div>                    
+                </div>
+              
+              <div class="col-sm-6">
+                <input type="button" class="btn btn-success float-left" id="btn_addsvc" value="Save">               
+              </div>
+              <div class="col-sm-6">
+                <input type="button" class="btn btn-primary float-right" id="btn_updatesvs" value="Update"> 
+               </div>
+            </div>          
+          </div>       
+        </div>          
+      </div>
+    </div>
+    <script src="{% static 'js/rad_reception.js' %}"></script>
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}

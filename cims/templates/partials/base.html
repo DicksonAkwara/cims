@@ -1,0 +1,39 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static '/font-awesome/css/all.min.css' %}">
+    <link rel="stylesheet" href="{% static '/css/quill.snow.css' %}">
+    <link rel="stylesheet" href="{% static '/css/bootstrap4.min.css' %}">
+    <script src="{% static '/js/jquery-3.2.1.min.js' %}"></script> 
+    <script src="{% static '/js/bootstrap.min.js' %}" ></script>
+    <script src="{% static 'js/sweetalert.min.js' %}"></script>
+    <script src="{% static 'js/chart.min.js' %}"></script>    
+    <script src="{% static 'js/quill.js' %}"></script>    
+    <style>
+      .verybigmodal {
+        min-width: 95%;
+     }
+     .prettybigmodal {
+        min-width: 80%;
+     }
+     @media print {
+    header,footer {
+      display: none !important;
+    }
+  }
+    </style>
+    <title>
+      {% block title %}Default Title{% endblock %}
+  </title>    
+  </head>
+  <body>
+    {% block content %}{% endblock %}
+    
+
+  </body>
+</html>

@@ -1,0 +1,319 @@
+{% extends "partials/base.html" %}
+{% block title %}Triage{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/nurse_nav.html'%}
+<div class="container-fluid" id="main">        
+          <div class="row mt-2">
+            <div class="col-md-12 col-sm-12 ">                  
+                        <div class="card h-100">
+                            <div class="card-header" id="headingOne">
+                              <div class="row">                              
+                                <div class="col-sm-3">
+                                  <div class="form-group">
+                                    <div class="input-group input-group-sm mb-3"> 
+                                      <div class="input-group-prepend">
+                                        <span class="input-group-text">Select ward</span>
+                                      </div>
+                                      <select class=" form-control form-control-sm" id="patward"> 
+                                        <option value="none">------------</option>
+                                        {% for ward in wards %}
+                                         <option value="{{ward.wardName}}">{{ward.wardName}}</option>
+                                      {%endfor%}                                                              
+                                      </select>                                        
+                                    </div>                                      
+                                  </div>
+                                </div>
+                                <div class="col-sm-4">
+                                  <div class="form-group">
+                                    <div class="input-group input-group-sm mb-3"> 
+                                      <input class="form-control form-control-sm " type="text" id="pCardNo" placeholder="search by card number or name" aria-label="Search">
+                                      <div class="input-group-postpend">
+                                        <small class="text-danger txtsearch"></small>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-sm-2">
+                                  <div class="form-group">
+                                    <input class="btn btn-success btn-sm"  type="button" id="btntgreport" value="Triage List">
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="card-body"> 
+                              <div class="container col-md-12">
+                                <div style="max-height:500px;overflow-y:scroll;" >
+                                  <table class="table table-sm table-bordered table-striped table-fixed" id="ptriage">
+                                    <thead style="position: sticky;top: 0" class="thead-dark">
+                                          <th >Visit Date</th>
+                                          <th >Patient No</th>
+                                          <th >Fullname</th>
+                                          <th >Age</th>
+                                          <th >Sex</th>
+                                          <th >Clinic/ward</th>
+                                          <th >Paymode</th>
+                                          <th >Urgency</th>
+                                        </thead>
+                                      <tbody id='ptriageBody'>                                       
+                                      </tbody>
+                                  </table>
+                              </div>
+
+                              </div>
+                           </div>
+                          </div>                       
+                        </div>
+                </div>
+          </div>       
+</div>
+<!--/.container-->
+<!-- Service request Modal -->
+<div class="modal fade" id="serviceModal" tabindex="-1" role="dialog" aria-labelledby="servicemodalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-top" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="modal_header"></h4>
+        <div class="alert hidden" role="alert" id="modalAlert"></div> 
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div> 
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">                    
+              <input class="form-control" type="text" id="search_service" placeholder="service to order"> 
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            
+            <table class="table table-hover" id="resultTable">
+              <thead>
+                <tr>                     
+                  <th scope="col">Service Name</th>
+                  <th scope="col">Normal Rate</th> 
+                  <th scope="col">Special Rate</th>                    
+                  <th scope="col">Department</th>                    
+                </tr>
+              </thead>
+              <tbody class="resultTableBody">
+    
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>       
+    </div>
+  </div>
+</div>
+<!--end of modal-->
+
+<!-- alert Modal -->
+<div class="modal fade" id="triagemodal" tabindex="-1" role="dialog" aria-labelledby="triagemodalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-top modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4>List of Traged patients Today</h4>
+        <button type="button" class="close text-danger" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>     
+      <div class="modal-body">
+        <div class="row mt-1">
+            <div class="col-sm-3">
+              <div class="form-group">
+                  <div class="input-group input-group-sm mb-3">                                                            
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">Search:</span>
+                    </div> 
+                    <input type="text" class="form-control text-center" id="searchtxt" > 
+                  </div>
+                </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="form-group">
+                <div class="input-group input-group-sm mb-3">                                                            
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">From:</span>
+                  </div> 
+                  <input type="date" class="form-control text-center" id="datefrom" > 
+                </div>
+              </div>
+        </div>
+          <div class="col-sm-3">
+              <div class="form-group">
+                  <div class="input-group input-group-sm mb-3">                                                            
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">To:</span>
+                    </div> 
+                    <input type="date" class="form-control text-center" id="dateto" > 
+                  </div>
+                </div>
+          </div>
+          <div class="col-sm-2">
+              <div class="form-group">
+                  <input type="button" value="View list" id="btnvlist" class="btn btn-sm btn-primary">
+              </div>
+          </div>
+        </div>
+        <div class="row mt-1">
+          <div class="col-sm-12" style="max-height:300px;overflow-y:scroll;">
+            <table class="table table-sm trgtable table-fixed " id="trgtable">
+              <thead style="position: sticky;top: 0" class="thead-dark"> 
+                <th> Date</th>
+                <th> Card No</th>
+                <th> Patient name</th>
+                <th> Age</th>
+                <th> Temp</th>
+                <th> BP</th>
+                <th> Pulse</th>                          
+                <th> height</th>
+                <th> Weight</th>
+              </thead>
+              <tbody id="trgtableBody">             
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>   
+    </div>
+  </div>
+</div>
+<!--end of modal-->
+
+<!-- triage entry Modal -->
+<div class="modal fade" id="triageFormModal" tabindex="-1" role="dialog" aria-labelledby="triageFormModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-top" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="modal_header"></h4> 
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" class="text-danger">&times;</span>
+        </button>
+      </div> 
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-4">
+            <label><strong>Card No:</strong></label>
+            <label id="last_visit" ></label>
+          </div>
+          <div class="col-sm-8">
+            <label><strong>Name:</strong></label>
+            <label id="pname"></label>
+          </div>                   
+        </div>
+        <div class="row">
+          <div class="col-sm-2">
+            <label><strong>Age:</strong></label>
+            <label id="pat_age"></label>
+          </div>
+          <div class="col-sm-3">
+            <label><strong>Gender:</strong></label>
+            <label id="pgender"></label>
+          </div> 
+
+          <div class="col-sm-4">
+            <label><strong>Paymode:</strong></label>
+            <label id="pymode"></label>
+          </div>
+          <div class="col-sm-3">
+            <label><strong>Urgency:</strong></label>
+            <label id="urgency"></label>
+          </div>          
+        </div><hr>
+
+        <div class="row">
+          <div class="col-sm-12">
+            <form action="" id="triageForm">
+                <input readonly hidden type="text" name="patid" id="patid" >
+                <input readonly hidden type="text" name="vno" id="vno" >
+
+                <div class="form-group row">
+                  <label for="inputPassword" class="col-sm-4 col-form-label">Temperature(C)</label>
+                  <div class="col-sm-8">
+                    <input type="number" class="form-control" name="btemp" id="btemp">
+                  </div>
+                </div>
+
+              <div class="form-group row">
+                <label for="inputPassword" class="col-sm-4 col-form-label">Blood pressure(mmHg)</label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" id="bpress" name="bpress">
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="inputPassword" class="col-sm-4 col-form-label">Pulse rate(b/m)</label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" id="pulse" name="pulse">
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="inputPassword" class="col-sm-4 col-form-label">height(cm)</label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" id="bheight" name="bheight">
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="inputPassword" class="col-sm-4 col-form-label">Weight(kg)</label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" id="bweight" name="bweight">
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="inputPassword" class="col-sm-4 col-form-label">Patient Urgency</label>
+                <div class="col-sm-8">
+                  <select class="form-select form-control" id="paturgency" name="paturgency"> 
+                    <option value="">---------</option>                             
+                    <option value="Normal">Normal</option>
+                    <option value="Mild">Mild</option>                                                         
+                    <option value="Critical">Critical</option>                                                         
+                  </select> 
+                </div>
+              </div>
+               <div class="form-group">
+                <div class="row mt-2">
+                  <div class="col-sm-6">
+                    <input class="btn btn-success float-right"  type="button" id="btnsave" value="Save Vitals">
+                  </div>
+                  <div class="col-sm-6">
+                    
+                  </div>
+                </div>
+              </div>
+              </form>
+          </div>
+        </div>
+        
+      </div>       
+    </div>
+  </div>
+</div>
+<!--end of modal-->
+<script>
+  var now = new Date();
+ var month = (now.getMonth() + 1);               
+ var day = now.getDate();
+ if (month < 10) 
+     month = "0" + month;
+ if (day < 10) 
+     day = "0" + day;
+ var today = now.getFullYear() + '-' + month + '-' + day;
+ $('#datefrom').val(today);
+ $('#dateto').val(today);
+</script>
+<script src="{% static 'js/nurse_ip_triage.js' %}"></script>
+
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}

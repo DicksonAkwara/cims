@@ -1,0 +1,206 @@
+{% extends "partials/base.html" %}
+{% block title %} farewell-Billing{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/fwnav.html'%}
+<div class="container-fluid">
+    <div class="row my-2">
+      <div class="col-sm-4">
+         <div class="card h-100">
+          <div class="card-header"></div>
+          <div class="card-body">
+                <div class="row">
+                  <div class="col-md-6">
+                    <input type="button" value="Search Deceased" class="btn btn-sm btn-info float-left btnSearchDec">                 
+                  </div>
+                </div>
+              
+                <div class="row mt-2">
+                  <div class="input-group mb-3">                                                            
+                    <div class="input-group-prepend">
+                    <span class="input-group-text">Bid/Int Number:</span>
+                    </div> 
+                    <input class="form-control" type="text" id="dnumber" readonly>
+                </div> 
+
+                <div class="input-group mb-3">                                                            
+                  <div class="input-group-prepend">
+                  <span class="input-group-text">Name:</span>
+                  </div> 
+                  <input class="form-control" type="text" id="dname" readonly>
+              </div>
+
+              <div class="input-group mb-3">                                                            
+                <div class="input-group-prepend">
+                <span class="input-group-text">Sex:</span>
+                </div> 
+                <input class="form-control" type="text" id="dsex" readonly >
+            </div>
+
+            <div class="input-group mb-3">                                                            
+              <div class="input-group-prepend">
+              <span class="input-group-text">Nok Name:</span>
+              </div> 
+              <input class="form-control" type="text" id="nname" readonly >
+          </div>
+          <div class="input-group mb-3">                                                            
+            <div class="input-group-prepend">
+            <span class="input-group-text">Nok Phone:</span>
+            </div> 
+            <input class="form-control" type="text" id="nphone" readonly >
+        </div>
+                </div>
+
+          
+             
+          </div>
+       
+    
+        </div>          
+        
+        </div>
+      
+        <div class="col-sm-8">
+          <div class="card h-100">
+            <div class="card-header"></div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-4">
+                  <input type="button" value="View Bill" class="btn btn-sm btn-primary float-left btn-search">                 
+                </div>
+
+                <div class="col-md-4">
+                  <input type="button" value="Add Service" class="btn btn-sm btn-success float-right btn-search">                 
+                </div>
+                <div class="col-md-4">
+                  <input type="button" value="Save Bill" id="btnSaveBill" class="btn btn-sm btn-danger float-right">
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-12 mt-3">
+                   <div style="max-height:300px;overflow-y:scroll;" >
+                    <table class="table table-sm table-striped table-fixed" id="billOutputSvs">
+                      <thead style="position: sticky;top: 0" class="thead-dark">
+                            <th style="width: 30%;">Service</th>
+                            <th >Quantity</th>
+                            <th >Cost</th>
+                            <th >Total</th>
+                            <th >Department</th>
+                            <th ></th>
+                          </thead>
+                        <tbody id='tbservicebody'>
+                     
+                        </tbody>
+                    </table>
+                </div>
+                </div>
+
+              </div>
+
+            </div>
+          
+           
+     
+         </div>          
+         
+         </div>
+      </div>
+  </div>
+</div>
+</div>
+
+<!-- Search deaceased details Modal -->
+<div class="modal fade" id="bodySearchModal" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="servicemodalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-top" role="document">
+  <div class="modal-content">
+  <div class="modal-header">
+    <h4>Search details by number/id/name</h4>
+    <div class="alert hidden" role="alert" id="modalAlert"></div> 
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div> 
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group">                    
+          <input class="form-control" type="text" id="searchtxt" placeholder="search...."> 
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        
+        <table class="table table-hover" id="tbdeceased">
+          <thead>
+            <tr>                     
+              <th scope="col">Fw No</th>
+              <th scope="col">Deceased Name</th> 
+              <th scope="col">Id Number</th>                     
+              <th scope="col">Ob number</th>                    
+              <th scope="col">Nok name</th>                   
+            </tr>
+          </thead>
+          <tbody class="tbdeceasedBody">
+  
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>       
+  </div>
+  </div>
+  </div>
+  <!--end of modal-->
+
+<!-- Search service Modal -->
+<div class="modal fade" id="serviceModal" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="servicemodalTitle" aria-hidden="true">
+<div class="modal-dialog modal-lg modal-dialog-top" role="document">
+<div class="modal-content">
+<div class="modal-header">
+  <h4>Search by service name</h4>
+  <div class="alert hidden" role="alert" id="modalAlert"></div> 
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div> 
+<div class="modal-body">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group">                    
+        <input class="form-control" type="text" id="search-service" placeholder="service to bill"> 
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      
+      <table class="table table-hover" id="tbsearchsvs">
+        <thead>
+          <tr>                     
+            <th scope="col">Service Name</th>
+            <th scope="col">Normal Rate</th> 
+            <th scope="col">Special Rate</th>                    
+            <th scope="col">Department</th>                    
+          </tr>
+        </thead>
+        <tbody class="tbsearchsvsbody">
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>       
+</div>
+</div>
+</div>
+<!--end of modal-->
+<script src="{% static 'js/farewell.js' %}"></script>
+
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}

@@ -1,0 +1,80 @@
+{% extends "partials/base.html" %}
+{% block title %}Theatre checklist{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/nurse_nav.html'%}
+<div class="container-fluid" id="main">
+    <div class="row row-offcanvas row-offcanvas-left vh-100">
+       <main class="col main overflow-auto">
+        <div class="card mt-2 h-100">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="">Select Theater</label>
+                            <select class=" form-control" id="patheater"> 
+                                <option value="">-------------</option>                             
+                                <option value="All">All</option>                             
+                                {% for theater in thr %}
+                                <option value="{{theater.Id}}">{{theater.Name}}</option>
+                                {%endfor%}                                
+                              </select>
+                        </div>
+                    </div>
+                    
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="">Operation Stage</label>
+                            <select class=" form-control" id="optype"> 
+                                <option value="">-------------</option>                                                          
+                                <option value="Pre-Operation">Pre-Operation</option>                             
+                                <option value="Inter-Operation">Inter-Operation</option>   
+                                <option value="Post-Operation">Post-Operation</option>   
+                              </select>
+                        </div>
+                       
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="">Search Patient</label>
+                                <input type="text" class="form-control" name="" id="checkf">
+                            </div>                        
+                    </div>
+                                  
+                    
+                </div>
+            </div>
+            <div class="card-body">
+               
+
+            </div>
+        </div>
+         
+        </main>
+        <!--/main col-->
+    </div>
+
+</div>
+<!--/.container-->
+<script>
+
+    var now = new Date();
+    var month = (now.getMonth() + 1);               
+    var day = now.getDate();
+    if (month < 10) 
+        month = "0" + month;
+    if (day < 10) 
+        day = "0" + day;
+    var today = now.getFullYear() + '-' + month + '-' + day;
+   
+    $('#admf').val(today);
+    $('#admt').val(today);
+
+</script>
+<script src="{% static 'js/nurse_adm.js' %}"></script>
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}

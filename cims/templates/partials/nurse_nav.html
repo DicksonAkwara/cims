@@ -1,0 +1,116 @@
+
+{% load static %}
+<nav class="navbar navbar-dark bg-info navbar-expand-md justify-content-center ">
+    <a href="{% url 'sysindex' %}" class="navbar-brand d-flex w-20 mr-auto">TIBASOFT</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsingNavbar3">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="navbar-collapse collapse w-100" id="collapsingNavbar3">
+        <ul class="navbar-nav w-100 justify-content-center">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
+                  Out-Patient
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <li><a class="dropdown-item" href="{% url 'triage-desk' %}">Triage</a></li>                  
+                  <li><a class="dropdown-item" href="{% url 'nurse_ops' %}">Services &amp; Drugs</a></li> 
+                  <li><a class="dropdown-item" href="#">Patient Card</a></li>
+                 </ul>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
+                  In-Patient
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="{% url 'nurse_adm' %}">Admissions</a></li>
+                    <li><a class="dropdown-item" href="{% url 'nurse_ip_triage' %}">Triage</a></li>                  
+                    <li><a class="dropdown-item" href="{% url 'nurse_cardex' %}">Cardex</a></li>                                    
+                    <li><a class="dropdown-item" href="{% url 'nurse_ip_ops' %}">Service Posting</a></li>                  
+                    <li> <a class="dropdown-item" href="{% url 'nurse_ip_ops' %}">Dispense</a></li>                                  
+                    <li> <a class="dropdown-item" href="{% url 'nurse_ip_ops' %}">Request</a></li>                                  
+                    <li> <a class="dropdown-item" href="{% url 'nurse_reff' %}">Referral</a></li>
+                    <li> <a class="dropdown-item" href="{% url 'nurse_disch' %}">Discharge</a></li>
+                </ul>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
+                  Theater
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="{% url 'theater_adm' %}">Admissions</a></li>
+                  <li><a class="dropdown-item" href="{% url 'theatre_checklist' %}">Checklist</a></li>                 
+                  <li> <a class="dropdown-item" href="{% url 'theatre_bill' %}">Billing</a></li>
+                  <li><a class="dropdown-item" href="{% url 'theatre_services' %}">Procedures</a></li>                                                    
+                  <li> <a class="dropdown-item" href="{% url 'theatre_discharge' %}">Discharge</a></li>
+                </ul>
+              </li>  
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
+                  Stocks
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <li><a class="dropdown-item" href="#">Requisition</a></li>
+                  <li><a class="dropdown-item" href="#">Approval</a></li>                 
+                  <li> <a class="dropdown-item" href="#">Reconciliation</a></li>
+                </ul>
+              </li>       
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'nurse_report' %}">Reports</a>
+      </li>      
+        </ul>
+        <ul class="nav navbar-nav ml-auto w-100 justify-content-end">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">logged in as {{user.username}} </a>
+                <input type="text" id="ussname" hidden readonly value="{{user.username}}">
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Account</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="#" data-target="#myModal" data-toggle="modal">Sign Out</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+
+<!--Sign out modal-->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title" id="myModalLabel">SMART Sign Out</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">×</span>
+                  <span class="sr-only">Close</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <p>Do you really want to exit from system</p>               
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-primary-outline btnlogout" >Yes</button>
+          </div>
+      </div>
+  </div>
+</div>
+<script >  
+    $('[data-toggle=offcanvas]').click(function() {
+      $('.row-offcanvas').toggleClass('active');
+    });
+
+    $('.btnlogout').on('click',function(){
+        window.location.href = "{% url 'user-logout' %}";
+    })
+</script> 
+
+
+
+
+
+    
+    
+
+
+

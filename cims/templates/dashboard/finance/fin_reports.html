@@ -1,0 +1,82 @@
+{% extends "partials/base.html" %}
+{% block title %}Patient-Refunds{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/finance_nav.html'%}
+<div class="container-fluid" id="main">
+    <div class="row my-2">
+            <div class="col-sm-12">
+              <div class="card h-100">
+                      <div class="card-header">
+                       <div class="row">
+                        <div class="col-sm-3">
+                          <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">Report Name</span>
+                            </div> 
+                            <select class="form-control form-control" id="schpat">                                                      
+                              {% for rep in reports %}
+                              <option value="{{rep.reportName}}">{{rep.reportName}}</option>
+                              {%endfor%}                                
+                            </select> 
+                          </div>
+                      </div>
+                      <div class="col-sm-3">
+                        <div class="input-group input-group-sm">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">From</span>
+                          </div> 
+                          <input type="date" class="form-control form-control-sm" id="ffdate"></input>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                      <div class="input-group input-group-sm">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">To</span>
+                        </div> 
+                        <input type="date" class="form-control form-control-sm" id="ftdate"></input>
+                      </div>
+                    </div>
+                    <div class="col-sm-3">                      
+                        <input type="button" class="btn btn-sm btn-success" id="btngenrep" value="Generate"></input>                      
+                    </div>
+                       </div>
+                      </div>
+                      <div class="card-body">
+                        <div class="repdiv">
+
+                        </div>
+                      </div>
+              </div> 
+                        
+             </div>          
+            
+         </div>
+       
+    
+
+</div>
+
+<script>
+
+  var now = new Date();
+  var month = (now.getMonth() + 1);               
+  var day = now.getDate();
+  if (month < 10) 
+      month = "0" + month;
+  if (day < 10) 
+      day = "0" + day;
+  var today = now.getFullYear() + '-' + month + '-' + day;
+ 
+  $('#ffdate').val(today);
+  $('#ftdate').val(today);
+
+</script>
+
+<script src="{% static 'js/cashpoint.js' %}"></script>
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}

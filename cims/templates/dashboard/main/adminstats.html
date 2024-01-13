@@ -1,0 +1,192 @@
+{% extends "partials/base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% load static %}
+{% block content %}
+    <!--navbar.html-->
+{% include 'partials/topnav.html' %}
+
+<div class="containe-fluid">
+  <div class="row mt-3 ml-3 mr-3">
+    <div class="col-sm-12 mt-3">
+      <h6 id="">Today Briefs</h6>
+    </div>
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <div class="card border-primary">
+                                <div class="card-body bg-primary">
+                                    <div class="card-body text-white">
+                                        <span class="float-right summary_icon"> <i class="fa fa-users "></i></span>
+                                        <h6>New patients: <b id="npat"></b></h6>
+                                        <h6>Revisits: <b id="rvpat"></b></h6>
+                                        <h6>Total: <b id="ttpat"></b></h6>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <a href="#" class="text-primary float-right">View OPD <span class="fa fa-angle-right"></span></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card border-warning">
+                                <div class="card-body bg-warning">
+                                    <div class="card-body text-white">
+                                        <span class="float-right summary_icon"> <i class="fa fa-bed"></i></span>
+                                        <h6>Admissions: <b id="tadm"></b></h6>
+                                        <h6>Ward occupancy: <b id="tocc"></b></h6>
+                                        <h6>Referrals: <b id="treff"></b></h6>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <a href="#" class="text-primary float-right">View IPD <span class="fa fa-angle-right"></span></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card border-success">
+                                <div class="card-body bg-success">
+                                    <div class="card-body text-white">
+                                        <span class="float-right summary_icon"> <i class="fa fa-money-check-alt "></i></span>
+                                        <h6>Non-Scheme: <b id="ttcash"></b></h6>
+                                        <h6>Schemes invoices: <b id="ttscheme"></b></h6>
+                                        <h6>Total: <b id="ttrevn"></b></h6>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <a href="#" class="text-primary float-right">View Payments <span class="fa fa-angle-right"></span></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                       <!-- <div class="col-md-3 mb-3">
+                          <div class="card border-success">
+                              <div class="card-body bg-success">
+                                  <div class="card-body text-white">
+                                      <span class="float-right summary_icon"> <i class="fa fa-file-invoice "></i></span>
+                                      <h4><b>
+                                          70000
+                                      </b></h4>
+                                      <p><b>Payments This Month</b></p>
+                                  </div>
+                              </div>
+                              <div class="card-footer">
+                                  <div class="row">
+                                      <div class="col-lg-12">
+                                          <a href="#" class="text-primary float-right">View Payments <span class="fa fa-angle-right"></span></a>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>-->
+                        <div class="col-md-3 mb-3">
+                         <div class="card border-info">
+                             <div class="card-body bg-info">
+                                 <div class="card-body text-white">
+                                     <span class="float-right summary_icon"> <i class="fa fa-file-invoice "></i></span>
+                                     <h6>Lab Tests: <b id="tlab"></b></h6>
+                                      <h6>Imaging: <b id="trad"></b></h6>
+                                      <h6>Prescriptions: <b id="tphar"></b></h6>
+                                 </div>
+                             </div>
+                             <div class="card-footer">
+                                 <div class="row">
+                                     <div class="col-lg-12">
+                                         <a href="#" class="text-primary float-right">View Requests <span class="fa fa-angle-right"></span></a>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                    </div>
+ 
+                    
+                </div>
+            </div>      			
+        </div>
+    </div>
+ </div>
+
+<div class="container-fluid">
+<div class="row mt-3 ml-3 mr-3">
+  <div class="col-sm-12 mt-3">
+    <h6 id="chart_period"></h6>
+  </div>
+  <div class="col-sm-4 p-3">
+    <div class="border border-secondary p-3">
+      <canvas id="myChart"></canvas>
+    </div>
+  </div>
+
+  <div class="col-sm-4 p-3">
+    <div class="border border-secondary p-3">
+      <canvas id="myChart2"></canvas>
+    </div>
+  </div>
+
+  <div class="col-sm-4 p-3">
+    <div class="border border-secondary p-3">
+      <canvas id="myChart3"></canvas>
+    </div>
+  </div>
+</div>  
+<script src="{% static 'js/adminchart.js'%}"></script>
+
+  
+
+</div>
+
+<style>
+  span.float-right.summary_icon {
+   font-size: 3rem;
+   position: absolute;
+   right: 1rem;
+   top: 0;
+}
+.imgs{
+   margin: .5em;
+   max-width: calc(100%);
+   max-height: calc(100%);
+ }
+ .imgs img{
+   max-width: calc(100%);
+   max-height: calc(100%);
+   cursor: pointer;
+ }
+ #imagesCarousel,#imagesCarousel .carousel-inner,#imagesCarousel .carousel-item{
+   height: 60vh !important;background: black;
+ }
+ #imagesCarousel .carousel-item.active{
+   display: flex !important;
+ }
+ #imagesCarousel .carousel-item-next{
+   display: flex !important;
+ }
+ #imagesCarousel .carousel-item img{
+   margin: auto;
+ }
+ #imagesCarousel img{
+   width: auto!important;
+   height: auto!important;
+   max-height: calc(100%)!important;
+   max-width: calc(100%)!important;
+ }
+</style>
+
+
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}

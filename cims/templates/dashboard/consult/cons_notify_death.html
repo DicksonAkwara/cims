@@ -1,0 +1,248 @@
+{% extends "partials/base.html" %}
+{% block title %}Consult | Death Notification{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}     
+<!--navbar.html-->
+{% include 'partials/cons_nav.html'%}
+<div class="container-fluid" id="main">
+   <form id="d1form">
+    <div class="row mt-2">           
+      <div class="col-sm-12">
+          <div class="card h-100">
+            <div class="card-header">
+              Deceased Details
+            </div>
+            <div class="card-body">                         
+               <div class="row mt-2">
+                <div class="col-sm-3">
+                  <div class="form-group">
+                    <label>op/ip Number</label>
+                    <input class="form-control form-control-sm" type="text" placeholder="enter to search" id="ipop" name="ipop">
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group">
+                    <label>Fullname<small class="text-danger">*</small></label>
+                    <input class="form-control form-control-sm" type="text" id="dc_name" name="dc_name">
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group">
+                    <label>Age<small class="text-danger">*</small><small>(Years)</small></label>
+                    <input class="form-control form-control-sm" type="number" id="dc_age" name="dc_age" min="1" max="150" >
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group">
+                    <label>Sex<small class="text-danger">*</small></label>
+                    <select name="dc_gender" id="dc_gender" class="form-control form-control-sm">
+                      <option selected>Select...</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>                    
+                      <option value="Bisexual">Bisexual</option>                    
+                    </select>
+                  </div>
+                </div> 
+              </div>                 
+          </div>
+        </div>
+      </div>
+       <div class="col-sm-12">
+          <div class="card h-100">
+            <div class="card-header">
+              Brought in by;
+            </div>
+            <div class="card-body"> 
+              <div class="row mt-2">
+                <div class="col-sm-3">
+                  <div class="form-group">
+                    <label>Fullname<small class="text-danger">*</small></label>
+                    <input class="form-control form-control-sm" type="text" id="dc_bfullname" name="dc_bfullname" >
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group">
+                    <label>Phone Number<small class="text-danger">(station/individual)</small></small></label>
+                    <input class="form-control form-control-sm" type="number" id="dc_bphone" name="dc_bphone" min="1" max="150"  >
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group">
+                    <label>Service No/National IdNo<small class="text-danger">*</small></label>
+                    <input class="form-control form-control-sm" type="number" id="dc_bidno" name="dc_bidno"  >
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group">
+                    <label>Relation To Deceased<small class="text-danger">*</small></label>
+                    <select name="dc_brelation" id="dc_brelation" class="form-control form-control-sm">
+                      {% for rel in relation %}
+                            <option value="{{rel.relName}}">{{rel.relName}}</option>
+                       {%endfor%}                   
+                    </select>
+                </div>
+                </div>
+              </div> 
+            </div>
+        </div>
+        </div>
+        <div class="col-sm-12">
+          <div class="card h-100">
+            <div class="card-header">
+              Next of Kin Details <button id="btncopy" class="btn btn-info btn-sm">copy</button>
+            </div>
+            <div class="card-body"> 
+              <div class="row mt-2">
+                <div class="col-sm-3">
+                  <div class="form-group">
+                    <label>Fullname<small class="text-danger">*</small></label>
+                    <input class="form-control form-control-sm" type="text" id="dc_nkfullname" name="dc_nkfullname">
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group">
+                    <label>Phone Number<small class="text-danger">*</small></small></label>
+                    <input class="form-control form-control-sm" type="number" id="dc_nkage" name="dc_nkage" min="1" max="150" >
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group">
+                    <label>National IdNo<small class="text-danger">*</small></label>
+                    <input class="form-control form-control-sm" type="number" id="dc_nkidno" name="dc_nkidno" >
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group">
+                    <label>Relation To Deceased<small class="text-danger">*</small></label>
+                    <select name="dc_relation" id="dc_relation" class="form-control form-control-sm">
+                      <option value="none" selected>Choose...</option>
+                      {% for rel in relation %}
+                        <option value="{{rel.relName}}">{{rel.relName}}</option>
+                        {%endfor%}                   
+                    </select>
+                </div>
+                </div>
+              </div> 
+          </div>
+        </div>
+        </div> 
+        <div class="col-sm-12">
+          <div class="card h-100">
+            <div class="card-header">
+              Clinical Details
+            </div>
+            <div class="card-body"> 
+              <div class="row mt-2">
+                <div class="col-sm-3">
+                  <div class="form-group">
+                    <label>Provisional Cause of death<small class="text-danger">*</small></label>
+                    <select name="dcause" class="form-control form-control-sm" id="dcause">
+                      {% for cse in death_cause%}
+                        <option value="{{cse.cause}}">{{cse.cause}}</option>                        
+                      {% endfor %}
+                    </select>
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group">
+                    <label>Place of death<small class="text-danger">*</small></label>
+                      <select name="pod" id="pod" class="form-control form-control-sm">
+                        <option value="Outside Facility">Outside Facility</option>
+                        <option value="Within Facility">Within Facility</option>
+                      </select>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label>Clinical Notes<small class="text-danger">*</small></label>
+                    <textarea name="clnotes" id="clnotes" class="form-control form-control-sm" rows="4"></textarea>
+                  </div>
+                </div>                  
+              </div>
+             
+          </div>
+        </div>
+        </div>
+
+        <div class="col-sm-12">
+          <div class="card h-100">
+            <div class="card-header">
+              Based onabove findings, i certify that the above named person is dead;
+            </div>
+            <div class="card-body"> 
+              <div class="row mt-2">
+                <div class="col-sm-3">
+                  <div class="form-group">
+                    <label>D1 sheet No:<small class="text-danger">*</small></label>
+                    <input type="text" name="sheetno" id="sheetno" class="form-control form-control-sm">
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group">
+                    <label>Doctor/Clinician name<small class="text-danger">*</small></label>
+                      <input type="text" name="docname" id="docname" value="{{user.username}}" readonly class="form-control form-control-sm">
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group">
+                    <label>Cadre<small class="text-danger">*</small></label>
+                    <select name="designation" id="designation" class="form-control form-control-sm">
+                      <option value="Clinician">clinician</option>
+                      <option value="Doctor">Doctor</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group">
+                    <label>Police station Referred To/From<small class="text-danger">*</small></label>
+                    <input type="text" name="station" id="station" class="form-control form-control-sm">
+                  </div>
+                </div>                   
+              </div>
+              <div class="row mt-2">
+                <div class="col-sm-4"></div>
+                <div class="col-sm-4 text-center">
+                  <button class="btn btn-success" id="btnConfirModal">Save Notification</button>
+                </div>
+                <div class="col-sm-4"></div>
+              </div>               
+          </div>
+        </div>
+        </div>
+    </div>
+   </form>
+
+</div>
+
+
+<!-- Modal confirm -->
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-top modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-danger" id="confirmModalLabel">Please confirm  details below;</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-sm tbdetails">
+          <tbody id="tbdetailsBody">
+
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-warning">Download</button>     
+        <button type="button" class="btn btn-success float-right" id="btnNotifyDeath">Confirm and Save Details</button>     
+      </div>
+    </div>
+  </div>
+</div>
+<!--footer.html-->
+<script src="{% static 'js/general_cons.js' %}"></script>
+{% include 'partials/footer.html' %}
+{% endblock%}
+
+

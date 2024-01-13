@@ -1,0 +1,397 @@
+{% extends "partials/base.html" %}
+{% block title %}Patient-Invoices{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/finance_nav.html'%}
+<div class="container-fluid" id="main">
+    <div class="row mt-2">
+        <div class="col-md-12">
+            <nav>
+              <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                <button class="nav-link active" id="unfin-tab" data-toggle="tab" data-target="#unfin"
+                  type="button" role="tab" aria-controls="unfin" aria-selected="true">Pending</button>
+                <button class="nav-link nav_btn_refresh" id="finalinv-tab" data-toggle="tab" data-target="#finalinv"
+                  type="button" role="tab" aria-controls="finalinv" aria-selected="false">Finalized</button>
+                <button class="nav-link" id="batchinv-tab" data-toggle="tab" data-target="#batchinv"
+                  type="button" role="tab" aria-controls="batchinv" aria-selected="false">Preauth Invoice</button>
+                <button class="nav-link" id="batches-tab" data-toggle="tab" data-target="#batches"
+                  type="button" role="tab" aria-controls="batches" aria-selected="false">Batched</button>
+              </div>
+          </nav>
+          <div class="tab-content" id="nav-tabContent">
+              <div class="tab-pane fade show active" id="unfin" role="tabpanel" aria-labelledby="unfin-tab">                     
+                <div class="card mt-3">
+                  <div class="card-header">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="input-group input-group-sm">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">From Date</span>
+                              </div> 
+                              <input class="form-control form-control" type="date" id="datepick"> 
+                            </div>
+                          </div>
+                        <div class="col-sm-3">
+                            <div class="input-group input-group-sm">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">Category</span>
+                              </div> 
+                              <select class="form-control form-control" id="schpat">                                                      
+                                {% for item in patType %}
+                                <option value="{{item.category}}">{{item.category}}</option>
+                                {%endfor%}                                
+                              </select> 
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="input-group input-group-sm">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">Scheme</span>
+                              </div> 
+                              <select class="form-control form-control" id="patschemes"> 
+                                <option>------select------</option>                                                      
+                                <option value="all">All</option>                                                     
+                                {% for item in scheme %}
+                                <option value="{{item.sub_name}}">{{item.sub_name}}</option>
+                                {%endfor%}                                
+                              </select> 
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="input-group input-group-sm">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">card no/name</span>
+                              </div> 
+                              <input class="form-control form-control" type="text" id="schpatsearch"> 
+                            </div>
+                          </div>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-12" style="max-height:500px;overflow-y:scroll;" >
+                            <table class="table table-sm table-hover table-fixed " id="tblunfin">
+                              <thead style="position: sticky;top: 0" class="thead-dark">
+                                <th> Date</th>
+                                <th> Card Number</th>
+                                <th> Patient name</th>
+                                <th> Scheme Name</th>
+                                <th></th>                                    
+                              </thead>
+                              <tbody id="tblunfinBody">                            
+                              </tbody>                       
+                            </table>                        
+                          </div>
+                    </div>                        
+                  </div>
+                </div>
+              </div>
+              
+              <div class="tab-pane fade" id="finalinv" role="tabpanel" aria-labelledby="finalinv-tab">                      
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="input-group input-group-sm">
+                                  <div class="input-group-prepend">
+                                    <span class="input-group-text">From Date</span>
+                                  </div> 
+                                  <input class="form-control" type="date" id="datepicker2"> 
+                                </div>
+                              </div>
+                            <div class="col-sm-3">
+                                <div class="input-group input-group-sm">
+                                  <div class="input-group-prepend">
+                                    <span class="input-group-text">Category</span>
+                                  </div> 
+                                  <select class="form-control" id="schfpat">                                                      
+                                    {% for item in patType %}
+                                    <option value="{{item.category}}">{{item.category}}</option>
+                                    {%endfor%}                                
+                                  </select> 
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="input-group input-group-sm">
+                                  <div class="input-group-prepend">
+                                    <span class="input-group-text">Scheme</span>
+                                  </div> 
+                                  <select class="form-control" id="schfname">
+                                    <option>------select------</option>                                                      
+                                    <option value="all">All</option>                                                      
+                                    {% for item in scheme %}
+                                    <option value="{{item.sub_name}}">{{item.sub_name}}</option>
+                                    {%endfor%}                                
+                                  </select> 
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="input-group input-group-sm">
+                                  <div class="input-group-prepend">
+                                    <span class="input-group-text">Card Number</span>
+                                  </div> 
+                                  <input class="form-control" type="text" id="fnpatsearch"> 
+                                </div>
+                              </div>
+                        </div>
+                      </div>                       
+                  <div class="card-body">
+                    <div class="row">
+                      
+                        <div class="col-sm-12" style="max-height:500px;overflow-y:scroll;" >
+                            <table class="table table-sm table-hover table-fixed " id="tblfin">
+                              <thead style="position: sticky;top: 0" class="thead-dark">
+                                <th> Invoice Date</th>
+                                <th> Invoice No</th>
+                                <th> Card Number</th>
+                                <th> Patient name</th>                                    
+                                <th> Scheme Name</th>
+                                <th></th>
+                                <th></th>
+                              </thead>
+                              <tbody id="tblfinBody">                            
+                              </tbody>                       
+                            </table>                        
+                          </div>
+                    </div>
+                   
+
+                  </div>
+                
+                </div>
+              </div>
+
+              <div class="tab-pane fade" id="batchinv" role="tabpanel" aria-labelledby="batchinv-tab">
+                <div class="card"> 
+                  <div class="card-header">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="input-group input-group-sm">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">From:</span>
+                              </div> 
+                              <input class="form-control" type="date" id="datepicker3"> 
+                            </div>
+                          </div>
+                          <div class="col-sm-3">
+                            <div class="input-group input-group-sm">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">To:</span>
+                              </div> 
+                              <input class="form-control" type="date" id="todatepicker"> 
+                            </div>
+                          </div>
+                        <div class="col-sm-3">
+                            <div class="input-group input-group-sm">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">Scheme</span>
+                              </div> 
+                              <select class="form-control" id="schfnamep">
+                                <option>------select------</option>                                                      
+                                <option value="all">All</option>                                                      
+                                {% for item in scheme %}
+                                <option value="{{item.sub_name}}">{{item.sub_name}}</option>
+                                {%endfor%}                                
+                              </select> 
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="input-group input-group-sm">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">Card Number</span>
+                              </div> 
+                              <input class="form-control" type="text" id="fnpatsearchp"> 
+                            </div>
+                          </div>
+                    </div>
+                  </div>                      
+                  <div class="card-body">
+                    <div class="row">
+                    </div>
+                  </div>
+                
+                </div>
+              </div>
+
+              <div class="tab-pane fade" id="batches" role="tabpanel" aria-labelledby="batches-tab">
+                <div class="card">                       
+                  <div class="card-body">
+                    <div class="row">                            
+                      <div class="col-sm-6">
+                        <div class="form-group">                          
+                          <input class="form-control" type="text" id="rsearchimage" placeholder="filter by card no">                         
+                         </div>
+                      </div>
+                    </div>
+                  </div>
+                
+                </div>
+              </div>
+      </div>
+           
+          </div>
+      
+    </div>
+
+</div>
+
+   <!--unfinalized invoice modal-->
+   <div class="modal fade" id="inv_details" tabindex="-1" aria-labelledby="inv_details" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-top modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header"> 
+          <h5 class="modal-title float-center" id="billmodalTitle">Invoice details</h5> 
+          <button type="button" class="btn-close btn-danger" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>         
+        </div>
+        <div class="modal-body">
+
+          
+          <div class="row">
+            <div class="col-sm-3">
+              <h6>Patient Name</h6>
+              <p id="patname"></p>
+            </div>
+            <div class="col-sm-3">
+              <h6>Card Number</h6>
+              <p id="patnumber"></p>
+            </div>
+            <div class="col-sm-3">
+              <h6>Scheme Name</h6>
+              <p id="patscheme"></p>
+            </div>
+            <div class="col-sm-3">
+              <h6>Invoice Amount</h6>
+              <p id="invoiceamt"></p>
+            </div>
+          </div>        
+          <div class="row mt-2">
+            <div class="col-sm-12">              
+                <table class="table table-sm table-hover tblInvDet" id="tblInvDet">
+                  <thead>
+                    <th>Bill Date</th>
+                    <th>Service/item</th>
+                    <th>Quantity</th>                                     
+                    <th>Price</th>                                     
+                    <th>Total price</th>                                     
+                    <th>Action</th>                                     
+                  </thead>
+                  <tbody id="tblInvDetBody"></tbody>
+                </table>             
+            </div>                     
+          </div>
+          <div class="row mt-4">
+            <div class="col-sm-4">
+              <button id="addservice" class="btn p-2 btn-info float-center">Add Bill</button>
+            </div>
+            <div class="col-sm-4">
+              <button id="finalizebill" class="btn p-2 btn-success float-center"> Finalize Invoice</button>
+            </div>
+            <div class="col-sm-4"></div>
+          </div>
+        
+            
+          </div>        
+          
+        </div>          
+      </div>
+    </div>
+
+      <!--finalized invoice modal-->
+   <div class="modal fade" id="fininvmodal" tabindex="-1" aria-labelledby="fininvmodal" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-top modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header"> 
+          <button class="btn btn-sm btn-warning" id="prtinvoice">Download</button> 
+          <button type="button" class="btn-close btn-danger" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>         
+        </div>
+        <div class="modal-body" id="divinvoice">
+          <div class="row">
+            <div class="col-sm-2">
+              <img src="{% static 'images/hosplogo.png' %}" alt="logo.jpg" class=" img-fluid mx-auto d-block">
+            </div>
+            <div class="col-sm-8 text-center">
+              <p class ="text-center">
+                <h5 id="fname"></h5>
+                <h6 id="address"></h6>
+                <h6 id="contact"></h6>
+              </p>
+            </div>
+            <div class="col-sm-2">
+              <img src="{% static 'images/hosplogo.png' %}" alt="logo.jpg" class=" img-fluid mx-auto d-block">
+            </div>
+          </div>
+          <h6 class="text-center font-weight-bold">Patient Final Invoice</h6>
+          <hr>
+
+          <div class="row">
+            <div class="col-sm-4">
+              <h6>Invoice Date: <label id="invdate"></label></h6>
+            </div>
+            <div class="col-sm-4">
+              <h6>Invoice No: <label id="invnumber"></label></h6>
+            </div>
+             <div class="col-sm-4">
+              <h6>Scheme: <label id="patfnscheme"></label></h6>
+            </div>
+          </div>  
+          <div class="row">
+            <div class="col-sm-3">
+              <h6>Card Number: <label id="patfnnumber"></label></h6>
+            </div>
+            <div class="col-sm-6">
+              <h6>Patient Name: <label id="patfnname"></label></h6>
+            </div>
+            <div class="col-sm-3">
+              <h6>Id No: <label id="patfnid"></label></h6>
+            </div>
+          </div>      
+          <div class="row mt-2">
+            <div class="col-sm-12">              
+                <table class="table table-sm table-bordered tblfnmodal" id="tblfnmodal">
+                  <thead>
+                    <th>Date</th>
+                    <th>Service/item</th>
+                    <th>Quantity</th>                                     
+                    <th>Price</th>                                     
+                    <th>Total price</th>                                     
+                    <th>Staff</th>                                     
+                  </thead>
+                  <tbody id="tblfnmodalBody"></tbody>
+                </table>             
+            </div>                     
+          </div> 
+          </div>        
+          
+        </div>          
+      </div>
+    </div>
+<script>
+
+    var now = new Date();
+    var month = (now.getMonth() + 1);               
+    var day = now.getDate();
+    if (month < 10) 
+        month = "0" + month;
+    if (day < 10) 
+        day = "0" + day;
+    var today = now.getFullYear() + '-' + month + '-' + day;
+   
+    $('#datepicker2').val(today);
+    $('#datepick').val(today);
+    $('#datepicker3').val(today);
+    $('#todatepicker').val(today);
+
+</script>
+<!--/.container-->
+<!--footer.html-->
+<script src="{% static 'js/fin_schemes.js' %}"></script>
+
+{% include 'partials/footer.html' %}
+{% endblock%}

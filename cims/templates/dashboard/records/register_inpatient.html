@@ -1,0 +1,356 @@
+{% extends "partials/base.html" %}
+{% block title %}Inpatient register{% endblock %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% load static %}
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/rec_nav.html' %}
+{% csrf_token %}
+<div class="container-fluid" id="main">
+    <div class="row">
+             <div class="col-sm-12 mt-2 overflow-auto">
+              <nav>
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                      <button class="nav-link active" id="admrequest" data-toggle="tab" data-target="#admrequests"
+                        type="button" role="tab" aria-controls="admrequests" aria-selected="true">Admission requests</button>
+                      <button class="nav-link nav_btn_refresh" id="genadm" data-toggle="tab" data-target="#generaladm"
+                        type="button" role="tab" aria-controls="generaladm" aria-selected="false">Admision Details</button>                      
+                    </div>
+              </nav>
+                <div class="tab-content" id="admissiontabs">
+
+                  <div class="tab-pane fade show active" id="admrequests" role="tabpanel" aria-labelledby="admrequests-tab">
+                    <div class="card">
+                      <div class="card-header">
+                        <div class="row">
+                          <div class="col-sm-2">
+                            <div class="form-group">
+                              <input type="button" class="btn btn-sm btn-warning" id='loadtreq' value="Refresh List">
+                            </div>
+                          </div>
+                          <div class="col-sm-3">
+                            <div class="input-group input-group-sm mb-3">                                                            
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">From Date</span>
+                              </div> 
+                              <input type="date" class="form-control" id="arqdate" name="arqdate">
+                            </div>
+                          </div>
+
+                          <div class="col-sm-3">
+                            <div class="form-group">                          
+                              <input class="form-control form-control-sm" type="text" id="ptsearch" placeholder="filter by cardno/name/ward">                         
+                             </div>                             
+                          </div>                         
+                          
+                          <div class="col-sm-2">
+                            <div class="form-group">
+                              <input type="button" class="btn btn-sm btn-success" value="Excel">
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>                       
+                      <div class="card-body">
+                        <div class="row">                           
+                          <div class="col-sm-12">
+                            <div style="max-height:500px;overflow-y:scroll;" >
+                              <table class="table table-sm table-striped table-fixed admreqtable mt-2" id="admreqtable">
+                                <thead style="position: sticky;top: 0" class="thead-dark">
+                                  <tr>
+                                    <th> Date</th>
+                                    <th> Card no</th>
+                                    <th> Patient name</th>
+                                    <th> Gender</th>
+                                    <th>Age</th>
+                                    <th> Request By</th>
+                                    <th> Ward</th>                                                                     
+                                    <th>Action</th>                                                                     
+                                  </tr>
+                                  </thead>
+                                  <tbody id="admreqtableBody">             
+                                  </tbody>
+                              </table>
+                          </div>
+                          </div>
+                        </div>
+                        
+                      </div>                    
+                    </div>
+                  </div>
+
+                  <div class="tab-pane fade" id="generaladm" role="tabpanel" aria-labelledby="generaladm-tab">
+                    <div class="card">                       
+                      <div class="card-body">
+                        <form action="" id="ipregistration" name="IpRegForm">        
+                          <div class="row my-2">
+                            <!--
+                            <div class="col-sm-4">
+                              <select id="pptype" class="form-control border-danger" name="pptype">
+                                <option value="none">select operation</option>
+                                <option value="newAdm">New Admission</option>
+                                <option value="readm">Re-admission</option>
+                              </select>
+                            </div>-->
+
+                            <div class="col-sm-4">
+                              <div class="input-group input-group-sm mb-3">                                                            
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">Patient No:</span>
+                                </div> 
+                                <input type="text" name="" id="opsearchfield" class="form-control" placeholder="search by outpatient card no">                            
+                              </div>
+                            </div>
+                    
+                            <div class="col-sm-4">
+                              <small id="searchindicator" class="text-danger"></small>
+                            </div>
+                          
+                          </div>       
+                               
+                              <div class="row my-2"> 
+                                <div class="col-sm-4">
+                                  <div class="card h-100">
+                                    <div class="card-header">
+                                      Patient Details
+                                    </div>
+                                    <div class="card-body">   
+                                      <input type="text" hidden name="editPatno" id="editPatno"> 
+                                               
+                                      <div class="form-group">
+                                        <label>Patient Fullname*</label>
+                                        <input class="form-control form-control-sm" type="text" id="fullname" name="fullname" required>
+                                      </div>
+                                      <div class="form-group">
+                                        <label>Patient IdNo*</label>
+                                        <input class="form-control form-control-sm" type="number" id="idno" name="idno" required >
+                                      </div>
+                                      <div class="form-group">
+                                        <label>Patient PhoneNo*</label>
+                                        <input class="form-control form-control-sm" type="number" id="phone" name="phone" required>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-sm-8">
+                                          <div class="form-group">
+                                            <label>Patient Age*</label>
+                                            <input class="form-control form-control-sm" type="number" id="age" name="age" min="1" max="150" required >
+                                          </div>
+                                        </div>
+                                        <div class="col-sm-4 mt-4">
+                                          <small class="text-danger" id="act_years"></small>
+                                        </div>
+                                      </div>
+                                     
+                                      <div class="form-group">
+                                        <label for="">Date of Birth</label>
+                                        <input type="date" class="form-control form-control-sm" name="dob" id="dob">
+                                     </div>
+                                      <div class="form-group">
+                                        <label>Patient Gender*</label>
+                                        <select name="gender" id="gender" class="form-control form-control-sm">
+                                          <option selected>Choose...</option>
+                                          <option value="Male">Male</option>
+                                          <option value="Female">Female</option>                    
+                                        </select>
+                                    </div>
+                    
+                                  </div>
+                                </div>
+                                </div>           
+                    
+                               
+                                  <div class="col-sm-4">
+                                    <div class="card h-100">
+                                      <div class="card-header">
+                                        Residence &amp; NoK details
+                                      </div>
+                                      <div class="card-body">                    
+                                        <div class="form-group">
+                                          <label>County of Residence*</label>
+                                          <select name="county" id="county" class="form-control form-control-sm">
+                                            <option selected>choose...</option>
+                                            {% for county in county %}
+                                            <option value="{{county.county_name}}">{{county.county_name}}</option>
+                                            {% endfor%} 
+                                          </select>
+                                        </div>
+                                        <div class="form-group">
+                                          <label>Sub-county*</label>
+                                          <select name="scounty" id="scounty" class="form-control form-control-sm">
+                                            <option selected>choose...</option>                        
+                                          </select>
+                                        </div>
+                                        <div class="form-group">
+                                          <label>Locality(village)*</label>
+                                          <input class="form-control form-control-sm" type="text" id="residence" name="residence"  required>
+                                        </div>
+                                        <div class="form-group">
+                                          <label>Next of Kin Fullname*</label>
+                                          <input class="form-control form-control-sm" type="text" id="nokname" name="nokname" required>
+                                        </div>
+                                        <div class="form-group">
+                                          <label>Next of Kin Phone*</label>
+                                          <input class="form-control form-control-sm" type="text" id="nokphone" name="nokphone" required>
+                                        </div>
+                                        <div class="form-group">
+                                          <label>Relation to Patient*</label>
+                                          <select name="relation" id="relation" class="form-control form-control-sm">
+                                            <option value="none" selected>Choose...</option>
+                                                {% for rel in relation %}
+                                                <option value="{{rel.relName}}">{{rel.relName}}</option>
+                                                {%endfor%}                                      
+                                          </select>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  </div>
+                    
+                    
+                                  <div class="col-sm-4">
+                                    <div class="card h-100">
+                                      <div class="card-header">
+                                        Admission Details
+                                      </div>
+                                      <div class="card-body">
+                                        <div class="form-group">
+                                          <label>Admission Type*</label>
+                                          <select name="admType" id="admType" class="form-control form-control-sm">
+                                            <option selected>Choose...</option>
+                                            <option value="Normal">Normal</option>
+                                            <option value="Emergency">Emergency</option> 
+                                            <option value="Referral-In">Referral-In</option>                                         
+                                          </select>
+                                      </div>
+                                      <div class="form-group">            
+                                        <label>Category*</label>
+                                        <select id="pcat" name="pcat" class="form-control form-control-sm">
+                                          <option selected>........</option>
+                                          {% for cat in category %}
+                                          <option value="{{cat.categoryName}}">{{cat.categoryName}}</option>
+                                          {% endfor%}                    
+                                        </select>
+                                      </div>
+                                      <div class="form-group">
+                                        <label>Manual File number*</label>
+                                        <input class="form-control form-control-sm" type="text" id="mfilenumber" name="mfilenumber">
+                                      </div>
+                                        <div class="form-group">            
+                                          <label>Ward Admitted*</label>
+                                          <select id="pos" name="wname" class="form-control form-control-sm">
+                                            <option selected>Choose...</option>
+                                            {% for point in pos %}
+                                            <option value="{{point.wardName}}">{{point.wardName}}</option>
+                                            {% endfor%}                    
+                                          </select>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                          <label> Payment method*</label>
+                                          <select name="ppaymode" id="ppaymode" onchange="check_paymode()" class="form-control form-control-sm">
+                                            <option selected>Choose...</option>
+                                            <option value="Non-scheme">Non-scheme</option>
+                                            <option value="Scheme">Scheme</option>                    
+                                          </select>
+                                        </div>
+                                        <div class="form-group">
+                                          <label>scheme name*</label>
+                                          <select name="pscheme" id="pscheme" class="form-control form-control-sm">
+                                            <option selected>choose...</option>
+                                            {% for item in schemes %}
+                                            <option value="{{item.sub_name}}">{{item.sub_name}}</option>
+                                            {% endfor%} 
+                                          </select>
+                                        </div>
+                                        <div class="form-group">
+                                          <label>Member scheme No.*</label>
+                                          <input class="form-control form-control-sm" type="text" id="mbNumber" name="mbNumber">
+                                        </div> 
+                                        <div class="form-group">
+                                          <input type="button" id="fmsubmit" class="btn btn-success p-2 form-control form-control-sm" value="Save Patient Details">                      
+                                        </div>                                       
+                                      </div>
+                                    </div>
+                                  </div>
+                                
+                                </div>          
+                        </form>
+                      </div>
+                    
+                    </div>
+                  </div>
+                </div>              
+              </div>
+        <!--/main col-->
+    </div>
+
+</div>
+<!--/.container-->
+<!-- readmission Modal -->
+<div class="modal fade " id="readmModal" tabindex="-1" role="dialog" aria-labelledby="revisitModal" aria-hidden="true">
+  <div class="modal-dialog modal-lg " role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="revisitModalLongTitle">Search by IP CardNo/IDnumber/file number</h5>
+        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <input type="text" class="form-control" id="searchIpnumber" >
+          </div>         
+        </form>  
+        <table class="table table-hover tableOutput" id="tableOutput">
+          <thead>
+            <tr>
+              <th scope="col">CardNo</th>
+              <th scope="col">Fullname</th>
+              <th scope="col">IdNumber</th>
+              <th scope="col">FileNumber</th>
+              <th scope="col">Residence</th>
+            </tr>
+          </thead>
+          <tbody class="rs-table-body">
+
+          </tbody>
+        </table>           
+      </div>
+      </div>
+  </div>
+</div>
+<!--end of revisit modal-->
+
+<!-- alert Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="paymodalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="alert hidden" role="alert" id="modalAlert"></div> 
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>        
+    </div>
+  </div>
+</div>
+<!--end of modal-->
+<script src="{% static 'js/ipregister.js' %}"></script>
+<script>
+
+  var now = new Date();
+  var month = (now.getMonth() + 1);               
+  var day = now.getDate();
+  if (month < 10) 
+      month = "0" + month;
+  if (day < 10) 
+      day = "0" + day;
+  var today = now.getFullYear() + '-' + month + '-' + day;
+  $('#arqdate').val(today);
+
+</script>
+
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}

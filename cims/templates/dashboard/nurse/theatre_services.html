@@ -1,0 +1,177 @@
+{% extends "partials/base.html" %}
+{% block title %}Theatre-Procedures{% endblock %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% load static %}
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/nurse_nav.html'%}
+        
+        <div class="container-fluid">
+          <div class="row my-2">
+            <div class="col-sm-4">
+               <div class="card h-100">
+                <div class="card-header">
+                  Theatre Procedures
+                </div>
+                <div class="card-body">
+                  <div class="row mt-3">
+                    <div class="col-sm-12">
+                     <form>                       
+                       <input id="proc_id" type="text" hidden>
+                       <div class="form-group">
+                         <label>Procedure Name</label>
+                         <input class="form-control" type="text" id="pname" required>
+                       </div>
+                       <div class="form-group">
+                         <label>Cash Price</label>
+                         <input class="form-control" type="text" id="pymode" required>
+                       </div>  
+                       <div class="form-group"  id="divWard" >
+                         <label>Scheme Price</label>
+                         <input class="form-control" type="text" id="proc" required>
+                       </div>              
+                     </form>                    
+                    </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-sm-4">
+                        <div class="form-group">
+                          <input type="button" class="btn btn-success" value="Save">
+                        </div>                        
+                      </div>
+                      <div class="col-sm-4">
+                        <div class="form-group">
+                          <input type="button" class="btn btn-warning" value="Update">
+                        </div>                        
+                      </div>
+                      <div class="col-sm-4">
+                        <div class="form-group">
+                          <input type="button" class="btn btn-danger" value="Suspend">
+                        </div>                        
+                      </div>
+                    </div>
+                </div>
+             
+          
+              </div>          
+              
+              </div>
+            
+              <div class="col-sm-8">
+                <div class="card h-100">
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <input type="text" placeholder="search procedure by name" class="form-control">                 
+                      </div>
+                     
+                    </div>
+      
+                    <div class="row">
+                      <div class="col-md-12 mt-3">
+                         <div style="max-height:500px;overflow-y:scroll;" >
+                          <table class="table table-sm table-striped table-fixed" id="thprocedure">
+                            <thead style="position: sticky;top: 0" class="thead-dark">
+                                  <th >date Added</th>
+                                  <th style="width: 30%;word-wrap: break-word;">Procedure</th>
+                                  <th >Cash</th>
+                                  <th >Scheme</th>
+                                  <th >Status</th>
+                                  <th >Added by</th>
+                                  <th >Action</th>
+                                </thead>
+                              <tbody id='thprocedurebody'>
+                                {% for procedure in proc %}
+                                <tr>
+                                  <td>{{procedure.date_added}}</td>
+                                  <td>{{procedure.service_name}}</td>
+                                  <td>{{procedure.normal_rate}}</td>
+                                  <td>{{procedure.scheme_rate}}</td>
+                                  <td>{{procedure.status}}</td>
+                                  <td>{{procedure.staff}}</td>
+                                  <td><input type="button" class="btn btn-sm btn-info" value="Load"></td>
+                                </tr>
+                                {%endfor%}
+                           
+                              </tbody>
+                          </table>
+                      </div>
+                      </div>
+      
+                    </div>
+
+                  </div>
+                
+                 
+           
+               </div>          
+               
+               </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- pay mode Modal -->
+<div class="modal fade" id="serviceModal" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="servicemodalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-top" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4>Search by procedure name</h4>
+        <div class="alert hidden" role="alert" id="modalAlert"></div> 
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div> 
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">                    
+              <input class="form-control" type="text" id="search-service" placeholder="service to bill"> 
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            
+            <table class="table table-hover" id="tableOutputSvs">
+              <thead>
+                <tr>                     
+                  <th scope="col">Procedure Name</th>
+                  <th scope="col">Cash Price</th> 
+                  <th scope="col">Scheme Price</th>                    
+                  <th scope="col">Department</th>                    
+                </tr>
+              </thead>
+              <tbody class="svs-table-body">
+    
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>       
+    </div>
+  </div>
+</div>
+<!--end of modal-->
+
+<!-- alert Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="paymodalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="alert hidden" role="alert" id="modalAlert"></div> 
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>        
+    </div>
+  </div>
+</div>
+<!--end of modal-->
+<script src="{% static 'js/op_billing.js' %}"></script>
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}

@@ -1,0 +1,93 @@
+{% extends "partials/base.html" %}
+{% block title %}medical-reports{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}
+     
+<!--navbar.html-->
+{% include 'partials/rec_nav.html'%}
+<div class="container-fluid" id="main">
+    <div class="row row-offcanvas row-offcanvas-left vh-100">
+       <main class="col main overflow-auto">
+        <div class="card mt-2 h-100">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="input-group input-group-sm mb-3">                                                            
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">Report Name:</span>
+                            </div> 
+                             <select name="" class="custom-select" id="rpname">
+                                <option value="">---------------</option>
+                                {% for rp in repname %} 
+                                <option value="{{rp.id}}">{{rp.reportName}}</option>
+                                {% endfor %}                              
+                            </select>
+                          </div>
+                       
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="input-group input-group-sm mb-3">                                                            
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">From:</span>
+                          </div> 
+                          <input type="date" id="datefrom" class="form-control"> 
+                        </div>
+                      </div>
+
+                      <div class="col-sm-3">
+                        <div class="input-group input-group-sm mb-3">                                                            
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">To:</span>
+                          </div> 
+                          <input type="date" id="dateto" class="form-control"> 
+                        </div>
+                      </div>
+
+                      <div class="col-sm-1">
+                        <div class="form-group">
+                            <input type="button" class=" form-control btn btn-sm btn-success" value="Load">
+                        </div>
+                    </div>
+
+                    <div class="col-sm-1">
+                        <div class="form-group">
+                            <input type="button" class=" form-control btn btn-sm btn-info" value="Excel">
+                        </div>
+                    </div>
+
+                    <div class="col-sm-1">
+                        <div class="form-group">
+                            <input type="button" class=" form-control btn btn-sm btn-warning" value="print">
+                        </div>
+                    </div>             
+                    
+                </div>
+            </div>
+            <div class="card-body">
+
+            </div>
+        </div>
+         
+        </main>
+        <!--/main col-->
+    </div>
+
+</div>
+<!--/.container-->
+<script>
+    var now = new Date();
+   var month = (now.getMonth() + 1);               
+   var day = now.getDate();
+   if (month < 10) 
+       month = "0" + month;
+   if (day < 10) 
+       day = "0" + day;
+   var today = now.getFullYear() + '-' + month + '-' + day;
+   $('#datefrom').val(today);
+   $('#dateto').val(today);
+</script>
+
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}

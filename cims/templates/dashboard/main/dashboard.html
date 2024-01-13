@@ -1,0 +1,146 @@
+{% extends "partials/base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% load static %}
+{% block content %}
+    <!--navbar.html-->
+{% include 'partials/topnav.html' %}
+<div class="container-fluid bg-info">
+  <div class="row">
+    <div class="col-sm-12">
+      <div style="float: left;width:auto; width:auto;" class="text-center bg-secondary p-3 m-2">
+        <a class="text-decoration-none text-dark" href="{% url 'adminstats' %}">
+          <img class="img-fluid img-thumbnail p-3"  src="{% static '/images/dashboard.png' %}" /><h5 class="text-white mt-2">Dashboard</h5></a>
+      </div>
+      
+      {% if request.user.department == "medical_records" or request.user.department == "Administration" %}
+      <div style="float: left;width:auto;" class="text-center bg-secondary p-3 m-2">
+        <a class="text-decoration-none text-dark" href="{% url 'rec-register' %}">
+          <img class="img-fluid img-thumbnail p-3"  src="{% static '/images/registration.png' %}" /><h5 class="text-white mt-2">Registration</h5></a>
+      </div>
+      {% endif%}
+      {% if request.user.department == "consultation" or request.user.department == "Administration" %}
+      <div style="float: left;width:auto;" class="text-center bg-secondary p-3 m-2">
+        <a class="text-decoration-none text-dark" href="{% url 'cons_index' %}">
+          <img class="img-fluid img-thumbnail p-3"  src="{% static '/images/doctor.png' %}" /><h5 class="text-white mt-2">Clerking</h5></a>
+      </div>
+      {% endif %}
+
+
+      {% if request.user.department == "finance" or request.user.department == "Administration" %}
+      <div style="float: left;width:auto;" class="text-center bg-secondary p-3 m-2">
+        <a class="text-decoration-none text-dark" href="{% url 'financeIndex' %}">
+          <img class="img-fluid img-thumbnail p-3"  src="{% static '/images/cashier.png' %}" /><h5 class="text-white mt-2">Revenue</h5></a>
+      </div>
+      {%endif%} 
+
+     
+      {% if request.user.department == "Administration" %}
+      <div style="float: left;width:auto;" class="text-center bg-secondary p-3 m-2">
+        <a class="text-decoration-none text-dark" href="{% url 'mnreports' %}">
+          <img class="img-fluid img-thumbnail p-3"  src="{% static '/images/reports.png' %}" /><h5 class="text-white mt-2">Reports</h5></a>
+      </div>
+      {%endif%}
+
+      {% if request.user.department == "nursing" or request.user.department == "Administration" %}
+      <div style="float: left;width:auto;" class="text-center bg-secondary p-3 m-2">
+        <a class="text-decoration-none text-dark" href="#"><!--{% url 'nurse-index' %}-->
+          <img class="img-fluid img-thumbnail p-3"  src="{% static '/images/nurse.png' %}" /><h5 class="text-white mt-2">Nursing</h5></a>
+      </div>
+      {% endif%}
+
+  
+    
+      {% if request.user.department == "radiology" or request.user.department == "Administration" %}
+      <div style="float: left;width:auto;" class="text-center bg-secondary p-3 m-2">
+        <a class="text-decoration-none text-dark" href="#"><!--{% url 'rad-reception' %}-->
+          <img class="img-fluid img-thumbnail p-3"  src="{% static '/images/radiology.png' %}" /><h5 class="text-white mt-2">Radiology</h5></a>
+      </div>
+      {%endif%}
+      {% if request.user.department == "pharmacy" or request.user.department == "Administration" %}
+      <div style="float: left;width:auto;" class="text-center bg-secondary p-3 m-2">
+        <a class="text-decoration-none text-dark" href="{% url 'phar-reception' %}"><!--{% url 'phar-reception' %}-->
+          <img class="img-fluid img-thumbnail p-3"  src="{% static '/images/pharmacy.jpeg' %}" /><h5 class="text-white mt-2">Pharmacy</h5></a>
+      </div>
+      {%endif%}
+      {% if request.user.department == "laboratory" or request.user.department == "Administration" %}
+      <div style="float: left;width:auto;" class="text-center bg-secondary p-3 m-2">
+        <a class="text-decoration-none text-dark" href="#"><!--{% url 'lab_index' %}-->
+          <img class="img-fluid img-thumbnail p-3"  src="{% static '/images/lab.png' %}" /><h5 class="text-white mt-2">Laboratory</h5></a>
+      </div>
+      {%endif%}
+      {% if request.user.department == "stores" or request.user.department == "Administration" %}
+      <div style="float: left;width:auto;" class="text-center bg-secondary p-3 m-2">
+        <a class="text-decoration-none text-dark" href="#"><!--{% url 'storeindex' %}-->
+          <img class="img-fluid img-thumbnail p-3"  src="{% static '/images/inventory.png' %}" /><h5 class="text-white mt-2">Inventory</h5></a>
+      </div>
+      {%endif%}
+     
+      {% if request.user.department == "farewell" or request.user.department == "Administration" %}
+      <div style="float: left;width:auto;" class="text-center bg-secondary p-3 m-2">
+        <a class="text-decoration-none text-dark" href="#"><!--{% url 'fwindex' %}-->
+          <img class="img-fluid img-thumbnail p-3"  src="{% static '/images/flower.jpeg' %}" /><h5 class="text-white mt-2">Farewell</h5></a>
+      </div>
+      {%endif%}
+      {% if request.user.department == "Public_health" or request.user.department == "Administration" %}
+      <div style="float: left;width:auto;" class="text-center bg-secondary p-3 m-2">
+        <a class="text-decoration-none text-dark" href="#"><!--{% url 'fwindex' %}-->
+          <img class="img-fluid img-thumbnail p-3"  src="{% static '/images/accounts.png' %}" /><h5 class="text-white mt-2">P.H.O</h5></a>
+      </div>
+      {%endif%}
+ 
+    
+      {% if request.user.department == "Administration" %}
+      <div style="float: left;width:auto;" class="text-center bg-secondary p-3 m-2">
+        <a class="text-decoration-none text-dark" href="{% url 'user-register' %}">
+          <img class="img-fluid img-thumbnail p-3"  src="{% static '/images/accounts.png' %}" /><h5 class="text-white mt-2">Accounts</h5></a>
+      </div>
+      {%endif%}
+
+      
+      {% if request.user.department == "Human_resource" or request.user.department == "Administration" %}
+      <div style="float: left;width:auto;" class="text-center bg-secondary p-3 m-2">
+        <a class="text-decoration-none text-dark" href="#"><!--{% url 'hrindex' %}-->
+          <img class="img-fluid img-thumbnail p-3"  src="{% static '/images/hr.png' %}" /><h5 class="text-white mt-2">H.R.M</h5></a>
+      </div>
+      {%endif%}
+
+      {% if request.user.department == "Human_resource" or request.user.department == "Administration" %}
+      
+      <div style="float: left;width:auto;" class="text-center bg-secondary p-3 m-2">
+        <a class="text-decoration-none text-dark" href="#"><!--{% url 'hrindex' %}-->
+          <img class="img-fluid img-thumbnail p-3"  src="{% static '/images/payroll.png' %}" /><h5 class="text-white mt-2">Payroll</h5></a>
+      </div>
+      {%endif%}
+      {% if request.user.department == "nursing" or request.user.department == "Administration" %}
+      <div style="float: left;width:auto;" class="text-center bg-secondary p-3 m-2">
+        <a class="text-decoration-none text-dark" href="#"><!--{% url 'crmindex' %}-->
+          <img class="img-fluid img-thumbnail p-3"  src="{% static '/images/comm.png' %}" /><h5 class="text-white mt-2">CRM</h5></a>
+      </div>
+      {%endif%}
+      {% if request.user.department == "Administration" %}
+      <div style="float: left;width:auto;" class="text-center bg-secondary p-3 m-2">
+        <a class="text-decoration-none text-dark" href="{% url 'sysindex' %}">
+          <img class="img-fluid img-thumbnail p-3"  src="{% static '/images/asset.png' %}" /><h5 class="text-white mt-2">Assets</h5></a>
+      </div>
+      {%endif%}
+      {% if request.user.department == "Security" or request.user.department == "Administration" %}
+      <div style="float: left;width:auto;" class="text-center bg-secondary p-3 m-2">
+        <a class="text-decoration-none text-dark" href="#"><!--{% url 'gateindex' %}-->
+          <img class="img-fluid img-thumbnail p-3"  src="{% static '/images/police.png' %}" /><h5 class="text-white mt-2">Gate Pass</h5></a>
+      </div>
+      {%endif%}
+      {% if request.user.department == "Administration" %}
+      <div style="float: left;width:auto;" class="text-center bg-secondary p-3 m-2">
+        <a class="text-decoration-none text-dark" href="{%  url 'admin:index' %}">
+          <img class="img-fluid img-thumbnail p-3"  src="{% static '/images/settings.png' %}" /><h5 class="text-white mt-2">Settings</h5></a>
+      </div>
+      {%endif%}
+    </div>
+  </div>
+
+
+
+</div>
+<!--footer.html-->
+{% include 'partials/footer.html' %}
+{% endblock%}

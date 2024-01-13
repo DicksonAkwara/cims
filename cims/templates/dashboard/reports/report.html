@@ -1,0 +1,206 @@
+{% extends "partials/base.html" %}
+{% block title %}Admin | Reports{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %} <!--loading crispy forms-->
+{% block content %}     
+<!--navbar.html-->
+{% include 'partials/repnav.html' %}
+<div class="container-fluid" id="main">
+ <div class="row mt-2">
+    <div class="col-mb-12 col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <select name="" id="dpt" class="form-control form-control-sm">
+                                <option value="">---select department--</option>
+                                {% for dept in depts %}
+                                <option value="{{dept.id}}">{{dept.deptName}}</option>
+                                {%endfor%}
+                            </select>
+                        </div>                       
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <select name="" id="dptrep" class="form-control form-control-sm">
+                                
+                            </select>
+                        </div>                       
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <div class="input-group input-group-sm mb-3">                                                            
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">From:</span>
+                              </div> 
+                              <input type="date" class="form-control text-center" id="datefrom" > 
+                            </div>
+                          </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <div class="input-group input-group-sm mb-3">                                                            
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">To:</span>
+                              </div> 
+                              <input type="date" class="form-control text-center" id="dateto" > 
+                            </div>
+                          </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <input type="button" value="Generate" id="btngenerate" class="btn btn-sm btn-primary">
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <input type="button" value="To Excel" id="exportexcel" class="btn btn-sm btn-success">
+                            <input type="button" value=" To PDF" id="exportpdf" onclick="javascript:tabletopdf();" class="btn btn-sm btn-warning">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div  id="spinners"  style="display:none;">
+                            <div class="d-flex justify-content-center ">
+                              <div class="spinner-border text-success" role="status">
+                                <span class="sr-only">...</span>
+                              </div>
+                              <div class="spinner-border text-danger" role="status">
+                                <span class="sr-only">...</span>
+                              </div>
+                              <div class="spinner-border text-warning" role="status">
+                                <span class="sr-only">...</span>
+                              </div>
+                            </div>
+                          </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                  <div class="col-md-3 mt-1">
+                    <div class="input-group input-group-sm mb-3">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">Search:</span>
+                      </div>
+                      <input type="text" class="form-control" id="itemsearch">
+                    </div>
+
+                  </div>
+                    <div class="col-md-12 mt-2">
+                       <div style="max-height:500px;overflow-y:scroll;overflow-x:scroll;">
+                        <div id="customers">
+                          <table class="table .table-responsive table-sm table-fixed table-bordered" id="reptableid">
+                            <thead  class="text-nowrap" id="repthead">
+                              </thead>
+                              <tbody id='reptablebody' class="">                           
+                              </tbody>
+                          </table>
+                        </div>                        
+                    </div>
+                    </div>
+    
+                  </div>
+
+            </div>
+        </div>
+    </div>
+ </div>
+ <!-- Select store modal-->
+ <div class="modal fade" id="storeModal" tabindex="-1" role="dialog" aria-labelledby="storemodalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-sm modal-dialog-top" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        Select Store
+        <div class="alert hidden" role="alert" id="modalAlert"></div> 
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div> 
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">                            
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Store Name</span>
+                </div>
+                <select name="rpstore" id="rpstore" class="form-control">
+                  <option  value="none">---------</option>
+                  {% for store in stores %}
+                  <option value="{{store.store_Id}}">{{store.store_name}}</option>
+                  {% endfor %}
+              </select>                                
+              </div>
+            </div>
+          </div>         
+        </div>
+        
+      </div>       
+    </div>
+  </div>
+</div>
+
+</div>
+<script>
+     var now = new Date();
+    var month = (now.getMonth() + 1);               
+    var day = now.getDate();
+    if (month < 10) 
+        month = "0" + month;
+    if (day < 10) 
+        day = "0" + day;
+    var today = now.getFullYear() + '-' + month + '-' + day;
+    $('#datefrom').val(today);
+    $('#dateto').val(today);
+</script>
+<script src="{% static 'js/reports.js' %}"></script>
+<script src="{% static 'js/xlsx.full.min.js' %}"></script>
+<script src="{% static 'js/jspdf.min.js' %}"></script>
+<script>
+  function tabletopdf() {
+  var pdf = new jsPDF('p', 'pt', 'letter');
+  // source can be HTML-formatted string, or a reference
+  // to an actual DOM element from which the text will be scraped.
+  source = $('#tb_div')[0];
+
+  // we support special element handlers. Register them with jQuery-style 
+  // ID selector for either ID or node name. ("#iAmID", "div", "span" etc.)
+  // There is no support for any other type of selectors 
+  // (class, of compound) at this time.
+  specialElementHandlers = {
+      // element with id of "bypass" - jQuery style selector
+      '#bypassme': function (element, renderer) {
+          // true = "handled elsewhere, bypass text extraction"
+          return true
+      }
+  };
+  margins = {
+      top: 80,
+      bottom: 60,
+      left: 40,
+      width: 522
+  };
+  // all coords and widths are in jsPDF instance's declared units
+  // 'inches' in this case
+  pdf.fromHTML(
+  source, // HTML string or DOM elem ref.
+  margins.left, // x coord
+  margins.top, { // y coord
+      'width': margins.width, // max width of content on PDF
+      'elementHandlers': specialElementHandlers
+  },
+
+  function (dispose) {
+      // dispose: object with X, Y of the last line add to the PDF 
+      //          this allow the insertion of new lines after html
+      pdf.save('report.pdf');
+  }, margins);
+}
+</script>
+
+
+{% include 'partials/footer.html' %}
+{% endblock%}
